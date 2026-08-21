@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Search Results for "{{ query }}" - Reddit Clone{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6">Search Results for "{{ query }}"</h1>
+    
+    <!-- Subreddits Section -->
+    {% if subreddits %}
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Communities</h2>
+        <div class="space-y-4">
+            {% for subreddit in subreddits %}
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <a href="{% url 'subreddits:subreddit_detail' subreddit.slug %}" class="text-lg font-semibold text-blue-600 hover:underline">
+                            r/{{ subreddit.name }}
+                        </a>
+                        <p class="text-gray-600 mt-1">{{ subreddit.description|truncatechars:200 }}</p>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ subreddit.member_count }} members
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Posts Section -->
+    {% if posts %}
+    <div>
+        <h2 class="text-xl font-semibold mb-4">Posts</h2>
+        <div class="space-y-4">
+            {% for post in posts %}
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <div class="flex items-center space-x-2 mb-2">
+                    <a href="{% url 'subreddits:subreddit_detail' post.subreddit.slug %}" class="text-sm text-gray-600 hover:underline">
+                        r/{{ post.subreddit.name }}
+                    </a>
+                    <span class="text-gray-400">•</span>
+                    <span class="text-sm text-gray-600">Posted by u/{{ post.author.username }}</span>
+                    <span class="text-gray-400">•</span>
+                    <span class="text-sm text-gray-600">{{ post.created_at|timesince }} ago</span>
+                </div>
+                
+                <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="block">
+                    <h3 class="text-lg font-semibold text-gray-900 hover:text-blue-600">{{ post.title }}</h3>
+                    {% if post.content %}
+                    <p class="text-gray-600 mt-1">{{ post.content|truncatechars:200 }}</p>
+                    {% endif %}
+                </a>
+                
+                <div class="flex items-center mt-2 text-sm text-gray-500">
+                    <span>{{ post.score }} points</span>
+                    <span class="mx-2">•</span>
+                    <span>{{ post.comments.count }} comments</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- No Results -->
+    {% if not subreddits and not posts %}
+    <div class="text-center py-8">
+        <p class="text-gray-600">No results found for "{{ query }}"</p>
+        <p class="text-sm text-gray-500 mt-2">Try different keywords or check your spelling</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %} 

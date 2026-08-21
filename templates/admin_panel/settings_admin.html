@@ -1,0 +1,66 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Platform Settings | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Platform Settings & Control</h1>
+        <p class="text-xs text-slate-500 mt-1">Configure global application parameters, support contacts, and system modes.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-5 max-w-2xl">
+    <form method="post" class="space-y-4 text-xs">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Site Name</label>
+                <input type="text" name="site_name" value="{{ setting.site_name }}"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Site Tagline</label>
+                <input type="text" name="site_tagline" value="{{ setting.site_tagline }}"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Support Email</label>
+                <input type="email" name="support_email" value="{{ setting.support_email }}"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Contact Phone</label>
+                <input type="text" name="contact_phone" value="{{ setting.contact_phone }}"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+        </div>
+
+        <div class="space-y-3 pt-2">
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" name="allow_registrations" {% if setting.allow_registrations %}checked{% endif %} class="w-4 h-4 rounded text-[#E85D2A] bg-slate-50 border-slate-300 focus:ring-0">
+                <span class="font-bold text-slate-800">Allow New User Registrations</span>
+            </label>
+            
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" name="require_submission_approval" {% if setting.require_submission_approval %}checked{% endif %} class="w-4 h-4 rounded text-[#E85D2A] bg-slate-50 border-slate-300 focus:ring-0">
+                <span class="font-bold text-slate-800">Require Admin Approval on User Submissions</span>
+            </label>
+
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="checkbox" name="maintenance_mode" {% if setting.maintenance_mode %}checked{% endif %} class="w-4 h-4 rounded text-[#E85D2A] bg-slate-50 border-slate-300 focus:ring-0">
+                <span class="font-bold text-rose-600">Maintenance Mode (Block non-admin users)</span>
+            </label>
+        </div>
+
+        <div class="pt-2">
+            <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold py-2.5 px-5 rounded-xl shadow-xs transition-all">
+                Save Platform Settings
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

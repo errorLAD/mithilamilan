@@ -1,0 +1,143 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Analytics | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Platform Analytics & Growth</h1>
+        <p class="text-xs text-slate-500 mt-1">Deep analytics across user growth, content submission rates, and location activity.</p>
+    </div>
+
+    <!-- Date Range Selector -->
+    <div class="flex items-center gap-2 bg-white border border-slate-200/80 p-1.5 rounded-2xl text-xs shadow-xs">
+        <a href="?days=7" class="px-3 py-1.5 rounded-xl font-bold transition-all {% if days == 7 %}bg-[#E85D2A] text-white shadow-xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %}">7 Days</a>
+        <a href="?days=30" class="px-3 py-1.5 rounded-xl font-bold transition-all {% if days == 30 %}bg-[#E85D2A] text-white shadow-xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %}">30 Days</a>
+        <a href="?days=90" class="px-3 py-1.5 rounded-xl font-bold transition-all {% if days == 90 %}bg-[#E85D2A] text-white shadow-xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %}">3 Months</a>
+        <a href="?days=365" class="px-3 py-1.5 rounded-xl font-bold transition-all {% if days == 365 %}bg-[#E85D2A] text-white shadow-xs{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-50{% endif %}">1 Year</a>
+    </div>
+</div>
+
+<!-- CHARTS GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Chart 1: User Registration Growth -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-base font-bold text-slate-900 font-heading uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-emerald-600"></i>
+            <span>User Registration Growth (Last {{ days }} Days)</span>
+        </h2>
+        <div class="h-64 relative">
+            <canvas id="userGrowthChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart 2: Submission Distribution by Category -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-base font-bold text-slate-900 font-heading uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-amber-500"></i>
+            <span>Content Submissions Distribution</span>
+        </h2>
+        <div class="h-64 relative flex justify-center">
+            <canvas id="contentDistributionChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<!-- LOCATION & SEARCH ANALYTICS -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    
+    <!-- Top Locations Table -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-base font-bold text-slate-900 font-heading uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-location-dot text-rose-500"></i>
+            <span>Location Analytics (Top User Base)</span>
+        </h2>
+        
+        <div class="space-y-2">
+            {% for city in top_cities %}
+            <div class="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/70 text-xs">
+                <span class="font-bold text-slate-800">📍 {{ city.name }}</span>
+                <span class="font-black text-[#E85D2A] text-sm">{{ city.count }} Users</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Search Analytics -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-base font-bold text-slate-900 font-heading uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass text-sky-500"></i>
+            <span>Search Analytics & Popular Queries</span>
+        </h2>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <div class="text-slate-800 font-bold">Top Search Queries</div>
+                <div class="mt-2 space-y-1.5 text-slate-600 font-medium">
+                    <div>1. Makhana Store</div>
+                    <div>2. Darbhanga PG</div>
+                    <div>3. Madhubani Painting</div>
+                    <div>4. Mithila Panchang</div>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/70">
+                <div class="text-slate-800 font-bold">Zero-Result Queries</div>
+                <div class="mt-2 space-y-1.5 text-slate-600 font-medium">
+                    <div>1. Metro Route Supaul</div>
+                    <div>2. Airport Bus Schedule</div>
+                    <div>3. Sanskrit Tutor</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // User Growth Chart
+    const ctx1 = document.getElementById('userGrowthChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'line',
+        data: {
+            labels: [{% for u in user_growth %}'{{ u.day|date:"M d" }}',{% empty %}'Day 1', 'Day 2', 'Day 3'{% endfor %}],
+            datasets: [{
+                label: 'New Registrations',
+                data: [{% for u in user_growth %}{{ u.count }},{% empty %}5, 12, 18{% endfor %}],
+                borderColor: '#059669',
+                backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
+                y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } }
+            }
+        }
+    });
+
+    // Content Breakdown Chart
+    const ctx2 = document.getElementById('contentDistributionChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: [{% for item in submission_breakdown_list %}'{{ item.name }}',{% endfor %}],
+            datasets: [{
+                data: [{% for item in submission_breakdown_list %}{{ item.count }},{% endfor %}],
+                backgroundColor: ['#E85D2A', '#38bdf8', '#fbbf24', '#34d399', '#a78bfa', '#f43f5e', '#818cf8', '#2dd4bf', '#84cc16', '#ec4899', '#06b6d4', '#8b5cf6']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'right', labels: { color: '#334155', font: { size: 10 } } } }
+        }
+    });
+</script>
+{% endblock %}

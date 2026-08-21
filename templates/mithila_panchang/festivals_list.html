@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}मिथिला पाबनि-तिहार - Festivals & Vrat | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-4">
+        <div class="max-w-2xl space-y-2">
+            <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+                <i class="fa-solid fa-gopuram text-amber-300"></i>
+                <span>मिथिला संस्कृति</span>
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+                मिथिला पाबनि-तिहार (Festivals & Vrat)
+            </h1>
+            <p class="text-amber-100 text-xs sm:text-sm font-medium">
+                मधुश्रावणी, छठ पूजा, कोजागरा, सामा चकेवा, जानकी नवमी सहित मिथिला के सभी पारम्परिक पर्व, त्यौहार व व्रत विवरण।
+            </p>
+        </div>
+    </div>
+
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Category Tabs -->
+            <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar text-xs font-bold py-1">
+                <a href="?category=all{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'all' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    सभी (All)
+                </a>
+                <a href="?category=pabni_tihar{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'pabni_tihar' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    पाबनि-तिहार
+                </a>
+                <a href="?category=vrat{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'vrat' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    व्रत (Vrat)
+                </a>
+                <a href="?category=puja{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'puja' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    पूजा (Puja)
+                </a>
+                <a href="?category=mithila_special{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'mithila_special' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    मिथिला विशेष
+                </a>
+                <a href="?category=religious{% if search_query %}&q={{ search_query }}{% endif %}" class="px-3.5 py-2 rounded-xl transition-all shrink-0 {% if selected_category == 'religious' %}bg-[#7D281E] text-white{% else %}text-slate-700 hover:bg-amber-50{% endif %}">
+                    धार्मिक
+                </a>
+            </div>
+
+            <!-- Search Form -->
+            <form method="get" class="relative w-full sm:w-64">
+                <input type="hidden" name="category" value="{{ selected_category }}">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="पाबनि खोजें (e.g. छठ, तीज)..." class="w-full bg-[#FAF7F2] border border-amber-200/80 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#7D281E]/20">
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-3 text-amber-700/60 text-xs"></i>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Festival Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for f in festivals %}
+        <div class="group bg-white rounded-3xl border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all overflow-hidden flex flex-col justify-between">
+            <div class="p-6 space-y-3">
+                <div class="flex items-center justify-between text-xs font-bold">
+                    <span class="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full">
+                        {{ f.date|date:"d F Y" }}
+                    </span>
+                    <span class="text-slate-500 font-semibold">{{ f.mithila_month_name }}</span>
+                </div>
+
+                <h3 class="text-xl font-black text-slate-900 group-hover:text-[#7D281E] transition-colors leading-snug">
+                    <a href="{% url 'mithila_panchang:festival_detail' f.pk %}">{{ f.title_hi }}</a>
+                </h3>
+
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {{ f.short_description }}
+                </p>
+            </div>
+
+            <div class="bg-[#FAF7F2] px-6 py-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold">
+                <a href="{% url 'mithila_panchang:download_ics' 'festival' f.pk %}" class="text-slate-600 hover:text-slate-900 flex items-center space-x-1" title="Add to Calendar">
+                    <i class="fa-regular fa-calendar-plus text-amber-600"></i>
+                    <span>कैलेंडर</span>
+                </a>
+                <a href="{% url 'mithila_panchang:festival_detail' f.pk %}" class="text-[#7D281E] hover:underline flex items-center space-x-1">
+                    <span>पूरा विवरण</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-3xl p-12 text-center border border-amber-200 text-slate-500 space-y-2">
+            <i class="fa-solid fa-gopuram text-4xl text-amber-400"></i>
+            <p class="font-bold text-slate-800">कोई त्यौहार या व्रत नहीं मिला</p>
+            <p class="text-xs">कृपया अन्य फिल्टर या खोज शब्द आज़माएं।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

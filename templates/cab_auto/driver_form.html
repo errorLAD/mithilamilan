@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Driver Self Registration - Cab & Auto Directory{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto space-y-8">
+
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas">
+        <!-- Back Button -->
+        <button onclick="history.back()" class="inline-flex items-center space-x-2 text-xs font-bold text-slate-600 hover:text-amber-600 transition-colors mb-4">
+            <i class="fa-solid fa-arrow-left text-[11px]"></i>
+            <span>Back</span>
+        </button>
+
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+            <i class="fa-solid fa-id-card text-amber-600"></i>
+            <span>Driver Registration</span>
+        </h1>
+        <p class="text-xs text-slate-500 mt-1">Register your Auto, E-Rickshaw, or Taxi listing. User submissions undergo Admin verification before appearing publicly.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas">
+        <form method="post" enctype="multipart/form-data" class="driver-form space-y-5 text-xs font-semibold">
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-slate-700">Full Name <span class="text-rose-500">*</span></label>
+                    {{ form.full_name }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Age <span class="text-rose-500">*</span></label>
+                    {{ form.age }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Direct Mobile Phone <span class="text-rose-500">*</span></label>
+                    {{ form.mobile_number }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">WhatsApp Number <span class="text-rose-500">*</span></label>
+                    {{ form.whatsapp_number }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Vehicle Type <span class="text-rose-500">*</span></label>
+                    {{ form.vehicle_type }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Vehicle Model <span class="text-rose-500">*</span></label>
+                    {{ form.vehicle_model }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Vehicle Registration Number (Optional)</label>
+                    {{ form.vehicle_number }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Years of Driving Experience</label>
+                    {{ form.experience_years }}
+                </div>
+
+                <div class="sm:col-span-2 space-y-1">
+                    <label class="text-slate-700">Service Area / Routes Covered <span class="text-rose-500">*</span></label>
+                    {{ form.service_area }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Available Hours</label>
+                    {{ form.available_hours }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Driver Photo</label>
+                    {{ form.photo }}
+                </div>
+
+                <div class="sm:col-span-2 space-y-1">
+                    <label class="text-slate-700">About / Additional Details</label>
+                    {{ form.about }}
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-extrabold py-3.5 rounded-2xl shadow-md transition-all text-sm">
+                Submit Driver Profile for Verification
+            </button>
+        </form>
+    </div>
+
+</div>
+
+<style>
+    /* Django renders form fields with no classes by default, so style them generically here */
+    .driver-form input[type="text"],
+    .driver-form input[type="number"],
+    .driver-form input[type="tel"],
+    .driver-form input[type="email"],
+    .driver-form select,
+    .driver-form textarea {
+        width: 100%;
+        padding: 0.65rem 0.9rem;
+        border: 1px solid rgb(226 232 240); /* slate-200 */
+        border-radius: 0.9rem;
+        background-color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: rgb(15 23 42); /* slate-900 */
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .driver-form input[type="text"]:focus,
+    .driver-form input[type="number"]:focus,
+    .driver-form input[type="tel"]:focus,
+    .driver-form input[type="email"]:focus,
+    .driver-form select:focus,
+    .driver-form textarea:focus {
+        border-color: rgb(217 119 6); /* amber-600 */
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+    }
+
+    .driver-form textarea {
+        min-height: 90px;
+        resize: vertical;
+    }
+
+    .driver-form input[type="file"] {
+        width: 100%;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: rgb(71 85 105); /* slate-600 */
+        padding: 0.5rem 0;
+    }
+
+    .driver-form input[type="file"]::file-selector-button {
+        margin-right: 0.75rem;
+        padding: 0.5rem 0.9rem;
+        border-radius: 0.75rem;
+        border: none;
+        background-color: rgb(217 119 6); /* amber-600 */
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.7rem;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .driver-form input[type="file"]::file-selector-button:hover {
+        background-color: rgb(180 83 9); /* amber-700 */
+    }
+
+    .driver-form input::placeholder,
+    .driver-form textarea::placeholder {
+        color: rgb(148 163 184); /* slate-400 */
+        font-weight: 500;
+    }
+</style>
+{% endblock %}

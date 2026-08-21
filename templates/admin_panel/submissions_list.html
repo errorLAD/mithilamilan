@@ -1,0 +1,120 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Submissions & Approvals Queue | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Master Submissions Queue</h1>
+        <p class="text-xs text-slate-500 mt-1">Review user-submitted entries across all 14 platform submission categories.</p>
+    </div>
+</div>
+
+<!-- FILTERS TOOLBAR -->
+<div class="bg-white border border-slate-200/80 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs shadow-xs">
+    <form method="get" class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+        
+        <!-- Category Filter -->
+        <select name="type" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            <option value="all" {% if sub_type == 'all' %}selected{% endif %}>All Types (News, Story, Events, Jobs...)</option>
+            <option value="news" {% if sub_type == 'news' %}selected{% endif %}>News (समाचार)</option>
+            <option value="story" {% if sub_type == 'story' %}selected{% endif %}>Stories (कहानी)</option>
+            <option value="event" {% if sub_type == 'event' %}selected{% endif %}>Events & Festivals</option>
+            <option value="job" {% if sub_type == 'job' %}selected{% endif %}>Jobs (रोजगार)</option>
+            <option value="pg" {% if sub_type == 'pg' %}selected{% endif %}>PG & Rentals</option>
+            <option value="lost_found" {% if sub_type == 'lost_found' %}selected{% endif %}>Lost & Found</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select name="status" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            <option value="PENDING" {% if status == 'PENDING' %}selected{% endif %}>Pending Approval</option>
+            <option value="APPROVED" {% if status == 'APPROVED' %}selected{% endif %}>Approved</option>
+            <option value="REJECTED" {% if status == 'REJECTED' %}selected{% endif %}>Rejected</option>
+            <option value="all" {% if status == 'all' %}selected{% endif %}>All Statuses</option>
+        </select>
+
+        <!-- Search input -->
+        <input type="text" name="q" value="{{ query }}" placeholder="Search title or user..."
+               class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#E85D2A] focus:bg-white w-48 font-medium">
+
+        <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold px-4 py-2 rounded-xl transition-all shadow-xs">Filter</button>
+    </form>
+
+    <div class="text-slate-500 font-semibold">
+        Showing <span class="text-slate-900 font-bold">{{ items|length }}</span> submission items
+    </div>
+</div>
+
+<!-- SUBMISSIONS DATATABLE -->
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Type</th>
+                    <th class="px-4 py-3.5">Title</th>
+                    <th class="px-4 py-3.5">Submitted By</th>
+                    <th class="px-4 py-3.5">Location</th>
+                    <th class="px-4 py-3.5">Date</th>
+                    <th class="px-4 py-3.5">Status</th>
+                    <th class="px-4 py-3.5 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for item in items %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 shrink-0">
+                        <span class="px-2.5 py-1 rounded-lg font-bold text-[10px] uppercase tracking-wider bg-orange-50 text-[#E85D2A] border border-orange-200">
+                            {{ item.type }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3.5 font-bold text-slate-900 max-w-xs truncate">
+                        {{ item.title }}
+                    </td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">
+                        u/{{ item.author }}
+                    </td>
+                    <td class="px-4 py-3.5 text-slate-500">
+                        {{ item.location }}
+                    </td>
+                    <td class="px-4 py-3.5 text-slate-500 whitespace-nowrap">
+                        {{ item.created_at|date:"d M Y, H:i" }}
+                    </td>
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        {% if item.status == 'APPROVED' or item.status == 'Approved' %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Approved</span>
+                        {% elif item.status == 'REJECTED' or item.status == 'Rejected' %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">Rejected</span>
+                        {% else %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3.5 text-right whitespace-nowrap space-x-1">
+                        <a href="{% url 'admin_panel:submission_action' item.app item.id 'approve' %}"
+                           class="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold border border-emerald-200 transition-colors shadow-xs">
+                            Approve
+                        </a>
+                        <a href="{% url 'admin_panel:submission_action' item.app item.id 'reject' %}"
+                           class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold border border-rose-200 transition-colors shadow-xs">
+                            Reject
+                        </a>
+                        <a href="{% url 'admin_panel:submission_action' item.app item.id 'delete' %}"
+                           onclick="return confirm('Delete this submission entry permanently?')"
+                           class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="px-4 py-12 text-center text-slate-400">
+                        <i class="fa-solid fa-folder-open text-3xl mb-2 block text-slate-300"></i>
+                        No submission items found matching the selected filter.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

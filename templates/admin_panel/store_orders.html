@@ -1,0 +1,67 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Orders Lifecycle | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">E-Commerce Orders Lifecycle</h1>
+        <p class="text-xs text-slate-500 mt-1">Track customer orders, update delivery status, manage payments.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Order ID</th>
+                    <th class="px-4 py-3.5">Customer</th>
+                    <th class="px-4 py-3.5">Total Amount</th>
+                    <th class="px-4 py-3.5">Payment</th>
+                    <th class="px-4 py-3.5">Order Status</th>
+                    <th class="px-4 py-3.5">Date</th>
+                    <th class="px-4 py-3.5 text-right">Update Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for o in orders %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold font-mono text-[#E85D2A]">#{{ o.order_number }}</td>
+                    <td class="px-4 py-3.5 font-bold text-slate-900">
+                        <div>{{ o.customer_name }}</div>
+                        <div class="text-[10px] text-slate-500 font-normal">{{ o.customer_mobile }}</div>
+                    </td>
+                    <td class="px-4 py-3.5 font-black text-emerald-600">₹{{ o.grand_total }}</td>
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase {% if o.payment_status == 'paid' %}bg-emerald-50 text-emerald-700 border border-emerald-200{% else %}bg-amber-50 text-amber-700 border border-amber-200{% endif %}">
+                            {{ o.payment_method }} ({{ o.payment_status }})
+                        </span>
+                    </td>
+                    <td class="px-4 py-3.5 whitespace-nowrap uppercase font-bold text-slate-800">
+                        {{ o.get_order_status_display }}
+                    </td>
+                    <td class="px-4 py-3.5 text-slate-500 whitespace-nowrap">{{ o.created_at|date:"d M Y, H:i" }}</td>
+                    <td class="px-4 py-3.5 text-right whitespace-nowrap">
+                        <form method="post" class="inline-flex items-center gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_id" value="{{ o.id }}">
+                            <select name="order_status" class="bg-slate-50 border border-slate-200 rounded-xl text-[11px] px-2.5 py-1.5 text-slate-800 font-medium">
+                                <option value="pending" {% if o.order_status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="confirmed" {% if o.order_status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="shipped" {% if o.order_status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                <option value="delivered" {% if o.order_status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                <option value="cancelled" {% if o.order_status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="px-3 py-1.5 rounded-xl bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold transition-all shadow-xs">Save</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="px-4 py-12 text-center text-slate-400">No orders found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

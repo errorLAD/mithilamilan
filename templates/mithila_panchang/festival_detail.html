@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ festival.title_hi }} - Mithila Festival | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-12">
+
+    <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+        <a href="{% url 'mithila_panchang:festivals_list' %}" class="hover:text-[#7D281E] flex items-center space-x-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>पाबनि-तिहार सूची</span>
+        </a>
+        <span>{{ festival.get_category_display }}</span>
+    </div>
+
+    <!-- Festival Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-4">
+        <div class="space-y-2">
+            <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+                <i class="fa-solid fa-gopuram text-amber-300"></i>
+                <span>{{ festival.mithila_month_name }}</span>
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+                {{ festival.title_hi }}
+            </h1>
+            <p class="text-amber-100 text-sm font-bold">
+                तिथि: {{ festival.date|date:"d F Y" }}
+            </p>
+        </div>
+
+        <div class="pt-2 flex flex-wrap gap-3 text-xs font-bold">
+            <a href="{% url 'mithila_panchang:download_ics' 'festival' festival.pk %}" class="bg-white text-[#7D281E] hover:bg-amber-50 px-4 py-2.5 rounded-xl shadow-xs transition-all flex items-center space-x-2">
+                <i class="fa-regular fa-calendar-plus"></i>
+                <span>Add to Calendar (.ics)</span>
+            </a>
+            <a href="{% url 'mithila_panchang:date_detail' festival.date|date:'Y-m-d' %}" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2.5 rounded-xl border border-white/20 transition-all flex items-center space-x-2">
+                <i class="fa-regular fa-calendar-days"></i>
+                <span>इस दिन का पंचांग देखें</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Description & Details -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-saas space-y-6">
+        
+        <div class="space-y-2">
+            <h3 class="font-extrabold text-slate-900 text-lg border-b border-amber-100 pb-2">विवरण (Description)</h3>
+            <p class="text-sm text-slate-700 leading-relaxed font-normal">
+                {{ festival.short_description }}
+            </p>
+        </div>
+
+        {% if festival.traditions %}
+        <div class="space-y-2">
+            <h3 class="font-extrabold text-slate-900 text-lg border-b border-amber-100 pb-2">मिथिला परंपराएँ एवं रीतियाँ (Traditions)</h3>
+            <p class="text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                {{ festival.traditions }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if festival.puja_vrat_info %}
+        <div class="space-y-2">
+            <h3 class="font-extrabold text-slate-900 text-lg border-b border-amber-100 pb-2">पूजा व व्रत विधि (Puja & Vrat Info)</h3>
+            <p class="text-sm text-slate-700 leading-relaxed font-normal whitespace-pre-line">
+                {{ festival.puja_vrat_info }}
+            </p>
+        </div>
+        {% endif %}
+
+        {% if festival.related_event %}
+        <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-calendar-star text-amber-700 text-xl"></i>
+                <div>
+                    <h4 class="font-bold text-amber-950">Events & Festivals समुदाय प्रविष्टि</h4>
+                    <p class="text-amber-800">इस त्यौहार का कम्युनिटी आयोजन विवरण उपलब्ध है।</p>
+                </div>
+            </div>
+            <a href="{% url 'events:event_detail' festival.related_event.pk %}" class="bg-[#7D281E] text-white font-bold px-4 py-2 rounded-xl shrink-0">
+                View Community Event &rarr;
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

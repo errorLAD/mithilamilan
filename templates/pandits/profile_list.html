@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ section_title }} - OK Delhi & Mithila Discovery{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8">
+
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-700 via-yellow-700 to-amber-900 p-8 md:p-12 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-amber-100">
+                <i class="fa-solid fa-om text-amber-300"></i>
+                <span>Vedic Guidance & Astrology Directory</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                Pandit & Astrologer Directory
+            </h1>
+            <p class="text-amber-100 text-sm md:text-base font-normal leading-relaxed">
+                Connect directly with verified Pandits for Karma Kanda, Griha Pravesh, Vivah Puja, and renowned Astrologers for Janam Kundali & Vastu guidance.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-3">
+                <a href="{% url 'pandits:profile_onboard' %}" class="inline-flex items-center space-x-2 bg-white text-amber-900 hover:bg-amber-50 font-bold text-xs sm:text-sm px-5 py-2.5 rounded-2xl shadow-lg transition-all hover:scale-105">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>+ List as Pandit / Astrologer</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Profiles Showcase -->
+    {% if featured_profiles %}
+    <div class="space-y-4">
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-6 bg-amber-500 rounded-full"></span>
+            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Verified & Featured Specialists</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for prof in featured_profiles %}
+            <div class="bg-white rounded-3xl border border-amber-200 shadow-saas hover:shadow-saas-lg p-5 space-y-4 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-3">
+                    <div class="flex items-start justify-between">
+                        <div class="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 border-2 border-amber-400/60 flex-shrink-0">
+                            {% if prof.profile_photo %}
+                            <img src="{{ prof.profile_photo.url }}" alt="{{ prof.full_name }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <div class="w-full h-full bg-gradient-to-tr from-amber-700 to-amber-500 text-white font-bold text-xl flex items-center justify-center">
+                                {{ prof.full_name|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% if prof.is_verified %}
+                        <span class="bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center space-x-1">
+                            <i class="fa-solid fa-circle-check text-amber-600"></i>
+                            <span>Verified</span>
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">
+                            {{ prof.get_profile_type_display }}
+                        </span>
+                        <h3 class="text-base font-bold text-slate-900 group-hover:text-amber-700 transition-colors">
+                            <a href="{{ prof.get_absolute_url }}">{{ prof.full_name }}</a>
+                        </h3>
+                        <p class="text-xs text-slate-500 line-clamp-1 font-medium mt-0.5">{{ prof.designation }}</p>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1 pt-1">
+                        <div class="flex items-center space-x-1.5 text-slate-500">
+                            <i class="fa-solid fa-location-dot text-rose-500 text-[11px]"></i>
+                            <span class="truncate">{{ prof.location }}</span>
+                        </div>
+                        <div class="flex items-center space-x-1.5 text-slate-500">
+                            <i class="fa-solid fa-briefcase text-amber-600 text-[11px]"></i>
+                            <span>{{ prof.experience_years }}+ Years Exp.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex items-center gap-2">
+                    <a href="{{ prof.get_whatsapp_url }}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2 rounded-xl text-center flex items-center justify-center space-x-1.5 shadow-xs transition-colors">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="{{ prof.get_absolute_url }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl transition-colors">
+                        Profile
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Search & Filters Toolbar -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4">
+        <form method="get" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 text-xs">
+            <!-- Search -->
+            <div class="relative lg:col-span-2">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                <input type="text" name="q" value="{{ query }}" placeholder="Search by name, specialization, puja..." class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-amber-600 font-medium">
+            </div>
+
+            <!-- Role Filter -->
+            <div>
+                <select name="type" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-amber-600 font-medium text-slate-700">
+                    <option value="">All Roles</option>
+                    <option value="pandit" {% if profile_type == 'pandit' %}selected{% endif %}>Pandit</option>
+                    <option value="astrologer" {% if profile_type == 'astrologer' %}selected{% endif %}>Astrologer</option>
+                </select>
+            </div>
+
+            <!-- Specialization -->
+            <div>
+                <input type="text" name="specialization" value="{{ specialization }}" placeholder="Specialization (e.g. Vastu)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-amber-600 font-medium">
+            </div>
+
+            <!-- Verified Toggle -->
+            <div class="flex items-center px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl">
+                <label class="flex items-center space-x-2 cursor-pointer font-bold text-slate-700">
+                    <input type="checkbox" name="verified" value="true" {% if verified_only == 'true' or verified_only == '1' %}checked{% endif %} class="accent-amber-600">
+                    <span>Verified Only</span>
+                </label>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-amber-700 hover:bg-amber-800 text-white font-bold px-4 py-2.5 rounded-2xl transition-colors text-center">
+                    Search
+                </button>
+                <a href="{% url 'pandits:profile_list' %}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2.5 rounded-2xl transition-colors flex items-center justify-center">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- All Profiles Directory -->
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-slate-900">
+                Registered Profiles <span class="text-xs text-slate-500 font-normal">({{ total_count }} found)</span>
+            </h2>
+        </div>
+
+        {% if profiles %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for prof in profiles %}
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg p-6 space-y-4 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="relative w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                            {% if prof.profile_photo %}
+                            <img src="{{ prof.profile_photo.url }}" alt="{{ prof.full_name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            {% else %}
+                            <div class="w-full h-full bg-gradient-to-tr from-amber-700 to-yellow-600 text-white font-black text-2xl flex items-center justify-center">
+                                {{ prof.full_name|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="space-y-1 min-w-0 flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-extrabold text-amber-700 uppercase tracking-wider">
+                                    {{ prof.get_profile_type_display }}
+                                </span>
+                                {% if prof.is_verified %}
+                                <span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>Verified</span>
+                                </span>
+                                {% endif %}
+                            </div>
+                            <h3 class="text-base font-extrabold text-slate-900 group-hover:text-amber-700 transition-colors truncate">
+                                <a href="{{ prof.get_absolute_url }}">{{ prof.full_name }}</a>
+                            </h3>
+                            <p class="text-xs text-slate-500 font-medium line-clamp-1">{{ prof.designation }}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 rounded-2xl p-3.5 text-xs space-y-1.5 border border-slate-100">
+                        <div class="flex items-center justify-between text-slate-600">
+                            <span class="text-slate-400 font-medium">Experience:</span>
+                            <span class="font-bold text-slate-800">{{ prof.experience_years }} Years</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-600">
+                            <span class="text-slate-400 font-medium">Location:</span>
+                            <span class="font-bold text-slate-800 truncate max-w-[150px]">{{ prof.location }}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-600">
+                            <span class="text-slate-400 font-medium">Languages:</span>
+                            <span class="font-semibold text-slate-700 truncate max-w-[150px]">{{ prof.languages }}</span>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1">
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SPECIALIZATION</span>
+                        <p class="font-semibold text-slate-800 line-clamp-2 leading-relaxed">{{ prof.specialization }}</p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex items-center gap-2">
+                    <a href="{{ prof.get_whatsapp_url }}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 rounded-2xl text-center flex items-center justify-center space-x-2 shadow-xs transition-colors">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>Chat on WhatsApp</span>
+                    </a>
+                    <a href="{{ prof.get_absolute_url }}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-4 py-2.5 rounded-2xl transition-colors">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="flex justify-center items-center space-x-2 pt-6">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&type={{ profile_type }}" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">Previous</a>
+            {% endif %}
+
+            <span class="text-xs font-semibold text-slate-500 px-3">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&type={{ profile_type }}" class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">Next</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-slate-200/80 space-y-4">
+            <div class="w-16 h-16 bg-amber-50 text-amber-700 rounded-full flex items-center justify-center mx-auto text-2xl">
+                <i class="fa-solid fa-user-xmark"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900">No profiles found matching your search</h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto">Are you a Pandit or Astrologer? Create your official profile today to be discovered by thousand of devotees!</p>
+            <a href="{% url 'pandits:profile_onboard' %}" class="inline-block bg-amber-700 text-white text-xs font-bold px-5 py-2.5 rounded-2xl">
+                + Create Profile
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

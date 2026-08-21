@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Saved Wishlist - Mithila Store{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8">
+
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-heart text-rose-600"></i>
+                <span>Saved Wishlist</span>
+            </h1>
+            <p class="text-xs text-slate-500">Your favorite Mithila paintings, dupattas, and handicrafts saved for later</p>
+        </div>
+        <a href="{% url 'store:product_list' %}" class="text-xs font-bold text-rose-600 hover:underline">&larr; Back to Catalog</a>
+    </div>
+
+    {% if wishlist_items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {% for item in wishlist_items %}
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas overflow-hidden flex flex-col justify-between group">
+            <div>
+                <div class="relative h-48 bg-slate-100 overflow-hidden">
+                    {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full bg-rose-700 text-white font-bold flex items-center justify-center text-sm p-4 text-center">
+                        {{ item.product.title }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="p-4 space-y-1">
+                    <h3 class="text-sm font-extrabold text-slate-900 line-clamp-1">
+                        <a href="{{ item.product.get_absolute_url }}">{{ item.product.title }}</a>
+                    </h3>
+                    <span class="text-base font-black text-slate-900 block">₹{{ item.product.price }}</span>
+                </div>
+            </div>
+
+            <div class="p-4 pt-0 flex gap-2">
+                <form method="post" action="{% url 'store:add_to_cart' item.product.pk %}" class="flex-1">
+                    {% csrf_token %}
+                    <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs py-2 rounded-xl">
+                        Move to Cart
+                    </button>
+                </form>
+                <a href="{% url 'store:toggle_wishlist' item.product.pk %}" class="px-3 py-2 bg-slate-100 text-slate-600 hover:text-rose-600 rounded-xl text-xs font-bold" title="Remove">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-white rounded-3xl p-12 text-center border border-slate-200/80 space-y-3">
+        <i class="fa-regular fa-heart text-4xl text-slate-300"></i>
+        <h2 class="text-lg font-bold text-slate-900">Your wishlist is empty</h2>
+        <p class="text-xs text-slate-500">Save products while browsing to view them anytime!</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

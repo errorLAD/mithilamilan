@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="hi" class="h-full bg-[#F8F6F0] font-sans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MithilaMilan Admin OS{% endblock %}</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fffdf5',
+                            100: '#fef7e6',
+                            500: '#E85D2A',
+                            600: '#d94c19',
+                            700: '#b83b12',
+                            900: '#0F1F35',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .font-heading { font-family: 'Outfit', sans-serif; }
+        [x-cloak] { display: none !important; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F1EFE9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-full bg-[#F8F6F0] text-slate-800 antialiased flex flex-col md:flex-row overflow-x-hidden" x-data="{ sidebarOpen: false }">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden bg-white border-b border-slate-200/80 px-4 py-3 flex items-center justify-between z-30 sticky top-0 shadow-xs">
+        <div class="flex items-center space-x-3">
+            <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                <i class="fa-solid fa-bars text-lg"></i>
+            </button>
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#C94718] text-white flex items-center justify-center font-black text-sm shadow-xs">M</div>
+                <span class="font-extrabold text-slate-900 text-base tracking-tight font-heading">Mithila<span class="text-[#E85D2A]">Admin</span></span>
+            </div>
+        </div>
+        <a href="{% url 'core:home' %}" class="text-xs bg-orange-50 border border-orange-200 text-[#E85D2A] hover:bg-orange-100 px-3.5 py-1.5 rounded-full font-bold transition-all">
+            Main Site <i class="fa-solid fa-arrow-right-long ml-1 text-[#E85D2A]"></i>
+        </a>
+    </header>
+
+    <!-- Sidebar Backdrop for Mobile -->
+    <div x-show="sidebarOpen" @click="sidebarOpen = false" x-cloak
+         class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-xs md:hidden"></div>
+
+    <!-- Sidebar Drawer (SaaS Premium Dark Slate & Warm Accent Sidebar) -->
+    <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-[#182232] border-r border-slate-800 flex flex-col transition-transform duration-300 md:static md:translate-x-0 shrink-0 shadow-xl"
+           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        
+        <!-- Sidebar Brand Header -->
+        <div class="h-16 px-5 border-b border-slate-800/80 flex items-center justify-between bg-[#131B28]">
+            <a href="{% url 'admin_panel:dashboard' %}" class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#B83B12] text-white flex items-center justify-center font-black text-base shadow-md shadow-orange-950/30">M</div>
+                <div>
+                    <div class="font-black text-white text-base leading-none tracking-tight font-heading">Mithila<span class="text-[#E85D2A]">Admin</span></div>
+                    <div class="text-[10px] text-amber-400 font-bold uppercase tracking-widest mt-0.5">Central OS v2.0</div>
+                </div>
+            </a>
+            <button @click="sidebarOpen = false" class="md:hidden text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-6 custom-scrollbar text-xs">
+            
+            <!-- MAIN DASHBOARD -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Main OS</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:dashboard' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'dashboard' %}bg-[#E85D2A] text-white shadow-md shadow-orange-950/40{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-chart-pie w-4 text-center"></i>
+                        <span>Overview OS</span>
+                    </a>
+                    <a href="{% url 'admin_panel:analytics' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'analytics' %}bg-[#E85D2A] text-white shadow-md shadow-orange-950/40{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-chart-line w-4 text-center text-teal-400"></i>
+                        <span>Platform Analytics</span>
+                    </a>
+                    <a href="{% url 'admin_panel:submissions' %}" class="flex items-center justify-between px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'submissions' %}bg-[#E85D2A] text-white shadow-md shadow-orange-950/40{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-list-check w-4 text-center text-amber-400"></i>
+                            <span>Approvals Queue</span>
+                        </div>
+                        <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full text-[10px]">Queue</span>
+                    </a>
+                    <a href="{% url 'admin_panel:users' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'users' %}bg-[#E85D2A] text-white shadow-md shadow-orange-950/40{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-users-gear w-4 text-center text-sky-400"></i>
+                        <span>Users Governance</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- CONTENT CMS -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Content CMS</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:news' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'news' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-newspaper w-4 text-center text-sky-400"></i>
+                        <span>समाचार (News)</span>
+                    </a>
+                    <a href="{% url 'admin_panel:stories' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'stories' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-book-open w-4 text-center text-amber-400"></i>
+                        <span>कहानी (Stories)</span>
+                    </a>
+                    <a href="{% url 'admin_panel:events' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'events' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-dharmachakra w-4 text-center text-orange-400"></i>
+                        <span>पावन पर्व एवं आयोजन</span>
+                    </a>
+                    <a href="{% url 'admin_panel:panchang' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'panchang' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-calendar-days w-4 text-center text-amber-500"></i>
+                        <span>मिथिला पंचांग</span>
+                    </a>
+                    <a href="{% url 'admin_panel:pride' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'pride' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-graduation-cap w-4 text-center text-blue-400"></i>
+                        <span>मिथिला गौरव एवं विद्वान</span>
+                    </a>
+                    <a href="{% url 'admin_panel:pandits' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'pandits' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-om w-4 text-center text-amber-500"></i>
+                        <span>पंडित एवं ज्योतिषी</span>
+                    </a>
+                    <a href="{% url 'admin_panel:music' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'music' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-music w-4 text-center text-rose-400"></i>
+                        <span>मैथिली संगीत</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- COMMUNITY HUB -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Community Hub</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:communities' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'communities' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-users-rays w-4 text-center text-indigo-400"></i>
+                        <span>Communities</span>
+                    </a>
+                    <a href="{% url 'admin_panel:top_communities' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'top_communities' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-trophy w-4 text-center text-amber-400"></i>
+                        <span>Top Leaderboard</span>
+                    </a>
+                    <a href="{% url 'admin_panel:posts' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'posts' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-file-lines w-4 text-center text-emerald-400"></i>
+                        <span>Feed Posts</span>
+                    </a>
+                    <a href="{% url 'admin_panel:comments' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'comments' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-comments w-4 text-center text-purple-400"></i>
+                        <span>Comments Tree</span>
+                    </a>
+                    <a href="{% url 'admin_panel:reports' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'reports' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-shield-halved w-4 text-center text-rose-400"></i>
+                        <span>Safety & Reports</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- E-COMMERCE & SERVICES -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Store & Services</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:store_dashboard' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'store' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-store w-4 text-center text-emerald-400"></i>
+                        <span>Mithila Store Suite</span>
+                    </a>
+                    <a href="{% url 'admin_panel:store_orders' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'store_orders' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-truck-fast w-4 text-center text-amber-400"></i>
+                        <span>Orders Lifecycle</span>
+                    </a>
+                    <a href="{% url 'admin_panel:services' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'services' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-briefcase w-4 text-center text-teal-400"></i>
+                        <span>Services Marketplace</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SEO & DIGITAL MARKETING -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">SEO & Growth</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:seo_dashboard' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'seo_dashboard' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-magnifying-glass-chart w-4 text-center text-emerald-400"></i>
+                        <span>SEO Dashboard</span>
+                    </a>
+                    <a href="{% url 'admin_panel:gsc' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'gsc' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-brands fa-google w-4 text-center text-sky-400"></i>
+                        <span>Search Console</span>
+                    </a>
+                    <a href="{% url 'admin_panel:seo_pages' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'seo_pages' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-file-code w-4 text-center text-amber-400"></i>
+                        <span>Page Meta Manager</span>
+                    </a>
+                    <a href="{% url 'admin_panel:seo_auditor' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'seo_auditor' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-list-check w-4 text-center text-purple-400"></i>
+                        <span>Content SEO Auditor</span>
+                    </a>
+                    <a href="{% url 'admin_panel:sitemap' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'sitemap' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-sitemap w-4 text-center text-[#E85D2A]"></i>
+                        <span>Sitemap & Robots</span>
+                    </a>
+                    <a href="{% url 'admin_panel:marketing' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'marketing' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-bullseye w-4 text-center text-rose-400"></i>
+                        <span>Digital Marketing</span>
+                    </a>
+                    <a href="{% url 'admin_panel:campaigns' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'campaigns' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-[#E85D2A] fa-flag w-4 text-center text-teal-400"></i>
+                        <span>Marketing Campaigns</span>
+                    </a>
+                    <a href="{% url 'admin_panel:utm' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'utm' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-link w-4 text-center text-indigo-400"></i>
+                        <span>UTM URL Builder</span>
+                    </a>
+                    <a href="{% url 'admin_panel:social' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'social' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-share-nodes w-4 text-center text-amber-500"></i>
+                        <span>Social Accounts</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SYSTEM & CONTROL -->
+            <div>
+                <div class="px-3 mb-2 text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">System & Control</div>
+                <div class="space-y-1">
+                    <a href="{% url 'admin_panel:notifications' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'notifications' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-bullhorn w-4 text-center text-orange-400"></i>
+                        <span>Broadcast Engine</span>
+                    </a>
+                    <a href="{% url 'admin_panel:homepage' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'homepage' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-sliders w-4 text-center text-sky-400"></i>
+                        <span>Homepage CMS</span>
+                    </a>
+                    <a href="{% url 'admin_panel:logs' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'logs' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-clock-rotate-left w-4 text-center text-purple-400"></i>
+                        <span>Activity Audit Logs</span>
+                    </a>
+                    <a href="{% url 'admin_panel:settings' %}" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl font-bold transition-all {% if active_tab == 'settings' %}bg-[#E85D2A] text-white{% else %}text-slate-300 hover:bg-slate-800/80 hover:text-white{% endif %}">
+                        <i class="fa-solid fa-gears w-4 text-center text-slate-400"></i>
+                        <span>Platform Settings</span>
+                    </a>
+                </div>
+            </div>
+
+        </nav>
+
+        <!-- Sidebar Footer Admin User Info -->
+        <div class="p-3 border-t border-slate-800 bg-[#131B28] flex items-center justify-between">
+            <div class="flex items-center space-x-3 min-w-0">
+                <div class="w-8 h-8 rounded-full bg-[#E85D2A] text-white flex items-center justify-center font-bold text-xs shrink-0">
+                    {{ request.user.username|slice:":1"|upper }}
+                </div>
+                <div class="min-w-0">
+                    <div class="text-xs font-bold text-white truncate">{{ request.user.username }}</div>
+                    <div class="text-[10px] text-emerald-400 font-semibold flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1 animate-pulse"></span>
+                        Super Admin
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'core:home' %}" title="Back to main site" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <i class="fa-solid fa-house text-xs"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Light Warm SaaS Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-y-auto bg-[#F8F6F0]">
+        
+        <!-- Warm Light Top Bar Navbar -->
+        <header class="hidden md:flex h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-6 items-center justify-between sticky top-0 z-30 shadow-xs">
+            <!-- Global Admin Search -->
+            <form action="{% url 'admin_panel:submissions' %}" method="get" class="relative w-80">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="q" placeholder="Global Admin Search (posts, users, orders...)"
+                       class="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#E85D2A] focus:bg-white transition-all shadow-inner font-medium">
+            </form>
+
+            <!-- Top Actions -->
+            <div class="flex items-center space-x-4">
+                <!-- Status Badge -->
+                <div class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span>System Operational</span>
+                </div>
+
+                <a href="{% url 'core:home' %}" class="text-xs bg-orange-50 border border-orange-200 text-[#E85D2A] hover:bg-orange-100 px-4 py-2 rounded-xl font-bold transition-all flex items-center space-x-2 shadow-xs">
+                    <span>Main Site</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Django Messages Toast Alerts -->
+        {% if messages %}
+        <div class="p-4 space-y-2 max-w-7xl mx-auto w-full">
+            {% for message in messages %}
+            <div class="px-4 py-3 rounded-2xl border text-xs font-bold flex items-center justify-between shadow-xs {% if message.tags == 'success' %}bg-emerald-50 border-emerald-200 text-emerald-800{% elif message.tags == 'warning' %}bg-amber-50 border-amber-200 text-amber-800{% else %}bg-rose-50 border-rose-200 text-rose-800{% endif %}">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check text-emerald-600{% elif message.tags == 'warning' %}fa-triangle-exclamation text-amber-600{% else %}fa-circle-xmark text-rose-600{% endif %}"></i>
+                    <span>{{ message }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Main Page Content Block -->
+        <main class="p-4 md:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full flex-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 py-4 border-t border-slate-200/80 text-center text-xs text-slate-500 font-medium">
+            MithilaMilan Admin OS © 2026 — Central Operating System for Mithila Community Platform
+        </footer>
+
+    </div>
+
+</body>
+</html>

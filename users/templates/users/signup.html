@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Sign Up - OkLocal Community{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center bg-slate-50 py-6 px-4">
+    <div class="max-w-md w-full bg-white rounded-3xl border border-slate-200 shadow-xl p-8 space-y-6">
+        
+        <div class="text-center space-y-2">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white font-extrabold text-2xl flex items-center justify-center shadow-md">
+                Ok
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Create MithilaMilan Account</h2>
+            <p class="text-xs text-slate-500">Join India's local community network today</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" novalidate class="space-y-4">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs py-3.5 rounded-2xl shadow-md transition-all mt-4">
+                Create Free Account
+            </button>
+        </form>
+
+        <div class="text-center border-t border-slate-100 pt-4">
+            <p class="text-xs text-slate-600">
+                Already registered?
+                <a href="{% url 'users:login' %}" class="font-bold text-orange-600 hover:underline">
+                    Sign In instead
+                </a>
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ month_name_en }} {{ year }} - Mithila Monthly Calendar | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <!-- Calendar Top Title Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-5 sm:p-7 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100 mb-1">
+                <i class="fa-regular fa-calendar-days text-amber-300"></i>
+                <span>मासिक मिथिला पंचांग</span>
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-black tracking-tight">
+                {{ month_name_en }} {{ year }} <span class="text-amber-200 text-lg sm:text-xl font-normal">• {{ mithila_month_title }}</span>
+            </h1>
+        </div>
+
+        <!-- Month Navigation Controls -->
+        <div class="flex items-center space-x-2 text-xs font-bold">
+            <a href="{% url 'mithila_panchang:monthly_calendar_specified' prev_year prev_month %}" class="bg-white/20 hover:bg-white/30 text-white px-3.5 py-2 rounded-xl border border-white/20 transition-all flex items-center space-x-1">
+                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                <span>पिछला</span>
+            </a>
+            <a href="{% url 'mithila_panchang:monthly_calendar_specified' today.year today.month %}" class="bg-white text-[#7D281E] px-3.5 py-2 rounded-xl shadow-xs hover:bg-amber-50">
+                वर्तमान माह
+            </a>
+            <a href="{% url 'mithila_panchang:monthly_calendar_specified' next_year next_month %}" class="bg-white/20 hover:bg-white/30 text-white px-3.5 py-2 rounded-xl border border-white/20 transition-all flex items-center space-x-1">
+                <span>अगला</span>
+                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Month Switcher Tabs (Matching Reference Image 1) -->
+    <div class="bg-white rounded-2xl p-2.5 border border-[#F0E4D4] shadow-xs flex items-center space-x-2 overflow-x-auto no-scrollbar text-xs font-bold">
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 1 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 1 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">जनवरी (वैशाख)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 2 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 2 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">फरवरी (जेठ)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 3 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 3 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">मार्च (असाढ़)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 4 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 4 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">अप्रैल (साओन)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 5 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 5 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">मई (भादो)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 6 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 6 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">जून (आसिन)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 7 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 7 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">जुलाई (कार्तिक)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 8 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 8 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">अगस्त (अगहन)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 9 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 9 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">सितंबर (पूस)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 10 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 10 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">अक्टूबर (माघ)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 11 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 11 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">नवंबर (फागुन)</a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' year 12 %}" class="px-3 py-1.5 rounded-full shrink-0 {% if month == 12 %}bg-[#7D281E] text-white shadow-xs{% else %}text-slate-700 hover:bg-amber-50{% endif %}">दिसंबर (चैत्र)</a>
+    </div>
+
+    <!-- Calendar Grid Container (Matching Image 1 Exact Card UI) -->
+    <div class="bg-[#FAF6F0] rounded-3xl border border-[#E8DAC8] p-2 sm:p-4 shadow-saas">
+        
+        <!-- Week Headers Row -->
+        <div class="grid grid-cols-7 bg-[#7D281E] text-white text-center text-xs font-black py-2.5 rounded-2xl mb-2 shadow-xs">
+            <div>रवि</div>
+            <div>सोम</div>
+            <div>मंगल</div>
+            <div>बुध</div>
+            <div>बृहस्पति</div>
+            <div>शुक्र</div>
+            <div>शनि</div>
+        </div>
+
+        <!-- 7-Column Days Grid -->
+        <div class="grid grid-cols-7 gap-1.5 sm:gap-2">
+            {% for week in month_days %}
+                {% for d in week %}
+                    <!-- Day Card -->
+                    <a href="{% url 'mithila_panchang:date_detail' d|date:'Y-m-d' %}" 
+                       class="rounded-2xl p-2 sm:p-2.5 transition-all flex flex-col justify-between min-h-[110px] sm:min-h-[135px] relative group text-left border
+                              {% if d == today %}
+                                  border-2 border-[#D9531E] bg-[#FFF8F0] shadow-md
+                              {% elif d.month != month %}
+                                  bg-[#F7F3EC]/60 border-slate-200/50 text-slate-400 opacity-60
+                              {% else %}
+                                  bg-white border-[#F0E4D4] hover:border-[#D9531E] hover:shadow-saas
+                              {% endif %}">
+
+                        <!-- Card Top: Large Orange Date Number + Today Badge -->
+                        <div class="flex items-start justify-between">
+                            <span class="text-xl sm:text-2xl font-black text-[#D9531E] leading-none group-hover:scale-105 transition-transform">
+                                {{ d.day }}
+                            </span>
+                            
+                            {% if d == today %}
+                            <span class="bg-[#D9531E] text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-2xs uppercase">
+                                आज
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Card Middle: Detailed Panchang Info (Identical to Image 1) -->
+                        <div class="my-1 space-y-0.5 text-[10px] sm:text-[11px] leading-tight">
+                            
+                            {% for grid_k, cell in grid_details.items %}
+                                {% if grid_k == d %}
+                                    <!-- 1. Mithila Month Name -->
+                                    <p class="font-extrabold text-[#7D281E] truncate">
+                                        {{ cell.mithila_month_name }}
+                                    </p>
+
+                                    <!-- 2. English Date Subtitle -->
+                                    <p class="text-slate-500 font-semibold text-[9px] sm:text-[10px]">
+                                        {{ cell.eng_date_str }}
+                                    </p>
+
+                                    <!-- 3. Paksha & Tithi Name -->
+                                    <p class="text-[#5C4033] font-extrabold truncate mt-0.5">
+                                        {{ cell.tithi_name }}
+                                    </p>
+
+                                    <!-- 4. Nakshatra Name -->
+                                    <p class="text-[#1E56A0] font-bold truncate">
+                                        {{ cell.nakshatra_name }}
+                                    </p>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- Card Bottom: Festival / Vrat Annotation (In Vivid Rose/Pink Text) -->
+                        <div class="mt-auto pt-1">
+                            {% for fest_k, fest_list in festival_records.items %}
+                                {% if fest_k == d %}
+                                    {% for f in fest_list %}
+                                    <p class="text-rose-600 font-black text-[10px] sm:text-[11px] leading-tight truncate">
+                                        {{ f.title_hi }}
+                                    </p>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% for muh_k, muh_list in muhurat_records.items %}
+                                {% if muh_k == d %}
+                                    {% for m in muh_list %}
+                                    <p class="text-emerald-700 font-black text-[10px] sm:text-[11px] leading-tight truncate">
+                                        💍 {{ m.category.name_hi }}
+                                    </p>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                    </a>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

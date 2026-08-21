@@ -1,0 +1,567 @@
+{% extends 'base.html' %}
+
+{% block title %}Your feed - OK DELHI COMMUNITY{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row gap-6 items-start">
+
+    <!-- Column 1: Left Navigation Card (Side Navbar) -->
+    <aside class="w-full md:w-56 lg:w-60 xl:w-64 shrink-0 bg-white rounded-2xl border border-slate-200/80 p-3.5 shadow-2xs space-y-1">
+        
+        <!-- Home Link (Active dark navy pill) -->
+        <a href="{% url 'core:home' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-[#0E1E38] text-white shadow-xs transition-all">
+            <i class="fa-solid fa-house text-white w-4 text-center"></i>
+            <span>Home</span>
+        </a>
+        
+        <!-- Delhi Wiki -->
+        <a href="{% url 'delhi_wiki:area_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-folder-closed text-slate-400 w-4 text-center"></i>
+            <span>Delhi Wiki</span>
+        </a>
+        
+        <!-- Delhi Metro -->
+        <a href="{% url 'delhi_wiki:metro_route_finder' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-solid fa-lock text-slate-400 w-4 text-center"></i>
+            <span>Delhi Metro</span>
+        </a>
+        
+        <!-- PG & Rentals -->
+        <a href="{% url 'pg_rental:listings' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-building text-slate-400 w-4 text-center"></i>
+            <span>PG & Rentals</span>
+        </a>
+        
+        <!-- Jobs -->
+        <a href="{% url 'job_portal:job_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-solid fa-briefcase text-slate-400 w-4 text-center"></i>
+            <span>Jobs</span>
+        </a>
+        
+        <!-- Lost & Found -->
+        <a href="{% url 'lost_and_found:item_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-solid fa-magnifying-glass text-slate-400 w-4 text-center"></i>
+            <span>Lost & Found</span>
+        </a>
+        
+        <!-- Coupons -->
+        <a href="{% url 'coupon_service:coupon_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-solid fa-gift text-slate-400 w-4 text-center"></i>
+            <span>Coupons</span>
+        </a>
+        
+        <!-- Story -->
+        <a href="{% url 'storytelling:story_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-image text-slate-400 w-4 text-center"></i>
+            <span>Story</span>
+        </a>
+        
+        <!-- News -->
+        <a href="{% url 'news:news_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-file-lines text-slate-400 w-4 text-center"></i>
+            <span>News</span>
+        </a>
+        
+        <!-- Hotel -->
+        <a href="{% url 'hotel_service:hotel_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-solid fa-house-chimney text-slate-400 w-4 text-center"></i>
+            <span>Hotel</span>
+        </a>
+        
+        <!-- Account Section Header -->
+        <div class="pt-3 pb-1 px-3">
+            <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">ACCOUNT</span>
+        </div>
+        
+        <!-- Notifications -->
+        <a href="{% url 'notifications:notification_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-bell text-slate-400 w-4 text-center"></i>
+            <span>Notifications</span>
+        </a>
+    </aside>
+
+    <!-- Column 2: Feed Center Area -->
+    <main class="flex-1 min-w-0 space-y-5">
+        
+        <!-- Premium Full-Width Floating Glassmorphic Mithila Heritage Express Banner -->
+        <div class="relative overflow-hidden bg-gradient-to-r from-[#FFFDF8] via-[#FFF8E8] to-[#FFFDF8] border border-[#EBE3D3] rounded-2xl h-14 px-3 flex items-center shadow-2xs select-none group">
+            
+            <!-- Top & Bottom Subtle Madhubani Border Motifs -->
+            <div class="absolute top-0 inset-x-0 h-[2px] bg-repeat-x opacity-80" style="background-image: repeating-linear-gradient(90deg, #7D3028 0px, #7D3028 6px, #D9A441 6px, #D9A441 12px, #FF6026 12px, #FF6026 18px, #0E1E38 18px, #0E1E38 24px);"></div>
+            <div class="absolute bottom-0 inset-x-0 h-[2px] bg-repeat-x opacity-60" style="background-image: repeating-linear-gradient(90deg, #D9A441 0px, #D9A441 8px, #7D3028 8px, #7D3028 16px);"></div>
+
+            <!-- Moving Track: Bicycle Facing Left Pulling Connected Heritage Notification Train -->
+            <div class="relative w-full h-full overflow-hidden pointer-events-auto flex items-center">
+                
+                <div class="flex items-center mithila-express-track">
+                    
+                    <!-- ================= SEQUENCE SET 1 (BICYCLE FACING LEFT + 7 CONNECTED NOTIFICATION CARDS) ================= -->
+                    <div class="flex items-center shrink-0">
+                        
+                        <!-- Traditional Indian Bicycle Illustration (Horizontally Flipped to Face LEFT) -->
+                        <div class="mithila-bike-bounce shrink-0 relative mr-1.5">
+                            <svg class="w-15 h-10" viewBox="0 0 68 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="translate(68, 0) scale(-1, 1)">
+                                    <path d="M14 16 L24 16 L22 23 L16 23 Z" fill="#FF6026" stroke="#7D3028" stroke-width="0.8" />
+                                    <path d="M18 16 L18 23" stroke="#FFFDF8" stroke-width="0.8" />
+
+                                    <path d="M10 16 L28 16" stroke="#5B3527" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M14 16 L16 28 M24 16 L24 28" stroke="#5B3527" stroke-width="1.2" />
+
+                                    <path d="M16 28 L34 28 L30 14 L16 28 Z" fill="none" stroke="#7D3028" stroke-width="2" stroke-linejoin="round" />
+                                    <path d="M30 15 L48 15 L34 28 L48 15 L50 28" stroke="#7D3028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M33 15 L42 15" stroke="#D9A441" stroke-width="1" />
+
+                                    <path d="M26 12 C28 11, 33 11, 34 13 L27 14 Z" fill="#5B3527" stroke="#3A2016" stroke-width="0.8" />
+
+                                    <path d="M48 15 L47 9 L42 8" stroke="#5B3527" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M42 8 L40 10" stroke="#D9A441" stroke-width="1.8" stroke-linecap="round" />
+
+                                    <g transform="translate(16, 28)">
+                                        <circle cx="0" cy="0" r="11" fill="none" stroke="#5B3527" stroke-width="2" />
+                                        <circle cx="0" cy="0" r="2" fill="#D9A441" />
+                                        <g class="mithila-wheel-spin">
+                                            <line x1="-11" y1="0" x2="11" y2="0" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="0" y1="-11" x2="0" y2="11" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="-7.8" y1="-7.8" x2="7.8" y2="7.8" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="-7.8" y1="7.8" x2="7.8" y2="-7.8" stroke="#A94B32" stroke-width="0.8" />
+                                        </g>
+                                    </g>
+                                    <g transform="translate(52, 28)">
+                                        <circle cx="0" cy="0" r="11" fill="none" stroke="#5B3527" stroke-width="2" />
+                                        <circle cx="0" cy="0" r="2" fill="#D9A441" />
+                                        <g class="mithila-wheel-spin">
+                                            <line x1="-11" y1="0" x2="11" y2="0" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="0" y1="-11" x2="0" y2="11" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="-7.8" y1="-7.8" x2="7.8" y2="7.8" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="-7.8" y1="7.8" x2="7.8" y2="-7.8" stroke="#A94B32" stroke-width="0.8" />
+                                        </g>
+                                    </g>
+
+                                    <g transform="translate(34, 28)">
+                                        <circle cx="0" cy="0" r="3.5" fill="#D9A441" stroke="#7D3028" stroke-width="1" />
+                                        <g class="mithila-wheel-spin">
+                                            <line x1="0" y1="0" x2="0" y2="6" stroke="#5B3527" stroke-width="1.8" stroke-linecap="round" />
+                                            <rect x="-2" y="5" width="4" height="2" rx="0.8" fill="#7D3028" />
+                                        </g>
+                                    </g>
+
+                                    <circle cx="4" cy="28" r="2" fill="#D9A441" stroke="#7D3028" stroke-width="1" />
+                                </g>
+                            </svg>
+                        </div>
+
+                        <!-- Connector 0: Rope from Rear of Bicycle to Card 1 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-5 h-3" viewBox="0 0 20 12" fill="none">
+                                <path d="M0 6 Q5 2, 10 6 T20 6" stroke="#D9A441" stroke-width="2" stroke-dasharray="3 2" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 1: Durga Puja -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 14 L9 7 L12 11 L15 7 L18 14 Z" fill="#D9A441" opacity="0.6" stroke="#7D3028" stroke-width="1" />
+                                    <path d="M7 19 C7 16, 17 16, 17 19" stroke="#7D3028" stroke-width="1.5" />
+                                    <path class="mithila-flame-flicker" d="M12 11 C11 13, 11 15, 12 16 C13 15, 13 13, 12 11 Z" fill="#FF6026" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Durga Puja</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">18 Oct</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 1 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 2: Chhath Puja -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" fill="#FF6026" />
+                                    <path d="M3 18 C6 16, 9 20, 12 18 C15 16, 18 20, 21 18" stroke="#D9A441" stroke-width="1.5" stroke-linecap="round" />
+                                    <path d="M8 14 C8 17, 16 17, 16 14" stroke="#7D3028" stroke-width="1.2" fill="#FEF3C7" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Chhath Puja</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">15 Nov</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 2 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 3: Makhana -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 12 C4 18, 20 18, 20 12 Z" fill="#D9A441" opacity="0.4" />
+                                    <path d="M4 12 C4 17, 20 17, 20 12" stroke="#7D3028" stroke-width="1.5" />
+                                    <circle cx="8" cy="10" r="2.5" fill="#FFFDF8" stroke="#D9A441" stroke-width="1" />
+                                    <circle cx="12" cy="8" r="2.8" fill="#FFFDF8" stroke="#D9A441" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Makhana</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">Mithila's Pride</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 3 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 4: LNMU -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 21H20 M6 21V12 L12 6 L18 12 V21" stroke="#7D3028" stroke-width="1.5" stroke-linecap="round" fill="none" />
+                                    <circle cx="12" cy="11" r="2" fill="#FF6026" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">LNMU</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">Mithila University</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 4 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 5: Mithila Painting -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="4" width="18" height="16" rx="2" stroke="#7D3028" stroke-width="1.2" fill="#FFFDF8" />
+                                    <path d="M7 12 C10 8, 14 8, 17 12 C14 16, 10 16, 7 12 Z" fill="#D9A441" stroke="#7D3028" stroke-width="0.8" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Mithila Painting</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">Madhubani Art</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 5 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 6: Mithila Bhoj -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M3 16 C6 10, 18 10, 21 16 Z" fill="#16A34A" opacity="0.4" />
+                                    <circle cx="12" cy="13" r="4" fill="#FFFDF8" stroke="#7D3028" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Mithila Bhoj</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">Traditional Food</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 6 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D9A441" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 7: Mithila Paag -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D9A441] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all mr-6">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 14 C5 9, 12 7, 19 9 C19 14, 5 17, 5 14 Z" fill="#A94B32" stroke="#7D3028" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">Mithila Paag</span>
+                                <span class="text-[8px] font-bold text-[#D9A441] tracking-wide leading-none">Our Heritage</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- High Performance 60fps CSS Animations for Mithila Heritage Express -->
+        <style>
+            @keyframes mithilaBikeExpressMove {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+            @keyframes mithilaWheelSpin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            @keyframes mithilaBikeBounce {
+                0% { transform: translate3d(0, 0px, 0); }
+                100% { transform: translate3d(0, -1.2px, 0); }
+            }
+            @keyframes mithilaFlameFlicker {
+                0% { transform: scale(1) translateY(0); opacity: 0.9; }
+                50% { transform: scale(1.15) translateY(-0.8px); opacity: 1; }
+                100% { transform: scale(0.95) translateY(0.4px); opacity: 0.85; }
+            }
+
+            .mithila-express-track {
+                display: flex;
+                align-items: center;
+                width: max-content;
+                animation: mithilaBikeExpressMove 30s linear infinite;
+                will-change: transform;
+            }
+            .mithila-express-track:hover {
+                animation-play-state: paused;
+            }
+            .mithila-wheel-spin {
+                animation: mithilaWheelSpin 0.9s linear infinite;
+                transform-origin: center;
+            }
+            .mithila-bike-bounce {
+                animation: mithilaBikeBounce 0.35s ease-in-out infinite alternate;
+            }
+            .mithila-flame-flicker {
+                animation: mithilaFlameFlicker 0.8s ease-in-out infinite alternate;
+                transform-origin: bottom center;
+            }
+
+            /* Reduced Motion Accessibility */
+            @media (prefers-reduced-motion: reduce) {
+                .mithila-express-track {
+                    animation: none !important;
+                    transform: translate3d(0, 0, 0) !important;
+                }
+                .mithila-wheel-spin,
+                .mithila-bike-bounce,
+                .mithila-flame-flicker {
+                    animation: none !important;
+                }
+            }
+        </style>
+        
+        <!-- Feed Header & Filter Controls -->
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Your feed</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Overview of local updates, discussions, housing, and hiring in {% if active_city %}{{ active_city.name }}{% else %}All India{% endif %}</p>
+            </div>
+            
+            <div class="bg-white border border-slate-200/80 rounded-full p-1 inline-flex items-center space-x-1 shadow-2xs">
+                <button type="button" class="bg-[#0E1E38] text-white rounded-full px-4 py-1 text-xs font-semibold shadow-xs">Popular</button>
+                <button type="button" class="text-slate-600 hover:text-slate-900 px-3.5 py-1 text-xs font-medium transition-colors">Nearby</button>
+                <button type="button" class="text-slate-600 hover:text-slate-900 px-3.5 py-1 text-xs font-medium transition-colors">New</button>
+            </div>
+        </div>
+
+        <!-- Feed Posts List -->
+        <div class="space-y-4">
+            {% for post in posts %}
+            <article class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-4 sm:p-5 flex gap-4 hover:border-slate-300/80 transition-all">
+                
+                <!-- Upvote / Downvote Box -->
+                <div class="flex flex-col items-center bg-slate-50/80 border border-slate-200/60 rounded-xl px-2 py-2 text-slate-400 text-xs min-w-[36px] h-fit justify-between">
+                    <button type="button" class="hover:text-[#FF6026] transition-colors p-0.5" title="Upvote">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                    <span class="font-bold text-slate-700 text-xs my-0.5">{{ post.upvotes_count|default:0 }}</span>
+                    <button type="button" class="hover:text-blue-600 transition-colors p-0.5" title="Downvote">
+                        <i class="fa-solid fa-arrow-down"></i>
+                    </button>
+                </div>
+
+                <!-- Post Main Content -->
+                <div class="flex-1 min-w-0 space-y-2">
+                    
+                    <!-- Post Header Meta -->
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <a href="{% url 'subreddits:subreddit_detail' post.subreddit.slug %}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100/70 text-emerald-800 hover:bg-emerald-200/70 transition-colors">
+                            c/{{ post.subreddit.name }}
+                        </a>
+                        <span class="text-slate-400 text-xs">
+                            Posted by <a href="{% url 'users:profile' post.author.username %}" class="font-medium text-slate-600 hover:text-indigo-600">u/{{ post.author.username }}</a> · {{ post.created_at|timesince }} ago
+                        </span>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 hover:text-[#FF6026] transition-colors leading-snug">
+                        <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}">{{ post.title }}</a>
+                    </h2>
+
+                    <!-- Text Snippet -->
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                        {{ post.content|truncatewords:40 }}
+                    </p>
+
+                    <!-- Footer Action Bar -->
+                    <div class="pt-2 flex items-center space-x-4 text-xs font-semibold text-slate-500">
+                        <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="inline-flex items-center space-x-1.5 hover:bg-slate-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                            <i class="fa-regular fa-comment text-slate-400 text-sm"></i>
+                            <span>{{ post.comments.count|default:0 }} Comments</span>
+                        </a>
+                        <button type="button" class="inline-flex items-center space-x-1.5 hover:bg-slate-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                            <i class="fa-solid fa-share-nodes text-slate-400 text-sm"></i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+
+                </div>
+            </article>
+            {% empty %}
+            <!-- Demo Post Matching Screenshot if no posts exist -->
+            <article class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-4 sm:p-5 flex gap-4">
+                <div class="flex flex-col items-center bg-slate-50/80 border border-slate-200/60 rounded-xl px-2 py-2 text-slate-400 text-xs min-w-[36px] h-fit justify-between">
+                    <button type="button" class="hover:text-[#FF6026] transition-colors p-0.5"><i class="fa-solid fa-arrow-up"></i></button>
+                    <span class="font-bold text-slate-700 text-xs my-0.5">0</span>
+                    <button type="button" class="hover:text-blue-600 transition-colors p-0.5"><i class="fa-solid fa-arrow-down"></i></button>
+                </div>
+                <div class="flex-1 min-w-0 space-y-2">
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100/70 text-emerald-800">
+                            c/Noida Sector 62 Metro Station
+                        </span>
+                        <span class="text-slate-400 text-xs">
+                            Posted by <span class="font-medium text-slate-600">u/infrablueindiadelhi</span> · 1 year, 4 months ago
+                        </span>
+                    </div>
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-snug">
+                        Top Momos Centres in Noida Sector 62
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                        Affordable, Value for Money, and High Budget Momos Centres in Noida Sector 62, Noida. Momos centres are increasingly becoming popular across various cities
+                    </p>
+                    <div class="pt-2 flex items-center space-x-4 text-xs font-semibold text-slate-500">
+                        <button type="button" class="inline-flex items-center space-x-1.5 hover:bg-slate-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                            <i class="fa-regular fa-comment text-slate-400 text-sm"></i>
+                            <span>0 Comments</span>
+                        </button>
+                        <button type="button" class="inline-flex items-center space-x-1.5 hover:bg-slate-100/80 px-2.5 py-1.5 rounded-lg transition-colors">
+                            <i class="fa-solid fa-share-nodes text-slate-400 text-sm"></i>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+    </main>
+
+    <!-- Column 3: Right Sidebar Column -->
+    <aside class="w-full lg:w-72 xl:w-80 shrink-0 space-y-5">
+        
+        <!-- Popular Communities Card -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">POPULAR COMMUNITIES</h3>
+                <a href="{% url 'subreddits:list' %}" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700">View All</a>
+            </div>
+            
+            {% for subreddit in subreddits %}
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-[#0E1E38] text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <a href="{% url 'subreddits:subreddit_detail' subreddit.slug %}" class="text-xs font-bold text-slate-900 hover:text-[#FF6026] transition-colors truncate block leading-snug">
+                            c/{{ subreddit.name }}
+                        </a>
+                        <span class="text-[10px] text-slate-400 font-medium block">1 member</span>
+                    </div>
+                </div>
+                <button type="button" class="bg-orange-50 border border-orange-200/80 hover:bg-orange-100 text-[#FF6026] text-xs font-bold px-3.5 py-1 rounded-full shadow-2xs transition-colors shrink-0">
+                    Join
+                </button>
+            </div>
+            {% empty %}
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-9 h-9 rounded-xl bg-[#0E1E38] text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-xs font-bold text-slate-900 truncate block leading-snug">
+                            c/Noida Sector 62 Metro Station
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-medium block">1 member</span>
+                    </div>
+                </div>
+                <button type="button" class="bg-orange-50 border border-orange-200/80 hover:bg-orange-100 text-[#FF6026] text-xs font-bold px-3.5 py-1 rounded-full shadow-2xs transition-colors shrink-0">
+                    Join
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Build Your Community Banner Card -->
+        <div class="bg-[#0E1E38] text-white rounded-2xl p-5 shadow-xs relative overflow-hidden space-y-3">
+            
+            <!-- Arch Background Overlay SVG -->
+            <svg class="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 pointer-events-none" viewBox="0 0 100 100" fill="currentColor">
+                <path d="M50 0 C77.6 0 100 22.4 100 50 L100 100 L0 100 L0 50 C0 22.4 22.4 0 50 0 Z" />
+            </svg>
+
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-100 relative z-10">BUILD YOUR COMMUNITY</h3>
+            <p class="text-xs text-slate-300 leading-relaxed font-normal relative z-10">
+                Start a group for your sector, RWA or interest — invite neighbours and post updates.
+            </p>
+            <a href="{% url 'subreddits:create' %}" class="inline-block bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs px-4 py-2 rounded-full shadow-xs transition-colors relative z-10">
+                Create community
+            </a>
+        </div>
+
+        <!-- Featured PGs & Rentals Card -->
+        {% if featured_pgs %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-5 space-y-3">
+            <div class="flex items-center justify-between">
+                <h3 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
+                    <i class="fa-solid fa-building-user text-emerald-600"></i>
+                    <span>FEATURED PGS & RENTALS</span>
+                </h3>
+                <a href="{% url 'pg_rental:listings' %}" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700">Explore</a>
+            </div>
+            {% for pg in featured_pgs %}
+            <a href="{% url 'pg_rental:pg_detail' pg.pk %}" class="block bg-slate-50 border border-slate-200/60 rounded-xl p-3 hover:border-emerald-300 transition-all space-y-1">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-bold text-slate-900 truncate">{{ pg.title }}</p>
+                    <span class="text-xs font-extrabold text-emerald-600">₹{{ pg.price }}/mo</span>
+                </div>
+                <p class="text-[10px] text-slate-500 flex items-center space-x-1">
+                    <i class="fa-solid fa-location-dot text-[9px]"></i>
+                    <span>{{ pg.locality }}, {{ pg.city }}</span>
+                </p>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </aside>
+
+</div>
+{% endblock %}

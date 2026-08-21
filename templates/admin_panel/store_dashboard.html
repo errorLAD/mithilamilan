@@ -1,0 +1,72 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Mithila Store Suite | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Mithila Store E-Commerce Suite</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage products catalog, artists/sellers, order status, inventory levels, and revenue.</p>
+    </div>
+    <a href="{% url 'admin_panel:store_orders' %}" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs">Orders Lifecycle →</a>
+</div>
+
+<!-- E-COMMERCE SUMMARY METRICS -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs">
+        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Products</div>
+        <div class="text-2xl sm:text-3xl font-black text-slate-900 font-heading mt-2">{{ products|length }}</div>
+    </div>
+    <div class="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs">
+        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Revenue</div>
+        <div class="text-2xl sm:text-3xl font-black text-emerald-600 font-heading mt-2">₹{{ total_revenue }}</div>
+    </div>
+    <div class="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs">
+        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Total Orders</div>
+        <div class="text-2xl sm:text-3xl font-black text-slate-900 font-heading mt-2">{{ total_orders }}</div>
+    </div>
+    <div class="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs">
+        <div class="text-xs text-slate-500 font-bold uppercase tracking-wider">Pending Orders</div>
+        <div class="text-2xl sm:text-3xl font-black text-amber-600 font-heading mt-2">{{ pending_orders }}</div>
+    </div>
+</div>
+
+<!-- PRODUCTS TABLE -->
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="p-4 border-b border-slate-100 font-bold text-xs text-slate-900 uppercase tracking-wider font-heading">
+        Product Inventory Catalog
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Product</th>
+                    <th class="px-4 py-3.5">Category</th>
+                    <th class="px-4 py-3.5">Price</th>
+                    <th class="px-4 py-3.5">Stock</th>
+                    <th class="px-4 py-3.5">Artist / Seller</th>
+                    <th class="px-4 py-3.5 text-right">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in products %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold text-slate-900 max-w-xs truncate">{{ p.title }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 font-medium">{{ p.category.name }}</td>
+                    <td class="px-4 py-3.5 font-black text-emerald-600">₹{{ p.price }}</td>
+                    <td class="px-4 py-3.5 font-bold">
+                        {% if p.stock_quantity > 0 %}<span class="text-slate-800">{{ p.stock_quantity }} Available</span>{% else %}<span class="text-rose-600">Out of Stock</span>{% endif %}
+                    </td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">{{ p.artist.name|default:"Mithila Artisan" }}</td>
+                    <td class="px-4 py-3.5 text-right">
+                        {% if p.is_active %}<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Active</span>{% else %}<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold border border-rose-200">Inactive</span>{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="px-4 py-12 text-center text-slate-400">No products found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

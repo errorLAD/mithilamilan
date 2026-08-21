@@ -1,0 +1,340 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#F8F8F6]">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MithilaMilan | मिथिला मिलन — जय मिथिला! जय मैथिली!{% endblock %}</title>
+    
+    <!-- Google Fonts: Inter & Noto Sans Devanagari -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Official YouTube IFrame Player API -->
+    <script src="https://www.youtube.com/iframe_api" id="yt-iframe-api"></script>
+    
+    <!-- Tailwind CSS (Play CDN with custom Mithila theme config) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#E85D2A',
+                            600: '#D54C1A',
+                            700: '#B03B10',
+                            900: '#0F1F35',
+                        },
+                        terracotta: '#E85D2A',
+                        mustard: '#D6A437',
+                        maroon: '#7D3028',
+                        mithilageen: '#5D7A55',
+                        mithiladark: '#0F1F35',
+                        mithilamuted: '#718096',
+                        mithilabg: '#F8F8F6'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Devanagari', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+                        devanagari: ['Noto Sans Devanagari', 'Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'saas': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03)',
+                        'saas-lg': '0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', 'Noto Sans Devanagari', sans-serif; background-color: #F8F8F6; color: #0F1F35; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        [x-cloak] { display: none !important; }
+        html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+        main { width: 100%; }
+
+        /* Responsive touch targets */
+        button, a { min-height: 38px; }
+        .touch-target { min-height: 44px; min-width: 44px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="min-h-full bg-[#F8F8F6] text-[#0F1F35] flex flex-col font-sans antialiased overflow-x-hidden" 
+      x-data="{ sidebarOpen: false, locationModalOpen: false }"
+      x-init="$watch('sidebarOpen', value => document.body.style.overflow = value ? 'hidden' : '')">
+    
+    <!-- Flash Messages Toast -->
+    {% if messages %}
+    <div class="fixed top-5 right-5 z-50 max-w-sm space-y-2">
+        {% for message in messages %}
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)" class="p-3.5 rounded-xl shadow-saas-lg border flex items-center justify-between text-xs font-medium bg-white border-slate-200 text-slate-800 transition-all duration-200">
+            <div class="flex items-center space-x-2.5">
+                {% if message.tags == 'error' %}<i class="fa-solid fa-circle-exclamation text-rose-500 text-sm"></i>
+                {% elif message.tags == 'success' %}<i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+                {% else %}<i class="fa-solid fa-circle-info text-[#E85D2A] text-sm"></i>{% endif %}
+                <span>{{ message }}</span>
+            </div>
+            <button @click="show = false" class="text-slate-400 hover:text-slate-600 ml-3 min-h-[38px] min-w-[38px] flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Top Navigation Header (Sticky, Mobile Compact) -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
+        <div class="w-full px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+            
+            <!-- Left: Mobile Menu Trigger & Brand Logo -->
+            <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+                <button @click="sidebarOpen = true" type="button" aria-label="Open Navigation Menu" class="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+
+                <a href="{% url 'core:home' %}" class="flex items-center space-x-2 group">
+                    <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#7D3028] text-white flex items-center justify-center shadow-xs text-xs sm:text-sm font-bold group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-om"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-black text-sm sm:text-base text-[#E85D2A] leading-tight tracking-tight font-devanagari">MithilaMilan</span>
+                        <span class="text-[8px] sm:text-[9px] font-bold text-[#7D3028] tracking-wide uppercase leading-none">जय मिथिला! जय मैथिली!</span>
+                    </div>
+                </a>
+
+                <!-- Integrated Sleek Mithila Heritage Cultural Badge -->
+                <div class="hidden md:flex items-center space-x-1.5 bg-[#FEF9C3] border border-[#FDE047] px-2.5 py-1 rounded-full text-[#7D3028] shadow-2xs ml-2">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3.5" fill="#E85D2A" />
+                        <path d="M12 2V5 M12 19V22 M2 12H5 M19 12H22 M4.93 4.93L7.05 7.05 M16.95 16.95L19.07 19.07" stroke="#7D3028" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                    <span class="text-[10px] font-black tracking-wider uppercase text-[#7D3028] font-devanagari">मिथिला मिलन</span>
+                </div>
+            </div>
+
+            <!-- Center: Search Input (Desktop) -->
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <form action="{% url 'subreddits:search' %}" method="get" class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </div>
+                    <input type="text" name="q" placeholder="मिथिला में खोजें... (Search communities, posts, events)" class="w-full bg-[#F8F8F6] focus:bg-white border border-slate-200/80 focus:border-[#E85D2A] rounded-full pl-9 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/10 transition-all font-devanagari">
+                </form>
+            </div>
+
+            <!-- Right: Navigation Controls (Responsive Touch Targets min-h 44px) -->
+            <div class="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
+                
+                <!-- Notification Bell Button -->
+                <a href="{% url 'notifications:notification_list' %}" class="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200/80 shadow-2xs transition-colors" title="सूचनाएँ">
+                    <i class="fa-regular fa-bell text-base"></i>
+                </a>
+
+                <!-- Universal Submit Dropdown -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" type="button" class="min-h-[44px] inline-flex items-center space-x-1.5 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs px-3.5 sm:px-4 py-2 rounded-full shadow-xs transition-colors">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span class="hidden sm:inline">+ Create Post</span>
+                        <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                    </button>
+
+                    <div x-show="open" @click.away="open = false" x-transition class="origin-top-right absolute right-0 mt-2 w-64 rounded-2xl shadow-saas-lg bg-white border border-slate-200 py-1.5 z-50 text-xs text-slate-700 font-medium" x-cloak>
+                        <div class="px-3 py-1 font-extrabold text-[10px] text-[#7D3028] uppercase tracking-wider">Mithila & Cultural Contributions</div>
+                        <a href="{% url 'events:event_submit' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-amber-50 hover:text-amber-700 min-h-[44px]">
+                            <i class="fa-solid fa-calendar-star text-amber-600 w-4"></i>
+                            <span>Add Event / Festival</span>
+                        </a>
+                        <a href="{% url 'pandits:profile_onboard' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-amber-50 hover:text-amber-700 min-h-[44px]">
+                            <i class="fa-solid fa-om text-amber-700 w-4"></i>
+                            <span>Register Pandit / Astrologer</span>
+                        </a>
+                        <a href="{% url 'mithila_pride:person_submit' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 min-h-[44px]">
+                            <i class="fa-solid fa-graduation-cap text-blue-600 w-4"></i>
+                            <span>Nominate Scholar / Personality</span>
+                        </a>
+
+                        <div class="px-3 py-1 font-extrabold text-[10px] text-slate-400 uppercase tracking-wider border-t border-slate-100 mt-1 pt-2">Community Services</div>
+                        <a href="{% url 'posts:create' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-slate-50 hover:text-[#E85D2A] min-h-[44px]">
+                            <i class="fa-solid fa-pen-to-square text-[#E85D2A] w-4"></i>
+                            <span>Create Post / Share Thoughts</span>
+                        </a>
+                        <a href="{% url 'pg_rental:add_listing' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-slate-50 hover:text-[#E85D2A] min-h-[44px]">
+                            <i class="fa-solid fa-house-chimney text-emerald-500 w-4"></i>
+                            <span>Add Rental Listing</span>
+                        </a>
+                        <a href="{% url 'job_portal:create_job' %}" class="flex items-center space-x-2.5 px-4 py-2.5 hover:bg-slate-50 hover:text-[#E85D2A] min-h-[44px]">
+                            <i class="fa-solid fa-briefcase text-blue-500 w-4"></i>
+                            <span>Post a Job Vacancy</span>
+                        </a>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated %}
+                <!-- User Profile Menu -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" type="button" class="min-h-[44px] min-w-[44px] flex items-center justify-center p-1 rounded-full hover:bg-slate-100 transition-colors">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-8 h-8 rounded-full object-cover">
+                        {% else %}
+                            <div class="w-8 h-8 rounded-full bg-[#7D3028] text-white font-bold text-xs flex items-center justify-center">
+                                {{ user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </button>
+
+                    <div x-show="open" @click.away="open = false" x-transition class="origin-top-right absolute right-0 mt-2 w-56 rounded-2xl shadow-saas-lg bg-white border border-slate-200 py-1.5 z-50 text-xs text-slate-700 font-medium" x-cloak>
+                        <div class="px-4 py-2 border-b border-slate-100">
+                            <p class="font-bold text-slate-900 truncate">u/{{ user.username }}</p>
+                            <p class="text-[10px] text-slate-500">Karma: {{ user.karma|default:0 }}</p>
+                        </div>
+                        <a href="{% url 'users:profile' user.username %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">Your Profile</a>
+                        <a href="{% url 'core:user_submissions' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 font-semibold text-amber-700 min-h-[44px] flex items-center">My Submissions</a>
+                        <a href="{% url 'pg_rental:my_listings' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">My PG Listings</a>
+                        <a href="{% url 'job_portal:my_jobs' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">My Job Posts</a>
+                        {% if user.is_staff or user.is_superuser %}
+                        <a href="{% url 'admin_panel:dashboard' %}" class="block px-4 py-2.5 text-[#E85D2A] font-bold hover:bg-orange-50 min-h-[44px] flex items-center justify-between border-t border-slate-100">
+                            <span>MithilaMilan Admin OS</span>
+                            <i class="fa-solid fa-gauge-high"></i>
+                        </a>
+                        {% endif %}
+                        <form method="post" action="{% url 'users:logout' %}" class="border-t border-slate-100">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 font-semibold min-h-[44px] flex items-center">Sign Out</button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="hidden sm:flex items-center space-x-2 font-sans">
+                    <a href="{% url 'users:login' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-slate-700 hover:text-slate-900 px-3.5 py-2 hover:bg-slate-100/80 rounded-full transition-colors">Log In</a>
+                    <a href="{% url 'users:signup' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-white bg-[#E85D2A] hover:bg-[#D54C1A] px-4 sm:px-5 py-2 rounded-full shadow-xs transition-all">Sign Up</a>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Slide-Out Navigation Drawer (80-85% Width, Scroll Locked, Touch Friendly) -->
+    <aside class="fixed inset-y-0 left-0 z-50 w-[85vw] max-w-80 bg-white border-r border-slate-200 flex flex-col transition-transform duration-300 ease-in-out lg:hidden shadow-2xl" 
+           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" x-cloak>
+        
+        <!-- Drawer Header with Madhubani Accent -->
+        <div class="h-16 flex items-center justify-between px-5 border-b border-slate-100 relative bg-gradient-to-r from-amber-50/50 via-white to-orange-50/50">
+            <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#E85D2A] to-transparent"></div>
+            
+            <a href="{% url 'core:home' %}" class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#7D3028] text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                    <i class="fa-solid fa-om"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-black text-sm text-[#E85D2A] font-devanagari">MithilaMilan</span>
+                    <span class="text-[8px] font-bold text-[#7D3028] uppercase">जय मिथिला! जय मैथिली!</span>
+                </div>
+            </a>
+            <button @click="sidebarOpen = false" aria-label="Close Navigation Menu" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl"><i class="fa-solid fa-xmark text-xl"></i></button>
+        </div>
+
+        <!-- Drawer Content Navigation List -->
+        <div class="flex-1 overflow-y-auto p-4 space-y-1.5 text-xs font-semibold font-devanagari">
+            <a href="{% url 'core:home' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl bg-[#0F1F35] text-white shadow-xs min-h-[44px]">
+                <i class="fa-solid fa-house w-5 text-center text-amber-300"></i><span class="font-bold">होम</span>
+            </a>
+            
+            <div class="pt-3 pb-1 px-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">मुख्य अनुभाग</span>
+            </div>
+
+            <a href="{% url 'mithila_panchang:panchang_home' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-amber-50 hover:text-amber-800 font-bold min-h-[44px]">
+                <i class="fa-solid fa-calendar-days w-5 text-center text-amber-600 text-sm"></i><span>मिथिला पंचांग</span>
+            </a>
+            <a href="{% url 'events:event_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-amber-50 hover:text-[#E85D2A] font-bold min-h-[44px]">
+                <i class="fa-solid fa-dharmachakra w-5 text-center text-[#E85D2A] text-sm"></i><span>पावन पर्व एवं आयोजन</span>
+            </a>
+            <a href="{% url 'mithila_pride:person_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-blue-50 hover:text-blue-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-graduation-cap w-5 text-center text-blue-600 text-sm"></i><span>मिथिला गौरव एवं विद्वान</span>
+            </a>
+            <a href="{% url 'pandits:profile_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-amber-50 hover:text-amber-800 font-bold min-h-[44px]">
+                <i class="fa-solid fa-om w-5 text-center text-amber-600 text-sm"></i><span>पंडित एवं ज्योतिषी</span>
+            </a>
+            <a href="{% url 'store:store_home' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-rose-50 hover:text-rose-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-bag-shopping w-5 text-center text-rose-500 text-sm"></i><span>मिथिला स्टोर</span>
+            </a>
+            <a href="{% url 'cab_auto:cab_auto_home' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-amber-50 hover:text-amber-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-taxi w-5 text-center text-amber-500 text-sm"></i><span>कैब एवं ऑटो</span>
+            </a>
+            <a href="{% url 'ghatkaiti:profile_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-ring w-5 text-center text-emerald-600 text-sm"></i><span>घटकैती</span>
+            </a>
+            <a href="{% url 'delhi_wiki:area_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-teal-50 hover:text-teal-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-map-location-dot w-5 text-center text-teal-600 text-sm"></i><span>मिथिला परिचय</span>
+            </a>
+            <a href="{% url 'pg_rental:listings' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-indigo-50 hover:text-indigo-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-house-user w-5 text-center text-indigo-600 text-sm"></i><span>किरायाक घर</span>
+            </a>
+            <a href="{% url 'job_portal:job_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-emerald-50 hover:text-emerald-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-briefcase w-5 text-center text-emerald-600 text-sm"></i><span>रोजगार</span>
+            </a>
+            <a href="{% url 'lost_and_found:item_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-rose-50 hover:text-rose-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-magnifying-glass-location w-5 text-center text-rose-500 text-sm"></i><span>हरायल आ भेटल वस्तु</span>
+            </a>
+            <a href="{% url 'storytelling:story_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-amber-50 hover:text-[#E85D2A] font-bold min-h-[44px]">
+                <i class="fa-solid fa-book-open w-5 text-center text-[#E85D2A] text-sm"></i><span>कहानी</span>
+            </a>
+            <a href="{% url 'news:news_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-sky-50 hover:text-sky-700 font-bold min-h-[44px]">
+                <i class="fa-solid fa-newspaper w-5 text-center text-sky-600 text-sm"></i><span>समाचार</span>
+            </a>
+            
+            <div class="pt-3 pb-1 px-2">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">खाता एवं नियंत्रण</span>
+            </div>
+            
+            {% if user.is_authenticated %}
+            <a href="{% url 'core:user_submissions' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-amber-800 bg-amber-50 font-bold min-h-[44px]">
+                <i class="fa-solid fa-paper-plane w-5 text-center text-amber-600 text-sm"></i><span>मेरी प्रस्तुतियाँ</span>
+            </a>
+            <a href="{% url 'notifications:notification_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-slate-50 font-bold min-h-[44px]">
+                <i class="fa-solid fa-bell w-5 text-center text-amber-500 text-sm"></i><span>सूचनाएँ</span>
+            </a>
+            {% else %}
+            <div class="space-y-2 pt-1">
+                <a href="{% url 'users:login' %}" @click="sidebarOpen = false" class="flex items-center justify-center space-x-2 w-full py-2.5 px-4 rounded-xl font-extrabold text-xs text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-2xs transition-colors min-h-[44px]">
+                    <i class="fa-solid fa-right-to-bracket text-[#E85D2A]"></i>
+                    <span>Log In</span>
+                </a>
+                <a href="{% url 'users:signup' %}" @click="sidebarOpen = false" class="flex items-center justify-center space-x-2 w-full py-2.5 px-4 rounded-xl font-extrabold text-xs text-white bg-[#E85D2A] hover:bg-[#D54C1A] shadow-xs transition-colors min-h-[44px]">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Sign Up</span>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- Mobile Backdrop with Blur -->
+    <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs lg:hidden" x-cloak></div>
+
+    <!-- Main Content Container (Mobile Padding 12px-16px, Desktop Preserved) -->
+    <main class="flex-1 bg-[#F8F8F6] w-full max-w-full overflow-x-hidden">
+        <div class="w-full px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-full">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

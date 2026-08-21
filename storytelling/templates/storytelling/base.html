@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Local Stories & Experiences - OkLocal{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-6 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Storytelling Header -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 mb-8 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="space-y-1 text-center md:text-left">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center md:justify-start space-x-2">
+                    <i class="fa-solid fa-book-open-reader text-sky-500"></i>
+                    <span>Local Stories & Commuter Experiences</span>
+                </h1>
+                <p class="text-xs text-slate-500">Read & share personal metro journeys, local culture stories & city experiences</p>
+            </div>
+
+            <div class="flex items-center space-x-2 text-xs font-semibold">
+                <a href="{% url 'storytelling:story_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">All Stories</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'storytelling:my_stories' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">My Stories</a>
+                <a href="{% url 'storytelling:create_story' %}" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white shadow-xs">
+                    <i class="fa-solid fa-plus mr-1"></i>Share Story
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% block storytelling_content %}
+        {% endblock %}
+
+    </div>
+</div>
+{% endblock %}

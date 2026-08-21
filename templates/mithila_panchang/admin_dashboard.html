@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Panchang Admin & Moderation Dashboard | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 pb-12">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-2">
+        <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+            <i class="fa-solid fa-shield-halved text-amber-300"></i>
+            <span>प्रशासनिक नियंत्रण पैनल</span>
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+            पंचांग एडमिन डैशबोर्ड (Panchang Admin)
+        </h1>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium">
+            पंचांग प्रविष्टियाँ, सत्यापन स्थिति (Verification Workflows) एवं ऑडिट लॉग्स।
+        </p>
+    </div>
+
+    <!-- Stats Overview Cards Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        
+        <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas space-y-1">
+            <span class="text-[10px] text-slate-500 font-bold uppercase block">कुल तिथि प्रविष्टियाँ</span>
+            <p class="text-2xl font-black text-slate-900">{{ total_days }}</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas space-y-1">
+            <span class="text-[10px] text-slate-500 font-bold uppercase block">पाबनि-तिहार</span>
+            <p class="text-2xl font-black text-rose-700">{{ total_festivals }}</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas space-y-1">
+            <span class="text-[10px] text-slate-500 font-bold uppercase block">कुल मुहूर्त</span>
+            <p class="text-2xl font-black text-amber-800">{{ total_muhurats }}</p>
+        </div>
+
+        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-300 shadow-saas space-y-1">
+            <span class="text-[10px] text-amber-900 font-extrabold uppercase block">समीक्षा अपेक्षित</span>
+            <p class="text-2xl font-black text-amber-900">{{ needs_review_count }}</p>
+        </div>
+
+        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-300 shadow-saas space-y-1">
+            <span class="text-[10px] text-emerald-900 font-extrabold uppercase block">सत्यापित (Verified)</span>
+            <p class="text-2xl font-black text-emerald-900">{{ verified_count }}</p>
+        </div>
+
+        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-300 shadow-saas space-y-1">
+            <span class="text-[10px] text-blue-900 font-extrabold uppercase block">प्रकाशित (Published)</span>
+            <p class="text-2xl font-black text-blue-900">{{ published_count }}</p>
+        </div>
+
+    </div>
+
+    <!-- Verification Workflows Table -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+            <h3 class="font-extrabold text-slate-900 text-base">हालिया मुहूर्त प्रविष्टियाँ & सत्यापन स्थिति</h3>
+            <a href="/admin/mithila_panchang/muhuratdate/" class="text-xs font-bold text-[#7D281E] hover:underline">
+                Django Admin में प्रबंधित करें &rarr;
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-[#FAF7F2] text-amber-950 font-bold border-b border-amber-200">
+                    <tr>
+                        <th class="p-3">ID</th>
+                        <th class="p-3">श्रेणी (Category)</th>
+                        <th class="p-3">अंग्रेजी तिथि</th>
+                        <th class="p-3">तिथि विवरण</th>
+                        <th class="p-3">स्रोतः</th>
+                        <th class="p-3">स्थिति (Status)</th>
+                        <th class="p-3">कार्रवाई (Action)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-amber-100 text-slate-700">
+                    {% for m in recent_muhurats %}
+                    <tr>
+                        <td class="p-3 font-mono text-[11px] font-bold">#{{ m.pk }}</td>
+                        <td class="p-3 font-bold text-slate-900">{{ m.category.name_hi }}</td>
+                        <td class="p-3 font-bold text-amber-900">{{ m.gregorian_date|date:"d M Y" }}</td>
+                        <td class="p-3">{{ m.mithila_month_name }} {{ m.tithi_name }} ({{ m.weekday_name }})</td>
+                        <td class="p-3 text-[11px] text-slate-500">{{ m.source_reference_text }}</td>
+                        <td class="p-3">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold
+                                {% if m.verification_status == 'PUBLISHED' %}bg-blue-100 text-blue-800
+                                {% elif m.verification_status == 'VERIFIED' %}bg-emerald-100 text-emerald-800
+                                {% else %}bg-amber-100 text-amber-900{% endif %}">
+                                {{ m.verification_status }}
+                            </span>
+                        </td>
+                        <td class="p-3">
+                            <form action="{% url 'mithila_panchang:admin_verify_muhurat' m.pk %}" method="post" class="inline-flex space-x-1">
+                                {% csrf_token %}
+                                {% if m.verification_status != 'VERIFIED' %}
+                                <button type="submit" name="action" value="verify" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold">
+                                    Verify
+                                </button>
+                                {% endif %}
+                                {% if not m.is_published %}
+                                <button type="submit" name="action" value="publish" class="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-[10px] font-bold">
+                                    Publish
+                                </button>
+                                {% else %}
+                                <button type="submit" name="action" value="unpublish" class="px-2 py-1 bg-slate-600 hover:bg-slate-700 text-white rounded text-[10px] font-bold">
+                                    Unpublish
+                                </button>
+                                {% endif %}
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

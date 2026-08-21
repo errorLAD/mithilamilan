@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ person.full_name }} - {{ person.get_category_display }} • Mithila Pride{% endblock %}
+
+{% block extra_head %}
+<!-- SEO & Open Graph Meta Tags -->
+<meta name="description" content="{{ person.full_name }} - {{ person.get_category_display }} from {{ person.place_location }}. {{ person.contributions_to_mithila|truncatewords:25 }}">
+<meta property="og:title" content="{{ person.full_name }} | {{ person.get_category_display }} • Mithila Pride">
+<meta property="og:description" content="{{ person.biography|truncatewords:30 }}">
+{% if person.photograph %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ person.photograph.url }}">
+{% endif %}
+
+<!-- Schema.org JSON-LD Structured Data for Person -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "{{ person.full_name|escapejs }}",
+  "jobTitle": "{{ person.get_category_display|escapejs }}",
+  "homeLocation": "{{ person.place_location|escapejs }}",
+  "description": "{{ person.contributions_to_mithila|escapejs }}"
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8">
+
+    <!-- Top Navigation Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'mithila_pride:person_list' %}" class="hover:text-blue-600 flex items-center space-x-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Mithila Pride Directory</span>
+        </a>
+        <span>/</span>
+        <span class="text-slate-900 truncate max-w-xs">{{ person.full_name }}</span>
+    </div>
+
+    <!-- Personality Hero Header -->
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas overflow-hidden p-6 sm:p-10">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+
+            <!-- Photograph -->
+            <div class="relative w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden bg-slate-900 border-4 border-blue-100 shadow-md flex-shrink-0">
+                {% if person.photograph %}
+                <img src="{{ person.photograph.url }}" alt="{{ person.full_name }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-tr from-blue-900 via-indigo-900 to-slate-900 text-white font-black text-5xl flex items-center justify-center">
+                    {{ person.full_name|first }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Details Header -->
+            <div class="flex-1 text-center md:text-left space-y-3">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                    <span class="bg-blue-100 text-blue-900 font-extrabold text-xs px-3.5 py-1 rounded-full uppercase tracking-wider">
+                        {{ person.get_category_display }}
+                    </span>
+                    <span class="bg-slate-100 text-slate-700 font-bold text-xs px-3 py-1 rounded-full">
+                        {{ person.get_era_generation_display }}
+                    </span>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                    {{ person.full_name }}
+                </h1>
+
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 text-xs sm:text-sm font-semibold text-slate-600">
+                    <span class="flex items-center space-x-1.5">
+                        <i class="fa-solid fa-location-dot text-rose-500"></i>
+                        <span>{{ person.place_location }}</span>
+                    </span>
+                    {% if person.organization_institution %}
+                    <span class="flex items-center space-x-1.5">
+                        <i class="fa-solid fa-building-columns text-blue-600"></i>
+                        <span>{{ person.organization_institution }}</span>
+                    </span>
+                    {% endif %}
+                </div>
+
+                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    "{{ person.contributions_to_mithila }}"
+                </p>
+
+                <!-- Share Profile Button -->
+                <div class="pt-2 flex justify-center md:justify-start" x-data="{ copied: false }">
+                    <button @click="navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 3000)" class="inline-flex items-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-md transition-all">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        <span x-text="copied ? 'Profile Link Copied!' : 'Share Profile'"></span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left 2 Columns: Biography, Life, Career, Achievements, Publications -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- Biography -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-book-open text-blue-600"></i>
+                    <span>Biography & Life Story</span>
+                </h2>
+                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                    {{ person.biography }}
+                </div>
+            </div>
+
+            <!-- Early Life & Education -->
+            {% if person.early_life or person.education %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+                {% if person.early_life %}
+                <div class="space-y-2">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-seedling text-emerald-600"></i>
+                        <span>Early Life & Roots</span>
+                    </h3>
+                    <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">{{ person.early_life }}</p>
+                </div>
+                {% endif %}
+
+                {% if person.education %}
+                <div class="space-y-2 pt-4 border-t border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-graduation-cap text-blue-600"></i>
+                        <span>Education & Lineage of Learning</span>
+                    </h3>
+                    <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">{{ person.education }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Career & Achievements -->
+            {% if person.career or person.major_achievements %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+                {% if person.career %}
+                <div class="space-y-2">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-briefcase text-indigo-600"></i>
+                        <span>Career & Professional Work</span>
+                    </h3>
+                    <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">{{ person.career }}</p>
+                </div>
+                {% endif %}
+
+                {% if person.major_achievements %}
+                <div class="space-y-2 pt-4 border-t border-slate-100">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        <span>Major Achievements & Breakthroughs</span>
+                    </h3>
+                    <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">{{ person.major_achievements }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Awards & Honors -->
+            {% if person.awards %}
+            <div class="bg-amber-50/70 rounded-3xl p-6 sm:p-8 border border-amber-200/80 space-y-4">
+                <h2 class="text-xl font-bold text-amber-950 border-b border-amber-200/80 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-award text-amber-600"></i>
+                    <span>Awards & Recognition</span>
+                </h2>
+                <div class="text-amber-950 text-sm leading-relaxed whitespace-pre-line font-medium">
+                    {{ person.awards }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Key Publications & Notable Works -->
+            {% if person.publications_work %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-nib text-blue-600"></i>
+                    <span>Publications & Notable Works</span>
+                </h2>
+                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-2xl border border-slate-100 font-mono text-xs">
+                    {{ person.publications_work }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Timeline Breakdown -->
+            {% if timeline %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-timeline text-blue-600"></i>
+                    <span>Chronological Timeline</span>
+                </h2>
+                <div class="relative border-l-2 border-blue-200 ml-3 space-y-6 pl-6">
+                    {% for t in timeline %}
+                    <div class="relative group">
+                        <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-blue-600 border-4 border-white shadow-xs"></div>
+                        <span class="text-xs font-extrabold text-blue-700 uppercase tracking-wider block">{{ t.year_or_date }}</span>
+                        <h4 class="text-sm font-bold text-slate-900">{{ t.title }}</h4>
+                        {% if t.description %}
+                        <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ t.description }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Right 1 Column: Gallery, References, Related -->
+        <div class="space-y-6">
+
+            <!-- References & Sources -->
+            {% if person.references_sources or person.website_social_links %}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                    References & External Links
+                </h3>
+
+                {% if person.website_social_links %}
+                <div>
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">WEBSITE & SOCIAL LINKS</span>
+                    <p class="text-slate-800 mt-0.5 whitespace-pre-line leading-relaxed">{{ person.website_social_links }}</p>
+                </div>
+                {% endif %}
+
+                {% if person.references_sources %}
+                <div class="pt-2 border-t border-slate-100">
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">CITATIONS / SOURCES</span>
+                    <p class="text-slate-600 mt-0.5 leading-relaxed italic">{{ person.references_sources }}</p>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Related Personalities -->
+            {% if related_persons %}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                    Related Luminaries
+                </h3>
+
+                <div class="space-y-4">
+                    {% for r in related_persons %}
+                    <div class="flex items-center space-x-3 group">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-800 flex-shrink-0 flex items-center justify-center font-bold text-sm overflow-hidden">
+                            {% if r.photograph %}
+                            <img src="{{ r.photograph.url }}" alt="{{ r.full_name }}" class="w-full h-full object-cover">
+                            {% else %}
+                            {{ r.full_name|first }}
+                            {% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-900 group-hover:text-blue-600 truncate">
+                                <a href="{{ r.get_absolute_url }}">{{ r.full_name }}</a>
+                            </h4>
+                            <span class="text-[10px] text-slate-500 truncate block">{{ r.get_category_display }} • {{ r.place_location }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}u/{{ profile_user.username }}'s Profile - OkLocal{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4 space-y-6">
+        
+        <!-- User Profile Card -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
+                {% if profile_user.avatar %}
+                    <img src="{{ profile_user.avatar.url }}" alt="{{ profile_user.username }}" class="w-24 h-24 rounded-full object-cover border-2 border-orange-500 shadow-md">
+                {% else %}
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-slate-800 to-slate-900 text-white font-black text-3xl flex items-center justify-center border-2 border-orange-500 shadow-md">
+                        {{ profile_user.username|first|upper }}
+                    </div>
+                {% endif %}
+
+                <div class="space-y-2 flex-1">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h1 class="text-2xl font-extrabold text-slate-900">u/{{ profile_user.username }}</h1>
+                            <p class="text-xs text-slate-500">Member since {{ profile_user.date_joined|date:"M Y" }}</p>
+                        </div>
+
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="px-3 py-1 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-bold flex items-center space-x-1">
+                                <i class="fa-solid fa-shield-halved text-amber-500"></i>
+                                <span>Karma: {{ profile_user.karma|default:0 }}</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    {% if profile_user.bio %}
+                        <p class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-100">{{ profile_user.bio }}</p>
+                    {% endif %}
+
+                    {% if user.is_authenticated and user == profile_user %}
+                    <div class="pt-2 flex flex-wrap gap-2 text-xs font-semibold">
+                        <a href="{% url 'pg_rental:my_listings' %}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700">My PGs</a>
+                        <a href="{% url 'job_portal:my_jobs' %}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700">My Posted Jobs</a>
+                        <a href="{% url 'lost_and_found:my_items' %}" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-700">My Lost & Found</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Created Community Hubs -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-users text-amber-500"></i>
+                    <span>Created Communities</span>
+                </h3>
+                <div class="space-y-2">
+                    {% for subreddit in profile_user.created_subreddits.all %}
+                    <a href="{% url 'subreddits:subreddit_detail' subreddit.slug %}" class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 hover:bg-orange-50/50 text-xs font-semibold text-slate-800 transition-colors">
+                        <span>c/{{ subreddit.name }}</span>
+                        <span class="text-[10px] text-slate-400">{{ subreddit.subscribers.count }} members</span>
+                    </a>
+                    {% empty %}
+                    <p class="text-xs text-slate-400 py-2">No community hubs created yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-pen-to-square text-orange-500"></i>
+                    <span>Recent Feed Posts</span>
+                </h3>
+                <div class="space-y-2">
+                    {% for post in profile_user.posts.all|slice:":5" %}
+                    <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="block p-2.5 rounded-xl bg-slate-50 hover:bg-orange-50/50 text-xs font-semibold text-slate-800 transition-colors truncate">
+                        {{ post.title }}
+                    </a>
+                    {% empty %}
+                    <p class="text-xs text-slate-400 py-2">No posts created yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

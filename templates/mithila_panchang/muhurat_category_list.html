@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name_hi }} - Mithila Muhurat | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <div class="flex items-center justify-between text-xs font-bold text-slate-600">
+        <a href="{% url 'mithila_panchang:muhurat_hub' %}" class="hover:text-[#7D281E] flex items-center space-x-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>शुभ मुहूर्त हब</span>
+        </a>
+        <span>{{ category.name_hi }}</span>
+    </div>
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-3">
+        <div class="flex items-center space-x-2">
+            <div class="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center text-lg font-bold">
+                <i class="fa-solid {{ category.icon }}"></i>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+                {{ category.name_hi }}
+            </h1>
+        </div>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium">
+            {{ category.description|default:"प्रमाणित मैथिली पंचांगानुसार शुद्ध मुहूर्त तिथियाँ।" }}
+        </p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-3">
+        <form method="get" class="flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
+            
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Status Filter -->
+                <select name="filter" onchange="this.form.submit()" class="bg-[#FAF7F2] border border-amber-200 rounded-xl px-3 py-1.5 text-slate-800 focus:outline-none">
+                    <option value="upcoming" {% if selected_filter == 'upcoming' %}selected{% endif %}>आगामी (Upcoming)</option>
+                    <option value="all" {% if selected_filter == 'all' %}selected{% endif %}>सभी तिथियाँ (All)</option>
+                    <option value="past" {% if selected_filter == 'past' %}selected{% endif %}>बीत चुकी (Past)</option>
+                </select>
+
+                <!-- Month Filter -->
+                <select name="month" onchange="this.form.submit()" class="bg-[#FAF7F2] border border-amber-200 rounded-xl px-3 py-1.5 text-slate-800 focus:outline-none">
+                    <option value="">सभी मास (All Months)</option>
+                    <option value="1" {% if selected_month == '1' %}selected{% endif %}>जनवरी</option>
+                    <option value="2" {% if selected_month == '2' %}selected{% endif %}>फरवरी</option>
+                    <option value="3" {% if selected_month == '3' %}selected{% endif %}>मार्च</option>
+                    <option value="4" {% if selected_month == '4' %}selected{% endif %}>अप्रैल</option>
+                    <option value="5" {% if selected_month == '5' %}selected{% endif %}>मई</option>
+                    <option value="6" {% if selected_month == '6' %}selected{% endif %}>जून</option>
+                    <option value="7" {% if selected_month == '7' %}selected{% endif %}>जुलाई</option>
+                    <option value="8" {% if selected_month == '8' %}selected{% endif %}>अगस्त</option>
+                    <option value="9" {% if selected_month == '9' %}selected{% endif %}>सितंबर</option>
+                    <option value="10" {% if selected_month == '10' %}selected{% endif %}>अक्टूबर</option>
+                    <option value="11" {% if selected_month == '11' %}selected{% endif %}>नवंबर</option>
+                    <option value="12" {% if selected_month == '12' %}selected{% endif %}>दिसंबर</option>
+                </select>
+            </div>
+
+            <!-- Sort Filter -->
+            <div class="flex items-center space-x-2">
+                <span class="text-slate-500">क्रम:</span>
+                <select name="sort" onchange="this.form.submit()" class="bg-[#FAF7F2] border border-amber-200 rounded-xl px-3 py-1.5 text-slate-800 focus:outline-none">
+                    <option value="asc" {% if selected_sort == 'asc' %}selected{% endif %}>निकटतम तिथि (Earliest)</option>
+                    <option value="desc" {% if selected_sort == 'desc' %}selected{% endif %}>कालक्रमानुसार (Latest)</option>
+                </select>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Muhurat Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        {% for m in muhurats %}
+        <a href="{% url 'mithila_panchang:muhurat_detail' m.pk %}" 
+           class="group bg-white rounded-2xl p-5 border border-amber-200/80 shadow-saas hover:shadow-saas-lg hover:border-[#7D281E] transition-all space-y-3 flex flex-col justify-between cursor-pointer">
+            
+            <div class="space-y-3">
+                
+                <!-- Card Top: Date Block + Category Tag + Calendar Icon -->
+                <div class="flex items-start justify-between">
+                    <!-- Colored Date Anchor Block -->
+                    <div class="bg-[#7D281E] text-white rounded-xl p-2.5 text-center shrink-0 w-16 shadow-xs group-hover:scale-105 transition-transform">
+                        <span class="block text-[10px] font-black uppercase tracking-wider">{{ m.gregorian_date|date:"M" }}</span>
+                        <span class="block text-2xl font-black leading-none">{{ m.gregorian_date|date:"d" }}</span>
+                    </div>
+
+                    <div class="text-right space-y-1">
+                        <span class="inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                            {{ category.name_hi }}
+                        </span>
+                        <i class="fa-regular fa-calendar text-amber-600 block text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="space-y-1">
+                    <h4 class="font-extrabold text-slate-900 text-sm group-hover:text-[#7D281E] transition-colors leading-snug">
+                        {{ m.mithila_month_name }} {{ m.paksha }} {{ m.tithi_name }}
+                    </h4>
+                    <p class="text-xs text-slate-600 font-medium">
+                        ({{ m.weekday_name }})। {{ m.nakshatra_name }} नक्षत्र
+                    </p>
+                    
+                    <!-- Exact Time or "विवाहक दिन" rule -->
+                    <div class="pt-1">
+                        <span class="inline-block text-xs font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/70">
+                            {% if m.start_time %}
+                                {{ m.start_time }} {% if m.end_time %}– {{ m.end_time }}{% endif %}
+                            {% else %}
+                                {{ category.name_hi|slice:":6" }}क दिन (पूरा दिन)
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-[#7D281E]">
+                <span>View Details</span>
+                <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-3xl p-12 text-center border border-amber-200 text-slate-500 space-y-2">
+            <i class="fa-solid fa-calendar-xmark text-4xl text-amber-400"></i>
+            <p class="font-bold text-slate-800">कोई मुहूर्त तिथि नहीं मिली</p>
+            <p class="text-xs">कृपया अन्य फिल्टर चुनें।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

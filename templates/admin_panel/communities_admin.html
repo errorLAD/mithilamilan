@@ -1,0 +1,44 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Communities Admin | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Communities Governance</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage subreddits/communities, review creation requests, track member counts.</p>
+    </div>
+    <a href="{% url 'admin_panel:top_communities' %}" class="bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs">🏆 Top Leaderboard</a>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Community</th>
+                    <th class="px-4 py-3.5">Creator</th>
+                    <th class="px-4 py-3.5 text-center">Members</th>
+                    <th class="px-4 py-3.5 text-center">Posts</th>
+                    <th class="px-4 py-3.5">Created Date</th>
+                    <th class="px-4 py-3.5 text-right">Approval Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for c in communities %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold text-slate-900">r/{{ c.name }}</td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">u/{{ c.creator.username }}</td>
+                    <td class="px-4 py-3.5 text-center font-black text-indigo-600">{{ c.members_cnt }}</td>
+                    <td class="px-4 py-3.5 text-center font-black text-emerald-600">{{ c.posts_cnt }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 whitespace-nowrap">{{ c.created_at|date:"d M Y" }}</td>
+                    <td class="px-4 py-3.5 text-right uppercase font-bold text-amber-700">{{ c.approval_status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="px-4 py-12 text-center text-slate-400">No communities found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

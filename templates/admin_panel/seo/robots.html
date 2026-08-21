@@ -1,0 +1,30 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}robots.txt Manager | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">robots.txt Direct Editor</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage search crawler directive rules directly from the database without file edits.</p>
+    </div>
+    <a href="/robots.txt" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center gap-2">
+        <span>View Live /robots.txt</span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+    </a>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4 max-w-2xl">
+    <form method="post" class="space-y-4 text-xs">
+        {% csrf_token %}
+        <div>
+            <label class="block text-slate-700 font-bold mb-1">robots.txt Content *</label>
+            <textarea name="content" rows="10" required
+                      class="w-full bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl p-4 focus:outline-none leading-relaxed">{{ config.content }}</textarea>
+        </div>
+        <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold py-2.5 px-5 rounded-xl shadow-xs transition-all">
+            💾 Update robots.txt Rules
+        </button>
+    </form>
+</div>
+{% endblock %}

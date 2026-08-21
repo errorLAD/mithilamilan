@@ -1,0 +1,95 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Marketing Campaigns | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Marketing Campaign Manager</h1>
+        <p class="text-xs text-slate-500 mt-1">Create and monitor targeted promotional campaigns across Google Ads, WhatsApp, Facebook, and Instagram.</p>
+    </div>
+</div>
+
+<!-- CREATE CAMPAIGN FORM -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3">Create New Campaign</h2>
+    <form method="post" class="space-y-4 text-xs">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Campaign Name *</label>
+                <input type="text" name="name" required placeholder="e.g. Chhath Puja Special 2026"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Platform</label>
+                <select name="platform" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] font-medium">
+                    <option value="Google Ads">Google Ads</option>
+                    <option value="Facebook Ads">Facebook / Meta</option>
+                    <option value="Instagram">Instagram Influencers</option>
+                    <option value="WhatsApp">WhatsApp Broadcast</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">UTM Campaign Tag *</label>
+                <input type="text" name="utm_campaign" required placeholder="e.g. chhath_puja_2026"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Start Date</label>
+                <input type="date" name="start_date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">End Date</label>
+                <input type="date" name="end_date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Budget (₹)</label>
+                <input type="number" name="budget" placeholder="5000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] font-medium">
+            </div>
+        </div>
+        <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold py-2.5 px-5 rounded-xl shadow-xs transition-all">
+            🚀 Launch Campaign
+        </button>
+    </form>
+</div>
+
+<!-- CAMPAIGNS LIST TABLE -->
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="p-4 border-b border-slate-100 font-bold text-xs text-slate-900 uppercase tracking-wider font-heading">
+        Active & Past Campaigns
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Campaign</th>
+                    <th class="px-4 py-3.5">Platform</th>
+                    <th class="px-4 py-3.5">UTM Tag</th>
+                    <th class="px-4 py-3.5">Budget</th>
+                    <th class="px-4 py-3.5">Duration</th>
+                    <th class="px-4 py-3.5 text-right">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for c in campaigns %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold text-slate-900">{{ c.name }}</td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">{{ c.platform }}</td>
+                    <td class="px-4 py-3.5 font-mono text-[#E85D2A]">{{ c.utm_campaign }}</td>
+                    <td class="px-4 py-3.5 font-black text-emerald-600">₹{{ c.budget }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 whitespace-nowrap">{{ c.start_date }} to {{ c.end_date }}</td>
+                    <td class="px-4 py-3.5 text-right">
+                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">{{ c.status }}</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="px-4 py-12 text-center text-slate-400">No campaigns created yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}News Admin (समाचार) | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">समाचार (News Portal Admin)</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage Mithila news articles, view statistics, approve/reject user submissions.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Title</th>
+                    <th class="px-4 py-3.5">Category</th>
+                    <th class="px-4 py-3.5">Author</th>
+                    <th class="px-4 py-3.5">Views</th>
+                    <th class="px-4 py-3.5">Date</th>
+                    <th class="px-4 py-3.5">Status</th>
+                    <th class="px-4 py-3.5 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for n in news_list %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold text-slate-900 max-w-sm truncate">{{ n.title }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 font-medium">{{ n.get_category_display }}</td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">u/{{ n.author.username }}</td>
+                    <td class="px-4 py-3.5 font-bold text-amber-600">{{ n.views }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 whitespace-nowrap">{{ n.created_at|date:"d M Y" }}</td>
+                    <td class="px-4 py-3.5 whitespace-nowrap">
+                        {% if n.status == 'APPROVED' %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Approved</span>
+                        {% elif n.status == 'REJECTED' %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">Rejected</span>
+                        {% else %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3.5 text-right whitespace-nowrap space-x-1">
+                        <a href="{% url 'admin_panel:submission_action' 'news' n.id 'approve' %}" class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Approve</a>
+                        <a href="{% url 'admin_panel:submission_action' 'news' n.id 'reject' %}" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 font-bold border border-rose-200">Reject</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="px-4 py-12 text-center text-slate-400">No news articles found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

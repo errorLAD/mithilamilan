@@ -1,0 +1,100 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Services Marketplace | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Services Marketplace Admin</h1>
+        <p class="text-xs text-slate-500 mt-1">Overview of PG/Rentals, Jobs, Lost & Found, Cab/Auto, Ghatkaiti, Wiki Areas.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- PG & Rentals -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>PG & Rental Listings ({{ pg_listings|length }})</span>
+            <i class="fa-solid fa-house-user text-indigo-600"></i>
+        </h2>
+        <div class="space-y-2 text-xs">
+            {% for pg in pg_listings %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-slate-900">{{ pg.title }}</div>
+                    <div class="text-[11px] text-slate-500 font-medium">{{ pg.city }} • ₹{{ pg.price_per_month }}/mo</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">{{ pg.approval_status }}</span>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-4 text-center">No rental listings.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Jobs Portal -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>Job Opportunities ({{ jobs|length }})</span>
+            <i class="fa-solid fa-briefcase text-emerald-600"></i>
+        </h2>
+        <div class="space-y-2 text-xs">
+            {% for j in jobs %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-slate-900">{{ j.title }}</div>
+                    <div class="text-[11px] text-slate-500 font-medium">{{ j.company }} • {{ j.location }}</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">{{ j.status }}</span>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-4 text-center">No job listings.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Drivers -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>Cab & Auto Drivers ({{ drivers|length }})</span>
+            <i class="fa-solid fa-taxi text-amber-600"></i>
+        </h2>
+        <div class="space-y-2 text-xs">
+            {% for d in drivers %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-slate-900">{{ d.full_name }} ({{ d.get_vehicle_type_display }})</div>
+                    <div class="text-[11px] text-slate-500 font-medium">{{ d.service_area }} • WA: {{ d.whatsapp_number }}</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">{{ d.status }}</span>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-4 text-center">No driver profiles.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Matrimonials -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between">
+            <span>Ghatkaiti Matrimonials ({{ matrimonials|length }})</span>
+            <i class="fa-solid fa-ring text-rose-600"></i>
+        </h2>
+        <div class="space-y-2 text-xs">
+            {% for m in matrimonials %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-slate-900">{{ m.full_name }} ({{ m.age }} Yrs)</div>
+                    <div class="text-[11px] text-slate-500 font-medium">{{ m.education }} • {{ m.native_place }}</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">{{ m.status }}</span>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-4 text-center">No matrimonial profiles.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

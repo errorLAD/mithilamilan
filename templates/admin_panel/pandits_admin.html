@@ -1,0 +1,51 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Pandits & Astrologers | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">पंडित एवं ज्योतिषी (Pandits & Astrologers Admin)</h1>
+        <p class="text-xs text-slate-500 mt-1">Verify scholar profiles, manage verification status, review consultation requests.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Name</th>
+                    <th class="px-4 py-3.5">Type</th>
+                    <th class="px-4 py-3.5">Experience</th>
+                    <th class="px-4 py-3.5">Location</th>
+                    <th class="px-4 py-3.5">WhatsApp</th>
+                    <th class="px-4 py-3.5">Verified Badge</th>
+                    <th class="px-4 py-3.5 text-right">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in pandits %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold text-slate-900">{{ p.full_name }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 font-medium">{{ p.get_profile_type_display }}</td>
+                    <td class="px-4 py-3.5 text-slate-600 font-semibold">{{ p.experience_years }} Years</td>
+                    <td class="px-4 py-3.5 text-slate-500 font-medium">{{ p.location }}</td>
+                    <td class="px-4 py-3.5 text-slate-700 font-mono">{{ p.whatsapp_number }}</td>
+                    <td class="px-4 py-3.5">
+                        {% if p.is_verified %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">✓ Verified</span>
+                        {% else %}
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600">Unverified</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3.5 text-right font-bold uppercase text-amber-700">{{ p.status }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="px-4 py-12 text-center text-slate-400">No pandits or astrologers found.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

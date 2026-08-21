@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}My Fare History - OkLocal Transit{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+            
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-receipt text-orange-500"></i>
+                        <span>Transit Fare History</span>
+                    </h1>
+                    <p class="text-xs text-slate-500">Your recent transit queries and fare history</p>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                {% for history in user_fares %}
+                <div class="p-4 rounded-2xl border border-slate-100 bg-slate-50 flex items-center justify-between text-xs">
+                    <div class="space-y-1">
+                        <p class="font-bold text-slate-900">{{ history.origin_stop.stop_name }} ➔ {{ history.destination_stop.stop_name }}</p>
+                        <p class="text-[11px] text-slate-500"><i class="fa-solid fa-bus text-orange-500 mr-1"></i>Route: {{ history.route.route_short_name }} • {{ history.journey_date|date:"M d, Y h:i A" }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-extrabold text-slate-900 text-sm">₹{{ history.fare }}</span>
+                        <span class="block text-[10px] font-bold uppercase text-emerald-600">{{ history.payment_status }}</span>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-8 space-y-2">
+                    <i class="fa-solid fa-ticket-simple text-3xl text-slate-300"></i>
+                    <p class="text-xs text-slate-500">No transit fare history recorded yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

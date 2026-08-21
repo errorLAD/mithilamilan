@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}मिथिला परिचय — Mithila Parichay & Guide{% endblock %}
+
+{% block content %}
+<div class="bg-[#F8F8F6] min-h-screen py-6 sm:py-8 font-devanagari">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Mithila Guide Sub-Header -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 mb-8 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
+            <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#E85D2A] via-[#D6A437] to-[#7D3028]"></div>
+            
+            <div class="space-y-1 text-center md:text-left">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-[#0F1F35] flex items-center justify-center md:justify-start space-x-2">
+                    <i class="fa-solid fa-map-location-dot text-[#E85D2A]"></i>
+                    <span>मिथिला परिचय एवं सांस्कृतिक मार्गदर्शिका</span>
+                </h1>
+                <p class="text-xs text-[#718096]">मिथिलाक प्रसिद्ध स्थान, ऐतिहासिक स्थल, पारंपरिक धरोहर, भोजन एवं स्थानीय ज्ञान</p>
+            </div>
+
+            <div class="flex items-center space-x-2 text-xs font-semibold flex-wrap justify-center gap-y-2">
+                <a href="{% url 'delhi_wiki:area_list' %}" class="px-3.5 py-2 rounded-xl bg-[#FFF7ED] text-[#E85D2A] border border-[#FFEDD5] hover:bg-[#FFEDD5]">स्थान एवं क्षेत्र</a>
+                <a href="{% url 'delhi_wiki:landmark_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">ऐतिहासिक स्थल</a>
+                <a href="{% url 'delhi_wiki:food_place_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">पारंपरिक खान-पान</a>
+                <a href="{% url 'delhi_wiki:market_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">बाज़ार एवं हाट</a>
+                <a href="{% url 'delhi_wiki:event_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">आयोजन एवं पर्व</a>
+            </div>
+        </div>
+
+        {% block wiki_content %}
+        {% endblock %}
+
+    </div>
+</div>
+{% endblock %}

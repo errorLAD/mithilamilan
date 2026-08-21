@@ -1,0 +1,56 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}मिथिला पंचांग Admin | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">मिथिला पंचांग (Panchang Admin)</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage daily panchang entries (Tithi, Nakshatra, Sunrise, Rahukaal) and festival dates.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Daily Panchang Table -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 font-heading">
+            Panchang Daily Entries ({{ panchang_days|length }})
+        </h2>
+        <div class="space-y-3">
+            {% for day in panchang_days %}
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-[#E85D2A] text-sm">{{ day.date|date:"d M Y" }} ({{ day.weekday_name }})</div>
+                    <div class="text-slate-800 font-semibold mt-1">{{ day.mithila_month_name }} {{ day.paksha }} {{ day.mithila_tithi_name }}</div>
+                    <div class="text-[11px] text-slate-500 mt-1">Nakshatra: {{ day.nakshatra_name }} | Rahukaal: {{ day.rahukaal }}</div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-6 text-center">No Panchang entries found.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Festival Calendar Dates -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 font-heading">
+            Upcoming Festivals & Vrat ({{ festivals|length }})
+        </h2>
+        <div class="space-y-3">
+            {% for f in festivals %}
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs flex items-center justify-between">
+                <div>
+                    <div class="font-bold text-slate-900 text-sm">{{ f.title_hi }}</div>
+                    <div class="text-[11px] text-[#E85D2A] font-bold mt-1">{{ f.date|date:"d M Y" }}</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">{{ f.get_category_display }}</span>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-6 text-center">No festival dates found.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

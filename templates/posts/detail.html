@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} — MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="bg-[#F8F8F6] min-h-screen py-4 sm:py-6 font-devanagari">
+    <div class="max-w-4xl mx-auto px-2 sm:px-4 space-y-4 sm:space-y-6">
+        
+        <!-- Top Back Button -->
+        <div class="flex items-center justify-between">
+            <button onclick="window.history.length > 1 ? history.back() : window.location.href='{% url 'core:home' %}'; return false;"
+                    type="button" 
+                    class="inline-flex items-center space-x-2 bg-white hover:bg-slate-100 text-[#0F1F35] font-bold text-xs px-3.5 py-2 rounded-full border border-slate-200/80 shadow-2xs transition-colors cursor-pointer">
+                <i class="fa-solid fa-arrow-left text-xs text-[#E85D2A]"></i>
+                <span>← वापस</span>
+            </button>
+
+            <a href="{% url 'subreddits:subreddit_detail' post.subreddit.slug %}" class="inline-flex items-center space-x-1.5 bg-[#FFF7ED] hover:bg-[#FFEDD5] text-[#E85D2A] font-bold text-xs px-3 py-1 rounded-full border border-[#FFEDD5] transition-colors">
+                <i class="fa-solid fa-users text-[10px]"></i>
+                <span>c/{{ post.subreddit.name }}</span>
+            </a>
+        </div>
+
+        <!-- Post Main Card -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-2xs p-5 sm:p-7 space-y-5 relative overflow-hidden">
+            
+            <!-- Thin Mithila Decorative Line Accent at top -->
+            <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#E85D2A] via-[#D6A437] to-[#7D3028] opacity-75"></div>
+
+            <!-- Post Header -->
+            <div class="flex items-center justify-between text-xs text-slate-500 border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2 flex-wrap">
+                    <span class="font-semibold text-slate-700">प्रस्तुतकर्ता <a href="{% url 'users:profile' post.author.username %}" class="text-[#E85D2A] hover:underline font-bold">u/{{ post.author.username }}</a></span>
+                    <span>•</span>
+                    <span>{{ post.created_at|timesince }} पहले</span>
+                </div>
+
+                {% if user == post.author %}
+                <form method="post" action="{% url 'posts:delete' post.subreddit.slug post.slug %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-rose-500 hover:text-rose-700 text-xs font-bold" onclick="return confirm('क्या आप इस पोस्ट को हटाना चाहते हैं?')">
+                        <i class="fa-regular fa-trash-can mr-1"></i>हटाएँ (Delete)
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-lg sm:text-2xl font-extrabold text-[#0F1F35] leading-snug">{{ post.title }}</h1>
+
+            <!-- Content -->
+            {% if post.content %}
+            <div class="text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
+                {{ post.content|linebreaks }}
+            </div>
+            {% endif %}
+
+            <!-- Image -->
+            {% if post.image %}
+            <div class="rounded-2xl overflow-hidden bg-slate-100 border border-slate-100 max-h-96">
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-full object-cover">
+            </div>
+            {% endif %}
+
+            <!-- URL -->
+            {% if post.url %}
+            <div class="p-3 rounded-2xl bg-[#F8F8F6] border border-slate-200 text-xs">
+                <a href="{{ post.url }}" target="_blank" class="text-[#E85D2A] font-bold hover:underline flex items-center space-x-1.5">
+                    <i class="fa-solid fa-link"></i>
+                    <span class="truncate">{{ post.url }}</span>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Post Action Bar (Vote, Comment Count, Share) -->
+            <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs font-semibold text-slate-600" x-data="detailVoteApp()">
+                
+                <div class="flex items-center bg-[#F8F8F6] rounded-full px-3 py-1.5 space-x-2 border border-slate-200">
+                    <button @click="upvoteDetail('{{ post.subreddit.slug }}', '{{ post.slug }}')"
+                            type="button" 
+                            class="hover:text-[#E85D2A] transition-colors p-1 cursor-pointer"
+                            :class="{ 'text-[#E85D2A] font-bold scale-110': userVote === 'up' || ({% if user in post.upvotes.all %}true{% else %}false{% endif %} && userVote === 'none') }"
+                            title="Upvote">
+                        <i class="fa-solid fa-arrow-up"></i>
+                    </button>
+                    
+                    <span class="font-extrabold text-[#0F1F35] text-xs px-1" id="detail-score">
+                        {{ post.score|default:0 }}
+                    </span>
+                    
+                    <button @click="downvoteDetail('{{ post.subreddit.slug }}', '{{ post.slug }}')"
+                            type="button" 
+                            class="hover:text-blue-600 transition-colors p-1 cursor-pointer"
+                            :class="{ 'text-blue-600 font-bold scale-110': userVote === 'down' || ({% if user in post.downvotes.all %}true{% else %}false{% endif %} && userVote === 'none') }"
+                            title="Downvote">
+                        <i class="fa-solid fa-arrow-down"></i>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <span class="inline-flex items-center space-x-1.5 text-slate-600">
+                        <i class="fa-regular fa-comment text-slate-400 text-sm"></i>
+                        <span>{{ post.comments.count }} विचार</span>
+                    </span>
+
+                    <!-- Share Button Popover -->
+                    <div class="relative" x-data="{ shareOpen: false }">
+                        <button @click="triggerDetailShare('{{ request.build_absolute_uri }}', '{{ post.title|escapejs }}', shareOpen = !shareOpen)" 
+                                type="button" 
+                                class="inline-flex items-center space-x-1.5 hover:bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/80 transition-colors text-slate-600">
+                            <i class="fa-solid fa-share-nodes text-slate-400 text-sm"></i>
+                            <span>साझा करें</span>
+                        </button>
+
+                        <div x-show="shareOpen" @click.away="shareOpen = false" x-transition class="origin-bottom-right absolute right-0 bottom-8 mt-2 w-56 rounded-2xl shadow-saas-lg bg-white border border-slate-200 p-3 z-50 text-xs">
+                            <div class="font-bold text-slate-900 mb-2 border-b border-slate-100 pb-1">पोस्ट शेयर करें</div>
+                            <div class="space-y-1">
+                                <button @click="copyDetailLink('{{ request.build_absolute_uri }}'); shareOpen = false;" class="w-full flex items-center space-x-2 p-2 hover:bg-slate-50 rounded-xl text-left font-medium text-slate-700">
+                                    <i class="fa-solid fa-link text-[#E85D2A]"></i>
+                                    <span>लिंक कॉपी करें</span>
+                                </button>
+                                <a href="https://api.whatsapp.com/send?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" class="flex items-center space-x-2 p-2 hover:bg-emerald-50 rounded-xl font-medium text-emerald-700">
+                                    <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                                    <span>WhatsApp</span>
+                                </a>
+                                <a href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ post.title|urlencode }}" target="_blank" class="flex items-center space-x-2 p-2 hover:bg-sky-50 rounded-xl font-medium text-sky-700">
+                                    <i class="fa-brands fa-telegram text-sky-500"></i>
+                                    <span>Telegram</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Discussion & Comments Section -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-2xs p-5 sm:p-7 space-y-6">
+            
+            <!-- Header with Mithila Fish SVG Accent -->
+            <h3 class="font-bold text-[#0F1F35] text-sm flex items-center space-x-2 border-b border-slate-100 pb-3">
+                <i class="fa-regular fa-comments text-[#E85D2A]"></i>
+                <span>विचार-विमर्श एवं टिप्पणियाँ</span>
+                <!-- Tiny Mithila Fish Accent -->
+                <svg class="w-4 h-4 text-[#E85D2A] opacity-70 ml-1" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 12 C9 5, 17 5, 20 12 C17 19, 9 19, 4 12 Z" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="15" cy="11" r="1.2" fill="currentColor"/>
+                </svg>
+            </h3>
+
+            <!-- Comment Input Box -->
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'posts:comment_create' post.subreddit.slug post.slug %}" class="space-y-3">
+                {% csrf_token %}
+                <textarea name="content" style="height: 110px;" placeholder="अपन विचार या सवाल एतए लिखू... (What are your thoughts?)" class="w-full bg-[#F8F8F6] border border-slate-200 rounded-2xl p-3.5 text-xs focus:outline-none focus:border-[#E85D2A] focus:bg-white transition-all font-devanagari" required></textarea>
+                <div class="flex justify-end">
+                    <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer">
+                        टिप्पणी करें (Comment)
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <p class="text-xs text-slate-500 bg-[#F8F8F6] p-4 rounded-2xl border border-slate-100 text-center">
+                विचार-विमर्श में भाग लेब लेल <a href="{% url 'users:login' %}" class="text-[#E85D2A] font-bold hover:underline">लॉग इन</a> करू।
+            </p>
+            {% endif %}
+
+            <!-- Comments Tree with Replies -->
+            <div class="space-y-4 pt-2">
+                {% for comment in comments %}
+                {% if not comment.parent %}
+                <div class="p-4 rounded-2xl bg-[#F8F8F6] border border-slate-200/70 space-y-2 text-xs" x-data="{ replyOpen: false }">
+                    
+                    <div class="flex items-center justify-between font-semibold text-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 rounded-full bg-[#7D3028] text-white font-bold text-[10px] flex items-center justify-center">
+                                {{ comment.author.username|first|upper }}
+                            </div>
+                            <span class="font-bold text-[#0F1F35]">u/{{ comment.author.username }}</span>
+                        </div>
+                        <span class="text-[10px] text-slate-400">{{ comment.created_at|timesince }} पहले</span>
+                    </div>
+
+                    <p class="text-slate-700 leading-relaxed pl-2 sm:pl-8 font-normal">{{ comment.content }}</p>
+                    
+                    <!-- Action Bar: Reply Toggle Button -->
+                    <div class="pl-2 sm:pl-8 pt-1 flex items-center space-x-3 text-[11px]">
+                        {% if user.is_authenticated %}
+                        <button @click="replyOpen = !replyOpen" type="button" class="text-[#E85D2A] font-bold hover:underline flex items-center space-x-1 min-h-[36px]">
+                            <i class="fa-solid fa-reply text-[10px]"></i>
+                            <span>↳ जवाब दें (Reply)</span>
+                        </button>
+                        {% endif %}
+                    </div>
+
+                    <!-- Inline Compact Reply Form -->
+                    <div x-show="replyOpen" x-transition class="ml-2 sm:ml-8 pt-2">
+                        <form method="post" action="{% url 'posts:comment_reply' comment.id %}" class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+                            {% csrf_token %}
+                            <span class="text-[10px] font-bold text-[#7D3028]">u/{{ comment.author.username }} के उत्तर में:</span>
+                            <textarea name="content" rows="2" placeholder="अपन उत्तर लिखू..." class="w-full bg-[#F8F8F6] border border-slate-200 rounded-xl p-2 text-xs focus:outline-none focus:border-[#E85D2A]" required></textarea>
+                            <div class="flex justify-end space-x-2">
+                                <button @click="replyOpen = false" type="button" class="px-3 py-1.5 text-slate-500 hover:bg-slate-100 rounded-lg text-xs font-semibold min-h-[36px]">रद्द करें</button>
+                                <button type="submit" class="bg-[#E85D2A] text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-xs min-h-[36px]">उत्तर दें</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Nested Sub-Comments (Level 2) -->
+                    {% if comment.replies.all %}
+                    <div class="ml-3 sm:ml-6 pl-2 sm:pl-4 border-l-2 border-[#D6A437]/40 space-y-3 pt-3">
+                        {% for reply in comment.replies.all %}
+                        <div class="p-3 sm:p-3.5 rounded-xl bg-white border border-slate-200/80 space-y-1.5" x-data="{ subReplyOpen: false }">
+                            <div class="flex items-center justify-between font-semibold text-slate-800">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-5 h-5 rounded-full bg-[#E85D2A] text-white font-bold text-[9px] flex items-center justify-center shrink-0">
+                                        {{ reply.author.username|first|upper }}
+                                    </div>
+                                    <span class="font-bold text-[#0F1F35] truncate">u/{{ reply.author.username }}</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400 shrink-0">{{ reply.created_at|timesince }} पहले</span>
+                            </div>
+                            
+                            <p class="text-slate-600 pl-2 sm:pl-7 font-normal">{{ reply.content }}</p>
+
+                            <!-- Level 2 Reply Toggle -->
+                            <div class="pl-2 sm:pl-7 pt-0.5">
+                                {% if user.is_authenticated %}
+                                <button @click="subReplyOpen = !subReplyOpen" type="button" class="text-[#E85D2A] font-bold text-[10px] hover:underline flex items-center space-x-1 min-h-[36px]">
+                                    <i class="fa-solid fa-reply text-[9px]"></i>
+                                    <span>↳ जवाब दें</span>
+                                </button>
+                                {% endif %}
+                            </div>
+
+                            <!-- Level 2 Inline Reply Form -->
+                            <div x-show="subReplyOpen" x-transition class="ml-2 sm:ml-7 pt-2">
+                                <form method="post" action="{% url 'posts:comment_reply' reply.id %}" class="bg-[#F8F8F6] p-2.5 rounded-xl border border-slate-200 space-y-2">
+                                    {% csrf_token %}
+                                    <span class="text-[10px] font-bold text-[#7D3028]">u/{{ reply.author.username }} के उत्तर में:</span>
+                                    <textarea name="content" rows="2" placeholder="अपन उत्तर लिखू..." class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs focus:outline-none focus:border-[#E85D2A]" required></textarea>
+                                    <div class="flex justify-end space-x-2">
+                                        <button @click="subReplyOpen = false" type="button" class="px-2.5 py-1.5 text-slate-500 hover:bg-slate-200 rounded-lg text-xs font-semibold min-h-[36px]">रद्द करें</button>
+                                        <button type="submit" class="bg-[#E85D2A] text-white px-3.5 py-1.5 rounded-lg text-xs font-bold min-h-[36px]">उत्तर दें</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Level 3 Nested Sub-Comments -->
+                            {% if reply.replies.all %}
+                            <div class="ml-5 pl-3 border-l-2 border-[#E85D2A]/30 space-y-2 pt-2">
+                                {% for sub_reply in reply.replies.all %}
+                                <div class="p-2.5 rounded-lg bg-[#F8F8F6] border border-slate-100 space-y-1">
+                                    <div class="flex items-center justify-between font-semibold text-slate-800 text-[11px]">
+                                        <span class="font-bold text-[#0F1F35]">u/{{ sub_reply.author.username }}</span>
+                                        <span class="text-[9px] text-slate-400">{{ sub_reply.created_at|timesince }}</span>
+                                    </div>
+                                    <p class="text-slate-600 text-xs font-normal">{{ sub_reply.content }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% endif %}
+                {% empty %}
+                <p class="text-xs text-slate-400 text-center py-6">अभी कोई टिप्पणी नहीं है। सबसे पहले अपनी बात साझा करें!</p>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+function detailVoteApp() {
+    return {
+        userVote: 'none',
+        async upvoteDetail(subredditSlug, postSlug) {
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'users:login' %}";
+                return;
+            {% endif %}
+            try {
+                const response = await fetch(`/r/${subredditSlug}/post/${postSlug}/upvote/?format=json`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    document.getElementById('detail-score').innerText = data.score;
+                    this.userVote = data.user_vote;
+                }
+            } catch (e) {
+                console.error("Upvote error:", e);
+            }
+        },
+        async downvoteDetail(subredditSlug, postSlug) {
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'users:login' %}";
+                return;
+            {% endif %}
+            try {
+                const response = await fetch(`/r/${subredditSlug}/post/${postSlug}/downvote/?format=json`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    document.getElementById('detail-score').innerText = data.score;
+                    this.userVote = data.user_vote;
+                }
+            } catch (e) {
+                console.error("Downvote error:", e);
+            }
+        },
+        triggerDetailShare(url, title) {
+            if (navigator.share && window.innerWidth < 768) {
+                navigator.share({ title: title, url: url }).catch(() => {});
+            }
+        },
+        copyDetailLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert("लिंक कॉपी भ गेल! (Link copied!)");
+            });
+        }
+    };
+}
+</script>
+{% endblock %}

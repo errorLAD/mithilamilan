@@ -1,0 +1,43 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Activity Audit Logs | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Admin Activity Audit Logs</h1>
+        <p class="text-xs text-slate-500 mt-1">Audit log recording every admin action, object modification, and staff IP address.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Timestamp</th>
+                    <th class="px-4 py-3.5">Admin User</th>
+                    <th class="px-4 py-3.5">Action Executed</th>
+                    <th class="px-4 py-3.5">Target Model</th>
+                    <th class="px-4 py-3.5">Details</th>
+                    <th class="px-4 py-3.5 text-right">IP Address</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for log in logs %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-mono text-slate-500 whitespace-nowrap">{{ log.timestamp|date:"d M Y, H:i:s" }}</td>
+                    <td class="px-4 py-3.5 font-bold text-slate-900">u/{{ log.user.username|default:"System" }}</td>
+                    <td class="px-4 py-3.5 font-semibold text-amber-700">{{ log.action }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 font-mono">{{ log.model_name|default:"-" }}</td>
+                    <td class="px-4 py-3.5 text-slate-700 max-w-xs truncate font-medium">{{ log.details|default:"-" }}</td>
+                    <td class="px-4 py-3.5 text-right font-mono text-slate-500">{{ log.ip_address|default:"Local" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="px-4 py-12 text-center text-slate-400">No activity logs recorded.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

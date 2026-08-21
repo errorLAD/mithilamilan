@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}कहानी लिखें (+ Write Story) | MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-8 font-sans pb-16">
+
+    <!-- Global Back Button -->
+    <div>
+        <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'storytelling:story_list' %}';" 
+                class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 text-xs font-bold transition-all shadow-2xs">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>← वापस</span>
+        </button>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-saas space-y-6">
+        
+        <div class="border-b border-slate-100 pb-4 space-y-1">
+            <span class="text-xs font-extrabold text-[#E85D2A] uppercase tracking-wider">Mithila Storytelling Platform</span>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-pen-nib text-[#E85D2A]"></i>
+                <span>+ अपनी कहानी लिखें</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">मिथिला के लोक, जीवन, संस्कृति या अपने अनुभव की कहानी साझा करें। समीक्षा के बाद कहानी प्रकाशित होगी।</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5 text-xs">
+            {% csrf_token %}
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">कहानी का शीर्षक (Title) *</label>
+                <input type="text" name="title" required placeholder="अपनी कहानी का आकर्षक शीर्षक लिखें..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">श्रेणी (Category) *</label>
+                    <select name="category" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                        {% for cat_code, cat_label in categories %}
+                        <option value="{{ cat_code }}">{{ cat_label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">स्थान / गाँव (Location)</label>
+                    <input type="text" name="location" placeholder="स्थान (जैसे: मधुबनी, दरभंगा)..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">संक्षिप्त भूमिका (Excerpt)</label>
+                <input type="text" name="excerpt" placeholder="कहानी का 1-2 पंक्ति में परिचय..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">कहानी सामग्री (Full Content) *</label>
+                <textarea name="content" rows="10" required placeholder="अपनी कहानी का पूरा विवरण यहाँ लिखें..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs leading-relaxed"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">कवर फोटो (Story Cover Image)</label>
+                <input type="file" name="image" accept="image/*" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 text-xs">
+            </div>
+
+            <div class="pt-4 flex items-center justify-end space-x-3">
+                <a href="{% url 'storytelling:story_list' %}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors">Cancel</a>
+                <button type="submit" class="px-7 py-3 rounded-2xl bg-[#E85D2A] hover:bg-[#d44c1a] text-white font-extrabold shadow-lg transition-transform transform active:scale-95">
+                    कहानी जमा करें (Submit Story)
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

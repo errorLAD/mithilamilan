@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mithila Store - Authentic Madhubani Art, Paintings & Handicrafts{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-10">
+
+    <!-- Store Hero Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-900 via-rose-800 to-amber-900 p-8 md:p-14 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-rose-100">
+                <i class="fa-solid fa-gem text-amber-300"></i>
+                <span>Authentic Cultural E-Commerce</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                Mithila Store
+            </h1>
+            <p class="text-rose-100 text-sm md:text-base font-normal leading-relaxed">
+                Handcrafted Madhubani paintings, Tussar silk sarees, terracotta handicrafts, and cultural home décor created by master Mithila artisans.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+                <a href="{% url 'store:product_list' %}" class="inline-flex items-center space-x-2 bg-white text-rose-950 hover:bg-rose-50 font-extrabold text-xs sm:text-sm px-6 py-3 rounded-2xl shadow-lg transition-all hover:scale-105">
+                    <i class="fa-solid fa-bag-shopping text-rose-600"></i>
+                    <span>Explore All Products</span>
+                </a>
+                <a href="{% url 'store:cart_view' %}" class="inline-flex items-center space-x-2 bg-rose-700/80 hover:bg-rose-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-2xl border border-rose-500/40">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>View Cart ({{ cart.total_items }})</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Floating Bar / Header Nav (Cart, Wishlist, My Orders inside Store) -->
+    <div class="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/80 shadow-saas flex flex-wrap items-center justify-between gap-4 text-xs font-bold">
+        <form action="{% url 'store:product_list' %}" method="get" class="flex items-center space-x-2 flex-1 max-w-md">
+            <div class="relative w-full">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
+                <input type="text" name="q" placeholder="Search Madhubani paintings, dupattas, gifts..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-rose-600 text-xs">
+            </div>
+            <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2 rounded-2xl font-bold">Search</button>
+        </form>
+
+        <div class="flex items-center space-x-2">
+            <a href="{% url 'store:wishlist_view' %}" class="px-4 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center space-x-1.5 transition-colors">
+                <i class="fa-regular fa-heart text-rose-500"></i>
+                <span>Wishlist</span>
+            </a>
+            <a href="{% url 'store:cart_view' %}" class="px-4 py-2 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 flex items-center space-x-1.5 border border-rose-200 transition-colors">
+                <i class="fa-solid fa-cart-shopping text-rose-600"></i>
+                <span>Cart ({{ cart.total_items }})</span>
+            </a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'store:order_history' %}" class="px-4 py-2 rounded-2xl bg-slate-900 text-white flex items-center space-x-1.5 hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-box font-normal"></i>
+                <span>My Orders</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Category Highlights -->
+    {% if categories %}
+    <div class="space-y-4">
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">Shop by Category</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {% for cat in categories %}
+            <a href="{% url 'store:product_list' %}?category={{ cat.slug }}" class="group bg-white p-5 rounded-3xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg text-center space-y-2 transition-all hover:-translate-y-1">
+                <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white flex items-center justify-center mx-auto text-xl transition-colors">
+                    <i class="fa-solid {{ cat.icon }}"></i>
+                </div>
+                <span class="font-bold text-slate-800 text-xs block group-hover:text-rose-600">{{ cat.name }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Featured Mithila Art Products -->
+    {% if featured_products %}
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <span class="w-2.5 h-6 bg-rose-600 rounded-full"></span>
+                <span>Featured Masterpieces</span>
+            </h2>
+            <a href="{% url 'store:product_list' %}" class="text-xs font-bold text-rose-600 hover:underline">View All &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for p in featured_products %}
+            <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg overflow-hidden transition-all duration-300 flex flex-col justify-between group">
+                <div>
+                    <!-- Product Image -->
+                    <div class="relative h-60 bg-slate-100 overflow-hidden">
+                        {% if p.image %}
+                        <img src="{{ p.image.url }}" alt="{{ p.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% else %}
+                        <div class="w-full h-full bg-gradient-to-tr from-rose-700 via-amber-700 to-rose-900 text-white font-bold text-lg flex items-center justify-center p-4 text-center">
+                            {{ p.title }}
+                        </div>
+                        {% endif %}
+
+                        <div class="absolute top-3 left-3 flex gap-2">
+                            {% if p.discount_percentage > 0 %}
+                            <span class="bg-rose-600 text-white font-extrabold text-[10px] px-2.5 py-1 rounded-full uppercase">
+                                {{ p.discount_percentage }}% OFF
+                            </span>
+                            {% endif %}
+                            <span class="bg-slate-900/80 backdrop-blur-md text-white font-bold text-[10px] px-2.5 py-1 rounded-full">
+                                {{ p.category.name }}
+                            </span>
+                        </div>
+
+                        <!-- Wishlist Toggle -->
+                        <form method="post" action="{% url 'store:toggle_wishlist' p.pk %}" class="absolute top-3 right-3">
+                            {% csrf_token %}
+                            <button type="submit" class="w-8 h-8 rounded-full bg-white/90 shadow-md text-rose-500 flex items-center justify-center hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-heart text-xs"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Details -->
+                    <div class="p-5 space-y-2">
+                        {% if p.artist %}
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">
+                            By {{ p.artist.name }}
+                        </span>
+                        {% endif %}
+                        <h3 class="text-base font-extrabold text-slate-900 group-hover:text-rose-600 transition-colors line-clamp-1">
+                            <a href="{{ p.get_absolute_url }}">{{ p.title }}</a>
+                        </h3>
+                        <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">{{ p.short_description }}</p>
+                    </div>
+                </div>
+
+                <!-- Price & Add to Cart -->
+                <div class="p-5 pt-0 flex items-center justify-between">
+                    <div>
+                        <span class="text-lg font-black text-slate-900">₹{{ p.price }}</span>
+                        {% if p.original_price %}
+                        <span class="text-xs text-slate-400 line-through ml-1">₹{{ p.original_price }}</span>
+                        {% endif %}
+                    </div>
+                    <form method="post" action="{% url 'store:add_to_cart' p.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-4 py-2 rounded-2xl shadow-xs transition-colors flex items-center space-x-1.5">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span>Add to Cart</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Featured Mithila Artists Section -->
+    {% if artists %}
+    <div class="bg-amber-50/80 rounded-3xl p-8 border border-amber-200/80 space-y-6">
+        <div class="space-y-1">
+            <span class="text-xs font-bold text-amber-800 uppercase tracking-wider">Meet the Artisans</span>
+            <h2 class="text-2xl font-black text-amber-950">Master Mithila Artists</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for artist in artists %}
+            <div class="bg-white p-5 rounded-2xl border border-amber-200 space-y-3">
+                <div class="w-16 h-16 rounded-full bg-amber-200 mx-auto overflow-hidden">
+                    {% if artist.photo %}
+                    <img src="{{ artist.photo.url }}" alt="{{ artist.name }}" class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full bg-amber-700 text-white font-black text-xl flex items-center justify-center">
+                        {{ artist.name|first }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="text-center space-y-1">
+                    <h3 class="font-bold text-slate-900 text-sm">{{ artist.name }}</h3>
+                    <span class="text-[10px] text-amber-800 font-semibold block">{{ artist.specialty }}</span>
+                    <span class="text-[10px] text-slate-500 block"><i class="fa-solid fa-location-dot text-rose-500 mr-0.5"></i>{{ artist.location }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

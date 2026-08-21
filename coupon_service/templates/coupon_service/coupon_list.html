@@ -1,0 +1,70 @@
+{% extends 'coupon_service/base.html' %}
+
+{% block coupon_content %}
+<div class="space-y-6">
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h2 class="text-base font-bold text-slate-900">Available Deals & Savings</h2>
+        <form method="get" class="flex w-full sm:w-auto max-w-sm gap-2">
+            <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search store or deal..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-red-600 focus:bg-white">
+            <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-colors">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for coupon in page_obj %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg hover:border-red-200 transition-all overflow-hidden flex flex-col justify-between">
+            
+            {% if coupon.image %}
+            <div class="h-36 bg-slate-100 overflow-hidden">
+                <img src="{{ coupon.image.url }}" alt="{{ coupon.title }}" class="w-full h-full object-cover">
+            </div>
+            {% endif %}
+
+            <div class="p-5 space-y-3 flex-1">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 font-bold text-[10px]">
+                        {{ coupon.get_store_display }}
+                    </span>
+                    {% if coupon.discount_percentage %}
+                    <span class="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-100">
+                        {{ coupon.discount_percentage }}% OFF
+                    </span>
+                    {% elif coupon.discount_amount %}
+                    <span class="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-100">
+                        ₹{{ coupon.discount_amount }} OFF
+                    </span>
+                    {% endif %}
+                </div>
+
+                <h3 class="text-sm font-bold text-slate-900 leading-snug">
+                    {{ coupon.title }}
+                </h3>
+
+                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                    {{ coupon.description }}
+                </p>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100">
+                <a href="{% url 'coupon_service:track_click' coupon.pk %}" target="_blank" class="block w-full text-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors">
+                    <i class="fa-solid fa-arrow-up-right-from-square mr-1.5"></i>Get Deal
+                </a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-8 text-center space-y-3 shadow-saas">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-ticket-simple"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-sm">No deals available</h3>
+            <p class="text-xs text-slate-500">Check back soon for new local promo codes and offers.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

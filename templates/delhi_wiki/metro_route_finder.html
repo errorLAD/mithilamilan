@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}City Transit & Metro Journey Planner - OkLocal Transit{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+            
+            <div class="text-center space-y-2 border-b border-slate-100 pb-6">
+                <div class="inline-flex items-center space-x-2 px-3 py-1 bg-teal-50 border border-teal-200 text-teal-700 rounded-full text-xs font-bold">
+                    <i class="fa-solid fa-train-subway"></i>
+                    <span>City Transit Network</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Metro & Transit Journey Planner</h1>
+                <p class="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">
+                    Plan your metro journey, check fare estimates, line interchanges, and journey duration across city metro networks.
+                </p>
+            </div>
+
+            <!-- Route Finder Form -->
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="find_route">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="source" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            <i class="fa-solid fa-circle-dot text-emerald-500 mr-1.5"></i>From Station
+                        </label>
+                        <select name="source" id="source" class="w-full bg-slate-50 border border-slate-200 focus:border-teal-500 rounded-2xl p-3 text-xs font-semibold text-slate-800 focus:outline-none" required>
+                            <option value="">Select Origin Metro Station</option>
+                            {% for line, line_stations in stations_by_line.items %}
+                                <optgroup label="{{ line.name }}">
+                                    {% for station in line_stations %}
+                                        <option value="{{ station.id }}" {% if source.id == station.id %}selected{% endif %}>
+                                            {{ station.name }}{% if station.is_interchange %} (Interchange Station){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="destination" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                            <i class="fa-solid fa-location-dot text-rose-500 mr-1.5"></i>To Station
+                        </label>
+                        <select name="destination" id="destination" class="w-full bg-slate-50 border border-slate-200 focus:border-teal-500 rounded-2xl p-3 text-xs font-semibold text-slate-800 focus:outline-none" required>
+                            <option value="">Select Destination Metro Station</option>
+                            {% for line, line_stations in stations_by_line.items %}
+                                <optgroup label="{{ line.name }}">
+                                    {% for station in line_stations %}
+                                        <option value="{{ station.id }}" {% if destination.id == station.id %}selected{% endif %}>
+                                            {{ station.name }}{% if station.is_interchange %} (Interchange Station){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs sm:text-sm px-8 py-3 rounded-2xl shadow-md transition-all">
+                        <i class="fa-solid fa-route mr-2"></i>Find Journey Route & Fare
+                    </button>
+                </div>
+            </form>
+
+            <!-- Results Section -->
+            {% if route_details %}
+            <div class="border-t border-slate-100 pt-6 space-y-6">
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span class="text-xs text-slate-500 font-semibold block">Est. Duration</span>
+                        <span class="text-lg font-extrabold text-slate-900">{{ route_details.journey_time }} mins</span>
+                    </div>
+                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+                        <span class="text-xs text-emerald-600 font-semibold block">Token Fare</span>
+                        <span class="text-lg font-extrabold text-emerald-700">₹{{ route_details.fare }}</span>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded-2xl border border-blue-100">
+                        <span class="text-xs text-blue-600 font-semibold block">Distance</span>
+                        <span class="text-lg font-extrabold text-blue-700">{{ route_details.distance }} km</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-slate-900 text-sm mb-4">Route Station Sequence</h4>
+                    <div class="space-y-2">
+                        {% for station in route_details.stations %}
+                        <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs font-semibold text-slate-800">
+                            <span class="w-6 h-6 rounded-full bg-teal-500 text-white text-[10px] font-bold flex items-center justify-center">{{ forloop.counter }}</span>
+                            <span>{{ station.name }}</span>
+                            {% if station.is_interchange %}
+                            <span class="ml-auto px-2 py-0.5 rounded-md bg-amber-100 text-amber-700 text-[10px] font-bold">Interchange</span>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

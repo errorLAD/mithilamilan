@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}All Communities — MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 py-4 font-sans">
+    
+    <!-- Header -->
+    <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-[#0F1F35] flex items-center gap-2">
+                <i class="fa-solid fa-users text-[#E85D2A]"></i>
+                <span>Explore Mithila Communities (सभी समुदाय)</span>
+            </h1>
+            <p class="text-xs text-[#718096] mt-1">Discover, join and participate in local discussions across Mithila regions and topics.</p>
+        </div>
+
+        <a href="{% url 'subreddits:create' %}" class="inline-flex items-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs px-5 py-2.5 rounded-full shadow-xs transition-colors shrink-0">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>+ Create Community</span>
+        </a>
+    </div>
+
+    <!-- Subreddits Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {% for sub in subreddits %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:border-[#E85D2A]/40 transition-all flex flex-col justify-between space-y-4">
+            <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-[#FFF7ED] text-[#E85D2A] font-extrabold text-sm flex items-center justify-center border border-[#FFEDD5]">
+                            c/
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-sm text-[#0F1F35] hover:text-[#E85D2A]">
+                                <a href="{% url 'subreddits:subreddit_detail' sub.slug %}">c/{{ sub.name }}</a>
+                            </h3>
+                            <span class="text-[10px] text-slate-400 font-medium">{{ sub.subscribers.count }} member{{ sub.subscribers.count|pluralize }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">
+                    {{ sub.description }}
+                </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="text-xs font-bold text-[#E85D2A] hover:underline">
+                    View Community ➔
+                </a>
+                <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="text-xs font-bold text-[#E85D2A] bg-[#FFF7ED] hover:bg-[#FFEDD5] px-4 py-1.5 rounded-full border border-[#FFEDD5] transition-colors">
+                    Join
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-8 text-center space-y-3">
+            <h3 class="font-bold text-slate-900 text-sm">No communities found</h3>
+            <p class="text-xs text-slate-500">Be the first to create a community for Mithila!</p>
+            <a href="{% url 'subreddits:create' %}" class="inline-block bg-[#E85D2A] text-white font-bold text-xs px-5 py-2 rounded-full">Create Community</a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

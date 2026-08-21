@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_number }} Details - Mithila Store{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <!-- Top Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'store:order_history' %}" class="hover:text-rose-600">&larr; My Orders</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">#{{ order.order_number }}</span>
+    </div>
+
+    <!-- Order Summary Header Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div>
+                <span class="font-extrabold text-slate-900 text-xl block">Order #{{ order.order_number }}</span>
+                <span class="text-xs text-slate-400">Placed on {{ order.created_at|date:"d M Y, H:i" }}</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <span class="px-4 py-1.5 rounded-full font-extrabold text-xs uppercase tracking-wider
+                    {% if order.order_status == 'delivered' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                    {% elif order.order_status == 'cancelled' %}bg-rose-100 text-rose-900 border border-rose-300
+                    {% else %}bg-amber-100 text-amber-900 border border-amber-300{% endif %}">
+                    {{ order.get_order_status_display }}
+                </span>
+
+                {% if order.order_status in 'pending,confirmed' %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="cancel">
+                    <button type="submit" onclick="return confirm('Are you sure you want to cancel this order?')" class="px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold text-xs">
+                        Cancel Order
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Order Progress Bar -->
+        {% if order.order_status != 'cancelled' %}
+        <div class="space-y-2">
+            <span class="text-xs font-bold text-slate-500 block">Order Status Progress</span>
+            <div class="grid grid-cols-5 text-[10px] font-extrabold text-center text-slate-400 gap-1">
+                <div class="{% if order.order_status in 'pending,confirmed,packed,shipped,out_for_delivery,delivered' %}text-rose-600{% endif %}">Confirmed</div>
+                <div class="{% if order.order_status in 'packed,shipped,out_for_delivery,delivered' %}text-rose-600{% endif %}">Packed</div>
+                <div class="{% if order.order_status in 'shipped,out_for_delivery,delivered' %}text-rose-600{% endif %}">Shipped</div>
+                <div class="{% if order.order_status in 'out_for_delivery,delivered' %}text-rose-600{% endif %}">Out for Delivery</div>
+                <div class="{% if order.order_status == 'delivered' %}text-emerald-600{% endif %}">Delivered</div>
+            </div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-rose-600 h-full transition-all duration-500
+                    {% if order.order_status == 'pending' or order.order_status == 'confirmed' %}w-1/5
+                    {% elif order.order_status == 'packed' %}w-2/5
+                    {% elif order.order_status == 'shipped' %}w-3/5
+                    {% elif order.order_status == 'out_for_delivery' %}w-4/5
+                    {% elif order.order_status == 'delivered' %}w-full bg-emerald-500{% endif %}">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Items & Shipping Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Ordered Items -->
+        <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs font-semibold">
+            <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Items in this Order</h2>
+
+            <div class="space-y-4 divide-y divide-slate-100">
+                {% for item in items %}
+                <div class="pt-3 flex items-center justify-between">
+                    <div>
+                        <span class="font-extrabold text-slate-900 text-sm block">{{ item.product_title }}</span>
+                        <span class="text-slate-500 block">Price: ₹{{ item.price }} x {{ item.quantity }}</span>
+                    </div>
+                    <span class="font-black text-slate-900 text-sm">₹{{ item.subtotal }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="border-t border-slate-100 pt-4 space-y-1.5 text-slate-600 font-bold text-right">
+                <div>Subtotal: <span class="text-slate-900">₹{{ order.subtotal }}</span></div>
+                <div>Delivery Charge: <span class="text-slate-900">₹{{ order.delivery_charge }}</span></div>
+                <div class="text-sm font-black text-rose-600 pt-1">Grand Total: ₹{{ order.grand_total }}</div>
+            </div>
+        </div>
+
+        <!-- Shipping & Payment Details -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs">
+            <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Delivery Information</h2>
+
+            <div class="space-y-3 font-semibold text-slate-700">
+                <div>
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">CUSTOMER NAME</span>
+                    <span class="font-bold text-slate-900">{{ order.customer_name }}</span>
+                </div>
+
+                <div>
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">CONTACT PHONE</span>
+                    <span class="font-bold text-slate-900">{{ order.customer_mobile }}</span>
+                </div>
+
+                <div>
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">DELIVERY ADDRESS</span>
+                    <p class="leading-relaxed">{{ order.delivery_address }}, {{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100">
+                    <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">PAYMENT METHOD</span>
+                    <span class="font-bold text-slate-900 block">{{ order.get_payment_method_display }}</span>
+                    <span class="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full inline-block mt-1
+                        {% if order.payment_status == 'paid' %}bg-emerald-100 text-emerald-800{% else %}bg-amber-100 text-amber-900{% endif %}">
+                        Payment: {{ order.get_payment_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

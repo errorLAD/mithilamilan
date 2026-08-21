@@ -1,0 +1,1482 @@
+{% extends 'base.html' %}
+
+{% block title %}गप-शप या विचार-विमर्श | MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row gap-6 items-start" x-data="{ mithilaModalOpen: false }">
+
+    <!-- Column 1: Left Navigation Card (Side Navbar) -->
+    <aside class="w-full md:w-56 lg:w-60 xl:w-64 shrink-0 bg-white rounded-2xl p-3.5 space-y-1 border border-slate-200/80 hidden lg:block font-devanagari shadow-2xs">
+        
+        <!-- Home Link -->
+        <a href="{% url 'core:home' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-[#0F1F35] text-white shadow-xs transition-all">
+            <i class="fa-solid fa-house text-white w-4 text-center"></i>
+            <span>होम</span>
+        </a>
+        
+        <!-- DISCOVER Header -->
+        <div class="pt-3 pb-1 px-3">
+            <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">FEEDS & DISCOVERY</span>
+        </div>
+
+        <!-- Mithila Panchang -->
+        <a href="{% url 'mithila_panchang:panchang_home' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-800 bg-amber-50/80 border border-amber-200/60 hover:bg-amber-100/90 text-amber-900 transition-all group">
+            <i class="fa-solid fa-calendar-days text-amber-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">मिथिला पंचांग</span>
+        </a>
+
+        <!-- Events & Festivals -->
+        <a href="{% url 'events:event_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-all group">
+            <i class="fa-solid fa-dharmachakra text-[#E85D2A] group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">पावन पर्व एवं आयोजन</span>
+        </a>
+
+        <!-- Mithila Pride & Scholars -->
+        <a href="{% url 'mithila_pride:person_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition-all group">
+            <i class="fa-solid fa-graduation-cap text-blue-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">मिथिला गौरव एवं विद्वान</span>
+        </a>
+
+        <!-- Pandit & Astrologer -->
+        <a href="{% url 'pandits:profile_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-all group">
+            <i class="fa-solid fa-om text-amber-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">पंडित एवं ज्योतिषी</span>
+        </a>
+
+        <!-- Mithila Store -->
+        <a href="{% url 'store:store_home' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-rose-50 hover:text-rose-700 transition-all group">
+            <i class="fa-solid fa-bag-shopping text-rose-500 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">मिथिला स्टोर</span>
+        </a>
+
+        <!-- Cab & Auto -->
+        <a href="{% url 'cab_auto:cab_auto_home' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-all group">
+            <i class="fa-solid fa-taxi text-amber-500 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">कैब एवं ऑटो</span>
+        </a>
+
+        <!-- Ghatkaiti Matrimonial -->
+        <a href="{% url 'ghatkaiti:profile_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all group">
+            <i class="fa-solid fa-ring text-emerald-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">घटकैती</span>
+        </a>
+
+        <!-- Mithila Wiki -->
+        <a href="{% url 'delhi_wiki:area_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700 transition-all group">
+            <i class="fa-solid fa-map-location-dot text-teal-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">मिथिला परिचय</span>
+        </a>
+        
+        <!-- PG & Rentals -->
+        <a href="{% url 'pg_rental:listings' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-all group">
+            <i class="fa-solid fa-house-user text-indigo-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">किरायाक घर</span>
+        </a>
+        
+        <!-- Jobs -->
+        <a href="{% url 'job_portal:job_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-all group">
+            <i class="fa-solid fa-briefcase text-emerald-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">रोजगार</span>
+        </a>
+        
+        <!-- Lost & Found -->
+        <a href="{% url 'lost_and_found:item_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-rose-50 hover:text-rose-700 transition-all group">
+            <i class="fa-solid fa-magnifying-glass-location text-rose-500 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">हरायल आ भेटल वस्तु</span>
+        </a>
+        
+        <!-- Story -->
+        <a href="{% url 'storytelling:story_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-[#E85D2A] transition-all group">
+            <i class="fa-solid fa-book-open text-[#E85D2A] group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">कहानी</span>
+        </a>
+        
+        <!-- News -->
+        <a href="{% url 'news:news_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-700 transition-all group">
+            <i class="fa-solid fa-newspaper text-sky-600 group-hover:scale-110 transition-transform w-4 text-center"></i>
+            <span class="font-bold">समाचार</span>
+        </a>
+        
+        <!-- Account Section Header -->
+        <div class="pt-3 pb-1 px-3">
+            <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">खाता एवं नियंत्रण</span>
+        </div>
+        
+        {% if user.is_authenticated %}
+        <!-- My Submissions -->
+        <a href="{% url 'core:user_submissions' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-amber-800 bg-amber-50 hover:bg-amber-100 transition-all">
+            <i class="fa-solid fa-paper-plane text-amber-600 w-4 text-center"></i>
+            <span>मेरी प्रस्तुतियाँ</span>
+        </a>
+        {% endif %}
+
+        {% if user.is_staff or user.is_superuser %}
+        <!-- Moderation Dashboard -->
+        <a href="{% url 'core:moderation_dashboard' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-amber-900 bg-gradient-to-r from-amber-100 to-yellow-100 hover:from-amber-200 hover:to-yellow-200 transition-all border border-amber-200">
+            <i class="fa-solid fa-shield-halved text-amber-700 w-4 text-center"></i>
+            <span>सामग्री समीक्षा (Moderation)</span>
+        </a>
+        {% endif %}
+
+        <!-- Notifications -->
+        <a href="{% url 'notifications:notification_list' %}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-all">
+            <i class="fa-regular fa-bell text-slate-400 w-4 text-center"></i>
+            <span>सूचनाएँ</span>
+        </a>
+    </aside>
+
+    <!-- Column 2: Feed Center Area -->
+    <main class="flex-1 min-w-0 space-y-4 sm:space-y-5">
+        
+        <!-- ✨ मिथिला Quick Access Button Card (Mobile Only: Hides 4 sidebar widgets inside 1 sleek modal) -->
+        <div class="lg:hidden">
+            <button @click="mithilaModalOpen = true" type="button" class="w-full bg-gradient-to-r from-[#FFFDF8] via-[#FFF8E8] to-[#FFFDF8] hover:from-[#FFF7ED] hover:to-[#FFEDD5] border border-amber-200/90 rounded-2xl p-3 sm:p-3.5 shadow-2xs hover:shadow-saas transition-all flex items-center justify-between group cursor-pointer text-left">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#7D3028] text-white font-black text-base flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                        ✨
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center space-x-2">
+                            <h3 class="font-extrabold text-[#0F1F35] text-sm tracking-tight font-devanagari">मिथिला</h3>
+                            <span class="px-2 py-0.5 rounded-full bg-[#E85D2A]/10 text-[#E85D2A] text-[9px] font-black uppercase tracking-wider">विशेष Hub</span>
+                        </div>
+                        <p class="text-[11px] font-medium text-slate-500 truncate mt-0.5">
+                            Music • Panchang • Community • Create
+                        </p>
+                    </div>
+                </div>
+                <div class="w-8.5 h-8.5 rounded-full bg-amber-100/60 group-hover:bg-[#E85D2A] text-[#E85D2A] group-hover:text-white flex items-center justify-center transition-colors shrink-0 ml-2 shadow-2xs">
+                    <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-0.5 transition-transform"></i>
+                </div>
+            </button>
+        </div>
+        
+        <!-- Premium Mithila Heritage Notification Ticker -->
+        <div class="relative overflow-hidden bg-gradient-to-r from-[#FFFDF8] via-[#FFF8E8] to-[#FFFDF8] border border-[#EBE3D3] rounded-2xl h-14 px-3 flex items-center shadow-2xs select-none group">
+            
+            <!-- Top & Bottom Thin Madhubani Border Motifs (• ◇ • ◇ •) -->
+            <div class="absolute top-0 inset-x-0 h-[3px] bg-repeat-x opacity-90 text-[8px] text-[#7D3028] overflow-hidden whitespace-nowrap leading-none select-none">
+                • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ •
+            </div>
+            <div class="absolute bottom-0 inset-x-0 h-[3px] bg-repeat-x opacity-70 text-[8px] text-[#D6A437] overflow-hidden whitespace-nowrap leading-none select-none">
+                • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ • ◇ •
+            </div>
+
+            <!-- Moving Track: Bicycle Pulling Connected Heritage Notification Train -->
+            <div class="relative w-full h-full overflow-hidden pointer-events-auto flex items-center">
+                
+                <div class="flex items-center mithila-express-track">
+                    
+                    <!-- ================= SEQUENCE SET 1 ================= -->
+                    <div class="flex items-center shrink-0">
+                        
+                        <!-- Traditional Bicycle Illustration -->
+                        <div class="mithila-bike-bounce shrink-0 relative mr-1.5">
+                            <svg class="w-15 h-10" viewBox="0 0 68 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g transform="translate(68, 0) scale(-1, 1)">
+                                    <path d="M14 16 L24 16 L22 23 L16 23 Z" fill="#E85D2A" stroke="#7D3028" stroke-width="0.8" />
+                                    <path d="M18 16 L18 23" stroke="#FFFDF8" stroke-width="0.8" />
+
+                                    <path d="M10 16 L28 16" stroke="#5B3527" stroke-width="2" stroke-linecap="round" />
+                                    <path d="M14 16 L16 28 M24 16 L24 28" stroke="#5B3527" stroke-width="1.2" />
+
+                                    <path d="M16 28 L34 28 L30 14 L16 28 Z" fill="none" stroke="#7D3028" stroke-width="2" stroke-linejoin="round" />
+                                    <path d="M30 15 L48 15 L34 28 L48 15 L50 28" stroke="#7D3028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M33 15 L42 15" stroke="#D6A437" stroke-width="1" />
+
+                                    <path d="M26 12 C28 11, 33 11, 34 13 L27 14 Z" fill="#5B3527" stroke="#3A2016" stroke-width="0.8" />
+
+                                    <path d="M48 15 L47 9 L42 8" stroke="#5B3527" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M42 8 L40 10" stroke="#D6A437" stroke-width="1.8" stroke-linecap="round" />
+
+                                    <g transform="translate(16, 28)">
+                                        <circle cx="0" cy="0" r="11" fill="none" stroke="#5B3527" stroke-width="2" />
+                                        <circle cx="0" cy="0" r="2" fill="#D6A437" />
+                                        <g class="mithila-wheel-spin">
+                                            <line x1="-11" y1="0" x2="11" y2="0" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="0" y1="-11" x2="0" y2="11" stroke="#A94B32" stroke-width="0.8" />
+                                        </g>
+                                    </g>
+                                    <g transform="translate(52, 28)">
+                                        <circle cx="0" cy="0" r="11" fill="none" stroke="#5B3527" stroke-width="2" />
+                                        <circle cx="0" cy="0" r="2" fill="#D6A437" />
+                                        <g class="mithila-wheel-spin">
+                                            <line x1="-11" y1="0" x2="11" y2="0" stroke="#A94B32" stroke-width="0.8" />
+                                            <line x1="0" y1="-11" x2="0" y2="11" stroke="#A94B32" stroke-width="0.8" />
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <!-- Connector 0 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-5 h-3" viewBox="0 0 20 12" fill="none">
+                                <path d="M0 6 Q5 2, 10 6 T20 6" stroke="#D6A437" stroke-width="2" stroke-dasharray="3 2" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 1: Durga Puja -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M6 14 L9 7 L12 11 L15 7 L18 14 Z" fill="#D6A437" opacity="0.6" stroke="#7D3028" stroke-width="1" />
+                                    <path d="M7 19 C7 16, 17 16, 17 19" stroke="#7D3028" stroke-width="1.5" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">दुर्गा पूजा</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">मिथिला पावन पर्व</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 1 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D6A437" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 2: Chhath Puja -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="8" r="4" fill="#E85D2A" />
+                                    <path d="M3 18 C6 16, 9 20, 12 18 C15 16, 18 20, 21 18" stroke="#D6A437" stroke-width="1.5" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">छठि पूजा</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">महापर्व मिथिला</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 2 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D6A437" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 3: Makhana -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="8" cy="10" r="2.5" fill="#FFFDF8" stroke="#D6A437" stroke-width="1" />
+                                    <circle cx="12" cy="8" r="2.8" fill="#FFFDF8" stroke="#D6A437" stroke-width="1" />
+                                    <circle cx="15" cy="12" r="2.2" fill="#FFFDF8" stroke="#D6A437" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">मिथिला मखान</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">जीआई टैग धरोहर</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 3 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D6A437" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 4: LNMU -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M4 21H20 M6 21V12 L12 6 L18 12 V21" stroke="#7D3028" stroke-width="1.5" fill="none" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">LNMU दरभंगा</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">मिथिला विश्वविद्यालय</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 4 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D6A437" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 5: Mithila Painting -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M7 12 C10 8, 14 8, 17 12 C14 16, 10 16, 7 12 Z" fill="#D6A437" stroke="#7D3028" stroke-width="0.8" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">मिथिला चित्रकला</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">मधुबनी लोककला</span>
+                            </div>
+                        </div>
+
+                        <!-- Connector 5 -->
+                        <div class="flex items-center mx-1 shrink-0">
+                            <svg class="w-4 h-3" viewBox="0 0 16 12" fill="none">
+                                <path d="M0 6 Q4 2, 8 6 T16 6" stroke="#D6A437" stroke-width="1.8" stroke-dasharray="2 1.5" />
+                            </svg>
+                        </div>
+
+                        <!-- Card 6: Mithila Paag -->
+                        <div class="bg-[#FFF8E8] border border-[#EBE3D3] hover:border-[#D6A437] rounded-xl px-2.5 py-1 flex items-center space-x-2 shadow-2xs shrink-0 select-none transition-all mr-6">
+                            <div class="w-7 h-7 rounded-lg bg-[#FFFDF8] border border-[#FDE68A] flex items-center justify-center shrink-0 shadow-2xs">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                                    <path d="M5 14 C5 9, 12 7, 19 9 C19 14, 5 17, 5 14 Z" fill="#E85D2A" stroke="#7D3028" stroke-width="1" />
+                                </svg>
+                            </div>
+                            <div class="flex flex-col font-devanagari">
+                                <span class="font-extrabold text-[10px] text-[#7D3028] tracking-tight leading-tight">मिथिला पाग</span>
+                                <span class="text-[8px] font-bold text-[#D6A437] tracking-wide leading-none">अस्मिता आ सम्मान</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <style>
+            @keyframes mithilaBikeExpressMove {
+                0% { transform: translate3d(0, 0, 0); }
+                100% { transform: translate3d(-50%, 0, 0); }
+            }
+            .mithila-express-track {
+                display: flex;
+                align-items: center;
+                width: max-content;
+                animation: mithilaBikeExpressMove 32s linear infinite;
+                will-change: transform;
+            }
+            .mithila-express-track:hover { animation-play-state: paused; }
+        </style>
+        
+        <!-- Feed Header Controls (Responsive text & clean 1-line mobile layout) -->
+        <div class="flex items-start justify-between gap-2 font-sans mb-2">
+            <div class="min-w-0 flex-1">
+                <h1 class="text-sm sm:text-lg lg:text-xl font-black text-[#0F1F35] tracking-tight flex items-center gap-1.5">
+                    <span class="truncate">गप-शप या विचार-विमर्श</span>
+                    <!-- Tiny Subtle Mithila Fish SVG Accent -->
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-[#E85D2A] opacity-70 shrink-0" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 12 C9 5, 17 5, 20 12 C17 19, 9 19, 4 12 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <circle cx="16" cy="11" r="1.2" fill="currentColor"/>
+                        <path d="M4 12 L1 8 M4 12 L1 16" stroke="currentColor" stroke-width="1.5"/>
+                    </svg>
+                </h1>
+                <p class="text-[11px] sm:text-xs text-[#718096] mt-0.5 line-clamp-1 sm:line-clamp-none">Discussions, thoughts, questions and local updates from Mithila</p>
+            </div>
+
+            <!-- Small Clean View All Communities Link on Top Right -->
+            <a href="{% url 'subreddits:list' %}" class="text-[11px] sm:text-xs font-bold text-[#E85D2A] hover:underline shrink-0 pt-0.5">
+                <span class="hidden sm:inline">View All Communities →</span>
+                <span class="sm:hidden">Communities →</span>
+            </a>
+        </div>
+
+        <!-- Feed Posts List -->
+        <div class="space-y-4 font-devanagari" x-data="feedVoteApp()">
+            {% for post in posts %}
+            <article class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-4 sm:p-5 flex flex-col sm:flex-row gap-4 hover:border-slate-300/80 transition-all relative overflow-hidden">
+                
+                <!-- Thin Mithila Decorative Line Accent at top -->
+                <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#E85D2A]/30 to-transparent"></div>
+
+                <!-- Upvote / Downvote Box (Desktop Only: hidden on mobile, flex on sm) -->
+                <div class="hidden sm:flex flex-col items-center justify-center bg-[#F8F8F6] border border-slate-200/60 rounded-xl px-2.5 py-1.5 text-slate-400 text-xs min-w-[38px] h-fit shrink-0 gap-1">
+                    
+                    <button @click="upvotePost('{{ post.subreddit.slug }}', '{{ post.slug }}', $event)" 
+                            type="button" 
+                            class="p-1 rounded hover:bg-orange-100 transition-colors cursor-pointer text-slate-500 hover:text-[#E85D2A]"
+                            :class="{ 'text-[#E85D2A] font-bold scale-110': userVotes['{{ post.slug }}'] === 'up' || ({% if user in post.upvotes.all %}true{% else %}false{% endif %} && !userVotes['{{ post.slug }}']) }"
+                            title="Upvote">
+                        <i class="fa-solid fa-arrow-up text-sm"></i>
+                    </button>
+                    
+                    <span class="font-extrabold text-[#0F1F35] text-xs my-0.5 min-w-[16px] text-center" id="score-{{ post.slug }}">
+                        {{ post.score|default:0 }}
+                    </span>
+                    
+                    <button @click="downvotePost('{{ post.subreddit.slug }}', '{{ post.slug }}', $event)" 
+                            type="button" 
+                            class="p-1 rounded hover:bg-blue-100 transition-colors cursor-pointer text-slate-500 hover:text-blue-600"
+                            :class="{ 'text-blue-600 font-bold scale-110': userVotes['{{ post.slug }}'] === 'down' || ({% if user in post.downvotes.all %}true{% else %}false{% endif %} && !userVotes['{{ post.slug }}']) }"
+                            title="Downvote">
+                        <i class="fa-solid fa-arrow-down text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- Post Main Content -->
+                <div class="flex-1 min-w-0 space-y-2">
+                    
+                    <!-- Post Header Meta -->
+                    <div class="flex flex-wrap items-center gap-2 text-xs">
+                        <a href="{% url 'subreddits:subreddit_detail' post.subreddit.slug %}" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#FFF7ED] text-[#E85D2A] border border-[#FFEDD5] hover:bg-[#FFEDD5] transition-colors">
+                            c/{{ post.subreddit.name }}
+                        </a>
+                        <span class="text-slate-400 text-xs">
+                            प्रस्तुतकर्ता <a href="{% url 'users:profile' post.author.username %}" class="font-semibold text-slate-700 hover:text-[#E85D2A]">u/{{ post.author.username }}</a> · {{ post.created_at|timesince }} पहले
+                        </span>
+                    </div>
+
+                    <!-- Title -->
+                    <h2 class="text-base sm:text-lg font-bold text-[#0F1F35] hover:text-[#E85D2A] transition-colors leading-snug">
+                        <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}">{{ post.title }}</a>
+                    </h2>
+
+                    <!-- Text Snippet -->
+                    <p class="text-xs sm:text-sm text-[#718096] leading-relaxed font-normal">
+                        {{ post.content|truncatewords:35 }}
+                    </p>
+
+                    <!-- Footer Action Bar -->
+                    <div class="pt-2 flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-semibold text-slate-500">
+                        
+                        <!-- Inline Mobile Voting Control (Mobile Only: sm:hidden) -->
+                        <div class="flex sm:hidden items-center bg-[#F8F8F6] border border-slate-200/80 rounded-full px-2 py-0.5 space-x-1 text-slate-500 shrink-0">
+                            <button @click="upvotePost('{{ post.subreddit.slug }}', '{{ post.slug }}', $event)" 
+                                    type="button" 
+                                    class="p-1 rounded-full hover:bg-orange-100 transition-colors text-slate-500 hover:text-[#E85D2A] min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                                    :class="{ 'text-[#E85D2A] font-bold scale-110': userVotes['{{ post.slug }}'] === 'up' || ({% if user in post.upvotes.all %}true{% else %}false{% endif %} && !userVotes['{{ post.slug }}']) }"
+                                    title="Upvote">
+                                <i class="fa-solid fa-arrow-up text-xs"></i>
+                            </button>
+
+                            <span class="font-extrabold text-[#0F1F35] text-xs px-0.5" id="score-mobile-{{ post.slug }}">
+                                {{ post.score|default:0 }}
+                            </span>
+
+                            <button @click="downvotePost('{{ post.subreddit.slug }}', '{{ post.slug }}', $event)" 
+                                    type="button" 
+                                    class="p-1 rounded-full hover:bg-blue-100 transition-colors text-slate-500 hover:text-blue-600 min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                                    :class="{ 'text-blue-600 font-bold scale-110': userVotes['{{ post.slug }}'] === 'down' || ({% if user in post.downvotes.all %}true{% else %}false{% endif %} && !userVotes['{{ post.slug }}']) }"
+                                    title="Downvote">
+                                <i class="fa-solid fa-arrow-down text-xs"></i>
+                            </button>
+                        </div>
+
+                        <!-- Comment Count Button -->
+                        <a href="{% url 'posts:detail' post.subreddit.slug post.slug %}" class="inline-flex items-center space-x-1.5 hover:bg-slate-100 px-2.5 py-1.5 rounded-xl transition-colors text-slate-600 min-h-[36px]">
+                            <i class="fa-regular fa-comment text-slate-400 text-sm"></i>
+                            <span>{{ post.comments.count|default:0 }} विचार</span>
+                        </a>
+
+                        <!-- Share Button with Popover -->
+                        <div class="relative" x-data="{ shareOpen: false }">
+                            <button @click="triggerShare('{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}', '{{ post.title|escapejs }}', $event, shareOpen = !shareOpen)" 
+                                    type="button" 
+                                    class="inline-flex items-center space-x-1.5 hover:bg-slate-100 px-2.5 py-1.5 rounded-xl transition-colors text-slate-600 min-h-[36px]">
+                                <i class="fa-solid fa-share-nodes text-slate-400 text-sm"></i>
+                                <span>साझा करें</span>
+                            </button>
+
+                            <!-- Share Popover Modal -->
+                            <div x-show="shareOpen" @click.away="shareOpen = false" x-transition class="origin-bottom-left absolute left-0 bottom-8 mt-2 w-56 rounded-2xl shadow-saas-lg bg-white border border-slate-200 p-3 z-50 text-xs">
+                                <div class="font-bold text-slate-900 mb-2 border-b border-slate-100 pb-1">पोस्ट शेयर करें</div>
+                                <div class="space-y-1">
+                                    <button @click="copyLink('{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}'); shareOpen = false;" class="w-full flex items-center space-x-2 p-2 hover:bg-slate-50 rounded-xl text-left font-medium text-slate-700">
+                                        <i class="fa-solid fa-link text-[#E85D2A]"></i>
+                                        <span>लिंक कॉपी करें</span>
+                                    </button>
+                                    <a :href="'https://api.whatsapp.com/send?text=' + encodeURIComponent('{{ post.title|escapejs }} ') + encodeURIComponent('{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}')" target="_blank" class="flex items-center space-x-2 p-2 hover:bg-emerald-50 rounded-xl font-medium text-emerald-700">
+                                        <i class="fa-brands fa-whatsapp text-emerald-600"></i>
+                                        <span>WhatsApp</span>
+                                    </a>
+                                    <a :href="'https://t.me/share/url?url=' + encodeURIComponent('{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}') + '&text=' + encodeURIComponent('{{ post.title|escapejs }}')" target="_blank" class="flex items-center space-x-2 p-2 hover:bg-sky-50 rounded-xl font-medium text-sky-700">
+                                        <i class="fa-brands fa-telegram text-sky-500"></i>
+                                        <span>Telegram</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+            {% empty %}
+            <!-- Culturally Tailored Empty State -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs p-8 text-center space-y-4">
+                <div class="w-16 h-16 mx-auto rounded-full bg-[#FFF7ED] flex items-center justify-center text-[#E85D2A]">
+                    <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none">
+                        <path d="M4 12 C9 5, 17 5, 20 12 C17 19, 9 19, 4 12 Z" stroke="currentColor" stroke-width="1.5"/>
+                        <circle cx="15" cy="11" r="1.5" fill="currentColor"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-[#0F1F35]">अभी यहाँ कुछ नहीं है</h3>
+                    <p class="text-xs text-[#718096] mt-1">सबसे पहले अपनी बात साझा करें।</p>
+                </div>
+                <a href="{% url 'posts:create' %}" class="inline-flex items-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs px-6 py-2.5 rounded-full shadow-xs transition-colors">
+                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                    <span>पोस्ट करें</span>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+
+    <!-- Column 3: Right Sidebar Column (Hidden on mobile, visible on desktop) -->
+    <aside class="hidden lg:block w-72 xl:w-80 shrink-0 space-y-5">
+        
+        <!-- 🎵 मैथिली संगीत एवं लोकगीत - MithilaMilan Audio Player Card -->
+        <div class="bg-white rounded-2xl border border-amber-200/80 shadow-2xs p-4 sm:p-5 space-y-3.5 font-sans relative overflow-hidden"
+             x-data="{ 
+                 songs: [
+                     {% for song in mithila_songs %}
+                     {
+                         id: '{{ song.video_id }}',
+                         title: '{{ song.title|escapejs }}',
+                         singer: '{{ song.singer|default:"मैथिली कलाकार"|escapejs }}',
+                         cover: 'https://img.youtube.com/vi/{{ song.video_id }}/hqdefault.jpg',
+                         audio_url: '{{ song.audio_url|escapejs }}'
+                     }{% if not forloop.last %},{% endif %}
+                     {% empty %}
+                     { id: 'H501incNC74', title: 'मिथिलाक पावन लोकगीत', singer: 'मैथिली सुर संगीत', cover: 'https://img.youtube.com/vi/H501incNC74/hqdefault.jpg', audio_url: '' },
+                     { id: '5Jp7tGF6hbY', title: 'मैथिली सोहर एवं विवाह गीत', singer: 'मिथिला कला संस्कृति', cover: 'https://img.youtube.com/vi/5Jp7tGF6hbY/hqdefault.jpg', audio_url: '' },
+                     { id: 'R2l4yhQLHa4', title: 'भगवती वंदना - मिथिला भजन', singer: 'मैथिली भक्ति माला', cover: 'https://img.youtube.com/vi/R2l4yhQLHa4/hqdefault.jpg', audio_url: '' },
+                     { id: 'JD9gsauGP4Y', title: 'मधुश्रावणी व बटगवनी', singer: 'पारम्परिक मैथिली स्वर', cover: 'https://img.youtube.com/vi/JD9gsauGP4Y/hqdefault.jpg', audio_url: '' }
+                     {% endfor %}
+                 ],
+                 currentIndex: 0,
+                 isPlaying: false,
+                 playerState: 'IDLE', // 'IDLE', 'LOADING', 'PLAYING', 'PAUSED', 'ERROR'
+                 errorMessage: '',
+                 ytPlayer: null,
+                 progressPercent: 0,
+                 currentTimeStr: '00:00',
+                 durationStr: '00:00',
+                 volume: 80,
+                 isMuted: false,
+                 timerId: null,
+
+                 get currentSong() {
+                     return this.songs[this.currentIndex] || this.songs[0];
+                 },
+
+                 init() {
+                     this.checkYTApi();
+                 },
+
+                 checkYTApi() {
+                     if (window.YT && window.YT.Player) {
+                         this.initPlayer();
+                     } else {
+                         window.onYouTubeIframeAPIReady = () => {
+                             this.initPlayer();
+                         };
+                     }
+                 },
+
+                 initPlayer() {
+                     if (this.ytPlayer) return;
+                     const el = document.getElementById('mithila-yt-player-home');
+                     if (!el) return;
+
+                     this.ytPlayer = new YT.Player('mithila-yt-player-home', {
+                         height: '100%',
+                         width: '100%',
+                         videoId: this.currentSong.id,
+                         playerVars: {
+                             'playsinline': 1,
+                             'autoplay': 0,
+                             'controls': 1,
+                             'rel': 0,
+                             'modestbranding': 1
+                         },
+                         events: {
+                             'onReady': (event) => {
+                                 console.log('Mithila Audio Player Ready');
+                             },
+                             'onStateChange': (e) => {
+                                 if (e.data === YT.PlayerState.PLAYING) {
+                                     this.isPlaying = true;
+                                     this.playerState = 'PLAYING';
+                                     this.errorMessage = '';
+                                     this.startTimer();
+                                 } else if (e.data === YT.PlayerState.PAUSED) {
+                                     this.isPlaying = false;
+                                     this.playerState = 'PAUSED';
+                                     this.stopTimer();
+                                 } else if (e.data === YT.PlayerState.ENDED) {
+                                     this.isPlaying = false;
+                                     this.playerState = 'ENDED';
+                                     this.stopTimer();
+                                     this.nextSong();
+                                 } else if (e.data === YT.PlayerState.BUFFERING) {
+                                     this.playerState = 'LOADING';
+                                 }
+                             },
+                             'onError': (e) => {
+                                 console.error('YouTube Player Error:', e.data);
+                                 this.isPlaying = false;
+                                 this.playerState = 'ERROR';
+                                 this.errorMessage = 'गीत उपलब्ध नहीं है — अगला गीत चालू हो रहा है';
+                                 this.stopTimer();
+                                 setTimeout(() => { this.nextSong(); }, 1500);
+                             }
+                         }
+                     });
+                 },
+
+                 async togglePlay() {
+                     if (this.playerState === 'ERROR') {
+                         this.errorMessage = '';
+                     }
+
+                     if (!this.ytPlayer) {
+                         this.initPlayer();
+                     }
+
+                     if (this.isPlaying) {
+                         if (this.ytPlayer && this.ytPlayer.pauseVideo) {
+                             this.ytPlayer.pauseVideo();
+                         }
+                         this.isPlaying = false;
+                         this.playerState = 'PAUSED';
+                     } else {
+                         this.playerState = 'LOADING';
+                         try {
+                             if (this.ytPlayer && this.ytPlayer.playVideo) {
+                                 const vidData = this.ytPlayer.getVideoData ? this.ytPlayer.getVideoData() : null;
+                                 if (vidData && vidData.video_id !== this.currentSong.id && this.ytPlayer.loadVideoById) {
+                                     this.ytPlayer.loadVideoById(this.currentSong.id);
+                                 }
+                                 this.ytPlayer.playVideo();
+                             } else {
+                                 setTimeout(() => {
+                                     if (this.ytPlayer && this.ytPlayer.playVideo) {
+                                         this.ytPlayer.playVideo();
+                                     }
+                                 }, 400);
+                             }
+                         } catch (err) {
+                             console.error('Playback Error:', err);
+                             this.playerState = 'ERROR';
+                             this.errorMessage = 'गीत उपलब्ध नहीं है';
+                         }
+                     }
+                 },
+
+                 selectSong(idx) {
+                     this.currentIndex = idx;
+                     this.errorMessage = '';
+                     this.playerState = 'LOADING';
+                     if (this.ytPlayer && this.ytPlayer.loadVideoById) {
+                         this.ytPlayer.loadVideoById(this.currentSong.id);
+                         this.ytPlayer.playVideo();
+                     } else {
+                         this.initPlayer();
+                         setTimeout(() => {
+                             if (this.ytPlayer && this.ytPlayer.loadVideoById) {
+                                 this.ytPlayer.loadVideoById(this.currentSong.id);
+                                 this.ytPlayer.playVideo();
+                             }
+                         }, 400);
+                     }
+                 },
+
+                 nextSong() {
+                     this.currentIndex = (this.currentIndex + 1) % this.songs.length;
+                     this.selectSong(this.currentIndex);
+                 },
+
+                 prevSong() {
+                     this.currentIndex = (this.currentIndex - 1 + this.songs.length) % this.songs.length;
+                     this.selectSong(this.currentIndex);
+                 },
+
+                 seekTrack(e) {
+                     const rect = e.currentTarget.getBoundingClientRect();
+                     const clickX = e.clientX - rect.left;
+                     const percent = clickX / rect.width;
+                     if (this.ytPlayer && this.ytPlayer.getDuration && this.ytPlayer.seekTo) {
+                         const total = this.ytPlayer.getDuration() || 0;
+                         if (total > 0) {
+                             const newTime = total * percent;
+                             this.ytPlayer.seekTo(newTime, true);
+                             this.progressPercent = percent * 100;
+                         }
+                     }
+                 },
+
+                 setVolume(val) {
+                     this.volume = val;
+                     this.isMuted = (val == 0);
+                     if (this.ytPlayer && this.ytPlayer.setVolume) {
+                         this.ytPlayer.setVolume(val);
+                     }
+                 },
+
+                 toggleMute() {
+                     this.isMuted = !this.isMuted;
+                     if (this.ytPlayer && this.ytPlayer.setVolume) {
+                         this.ytPlayer.setVolume(this.isMuted ? 0 : this.volume);
+                     }
+                 },
+
+                 startTimer() {
+                     this.stopTimer();
+                     this.timerId = setInterval(() => {
+                         if (this.ytPlayer && this.ytPlayer.getCurrentTime && this.ytPlayer.getDuration) {
+                             const current = this.ytPlayer.getCurrentTime() || 0;
+                             const total = this.ytPlayer.getDuration() || 0;
+                             if (total > 0) {
+                                 this.progressPercent = (current / total) * 100;
+                                 this.currentTimeStr = this.formatTime(current);
+                                 this.durationStr = this.formatTime(total);
+                             }
+                         }
+                     }, 500);
+                 },
+
+                 stopTimer() {
+                     if (this.timerId) {
+                         clearInterval(this.timerId);
+                         this.timerId = null;
+                     }
+                 },
+
+                 formatTime(sec) {
+                     const m = Math.floor(sec / 60);
+                     const s = Math.floor(sec % 60);
+                     return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+                 }
+             }">
+
+            <!-- Section Header -->
+            <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="w-6 h-6 rounded-full bg-amber-100 text-[#7D281E] flex items-center justify-center text-xs font-black">
+                        🪷
+                    </span>
+                    <div>
+                        <h3 class="font-extrabold text-[#7D281E] text-xs uppercase tracking-wider flex items-center gap-1.5">
+                            <span>🎵 मैथिली संगीत एवं लोकगीत</span>
+                        </h3>
+                        <p class="text-[10px] text-slate-500 font-medium">"मिथिलाक मधुर पारंपरिक गीत"</p>
+                    </div>
+                </div>
+                <a href="{% url 'mithila_panchang:mithila_songs_list' %}" class="text-[11px] font-bold text-[#E85D2A] hover:underline flex items-center space-x-1">
+                    <span>View All ➔</span>
+                </a>
+            </div>
+
+            <!-- Premium Music Card Display (90% Modern Player, 10% Mithila Character) -->
+            <div class="bg-gradient-to-br from-[#FFFDF9] via-[#FAF6F0] to-[#F5ECE0] rounded-2xl p-3 sm:p-3.5 border border-amber-200 shadow-sm space-y-3 relative">
+                
+                <!-- Main Player Header: Artwork + Title + Main Controls -->
+                <div class="flex items-center space-x-3">
+                    
+                    <!-- Artwork with Living Cover & Soundwave -->
+                    <div class="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden shrink-0 bg-slate-900 border border-amber-300 shadow-xs"
+                         :class="isPlaying ? 'ring-2 ring-amber-500/80 shadow-md' : ''">
+                        <img :src="currentSong.cover" 
+                             :alt="currentSong.title" 
+                             class="w-full h-full object-cover transition-transform duration-500"
+                             :class="isPlaying ? 'animate-living-cover' : ''">
+                        
+                        <!-- Soundwave Indicator when playing -->
+                        <template x-if="isPlaying">
+                            <div class="absolute bottom-1 right-1 bg-black/70 text-white text-[9px] font-bold px-1 py-0.5 rounded flex items-center space-x-0.5">
+                                <span class="w-1 h-2 bg-[#FF6026] rounded-full animate-bounce"></span>
+                                <span class="w-1 h-3 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                                <span class="w-1 h-1.5 bg-[#FF6026] rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Track Info + Controls -->
+                    <div class="min-w-0 flex-1 space-y-1.5">
+                        <div>
+                            <span class="text-[9px] font-extrabold uppercase text-[#FF6026] tracking-wider block"
+                                  x-text="playerState === 'PLAYING' ? 'NOW PLAYING' : (playerState === 'LOADING' ? 'LOADING...' : 'SELECT & PLAY')">
+                            </span>
+                            <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 truncate leading-snug" x-text="currentSong.title"></h4>
+                            <p class="text-[11px] text-amber-900 font-semibold truncate" x-text="currentSong.singer"></p>
+                        </div>
+
+                        <!-- Audio Control Buttons (Min 44px Touch Target) -->
+                        <div class="flex items-center space-x-2 pt-0.5">
+                            <button @click="prevSong()" type="button" class="min-w-[36px] min-h-[36px] sm:min-w-[44px] sm:min-h-[44px] rounded-full text-slate-600 hover:text-[#FF6026] flex items-center justify-center text-sm transition-colors cursor-pointer" title="Previous">
+                                <i class="fa-solid fa-backward-step"></i>
+                            </button>
+
+                            <button @click="togglePlay()" type="button" 
+                                    class="min-w-[44px] min-h-[44px] rounded-full bg-gradient-to-r from-[#FF6026] to-[#E5531B] hover:from-[#E5531B] hover:to-[#C23D0D] text-white flex items-center justify-center shadow-md transition-all transform active:scale-95 cursor-pointer shrink-0"
+                                    :class="isPlaying ? 'animate-pulse ring-2 ring-amber-400/60' : ''"
+                                    title="Play/Pause">
+                                <template x-if="playerState === 'LOADING'">
+                                    <i class="fa-solid fa-spinner animate-spin text-sm"></i>
+                                </template>
+                                <template x-if="playerState !== 'LOADING' && !isPlaying">
+                                    <i class="fa-solid fa-play text-sm ml-0.5"></i>
+                                </template>
+                                <template x-if="playerState !== 'LOADING' && isPlaying">
+                                    <i class="fa-solid fa-pause text-sm"></i>
+                                </template>
+                            </button>
+
+                            <button @click="nextSong()" type="button" class="min-w-[36px] min-h-[36px] sm:min-w-[44px] sm:min-h-[44px] rounded-full text-slate-600 hover:text-[#FF6026] flex items-center justify-center text-sm transition-colors cursor-pointer" title="Next">
+                                <i class="fa-solid fa-forward-step"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Error Message if Track Blocked -->
+                <template x-if="playerState === 'ERROR'">
+                    <div class="bg-rose-50 border border-rose-200 rounded-xl p-2.5 text-xs text-rose-800 font-bold flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                        <span x-text="errorMessage"></span>
+                    </div>
+                </template>
+
+                <!-- YouTube Embedded Stream Box (YouTube TOS Compliant Stream Container) -->
+                <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-slate-950 border border-slate-200/80 shadow-xs transition-all duration-300"
+                     :class="(isPlaying || playerState === 'LOADING' || playerState === 'PLAYING') ? 'block' : 'hidden'">
+                    <div id="mithila-yt-player-home" class="w-full h-full"></div>
+                </div>
+
+                <!-- Seekable Audio Progress Bar + Timing + Volume Controls -->
+                <div class="space-y-1.5 pt-1">
+                    <div @click="seekTrack($event)" class="w-full bg-amber-200/80 hover:bg-amber-300/80 h-2 rounded-full overflow-hidden relative cursor-pointer transition-colors">
+                        <div class="bg-[#FF6026] h-full transition-all duration-200 rounded-full"
+                             :style="'width: ' + progressPercent + '%'"></div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between text-[11px] font-mono text-slate-600 font-semibold">
+                        <span x-text="currentTimeStr"></span>
+                        
+                        <!-- Mini Volume Controls -->
+                        <div class="flex items-center space-x-1.5 font-sans">
+                            <button @click="toggleMute()" type="button" class="text-slate-500 hover:text-slate-800 text-xs">
+                                <i class="fa-solid" :class="isMuted ? 'fa-volume-xmark text-rose-500' : 'fa-volume-high'"></i>
+                            </button>
+                            <input type="range" min="0" max="100" x-model="volume" @input="setVolume($event.target.value)" class="w-16 h-1 accent-[#FF6026] cursor-pointer">
+                        </div>
+
+                        <span x-text="durationStr"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- 🔔 आज मिथिला में (Perfect Redesigned Mithila Panchang Today Card) -->
+        <a href="{% url 'mithila_panchang:panchang_home' %}" class="block group">
+            <div class="bg-gradient-to-b from-white via-[#FFFDF9] to-[#FFF8EE] rounded-2xl border border-amber-200/90 shadow-saas hover:shadow-saas-lg hover:border-[#E85D2A]/50 transition-all p-4 sm:p-5 space-y-4 font-sans relative overflow-hidden">
+                
+                <!-- 1. Header Row -->
+                <div class="flex items-center justify-between border-b border-amber-200/60 pb-3">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="relative flex h-3 w-3 shrink-0">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85D2A] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-[#E85D2A]"></span>
+                        </span>
+                        <h3 class="font-black text-[#0F1F35] text-sm tracking-tight flex items-center space-x-1.5">
+                            <span>🔔 आज मिथिला में</span>
+                        </h3>
+                    </div>
+
+                    <span class="px-3 py-1 rounded-full bg-[#FFF7ED] text-[#E85D2A] font-extrabold text-xs border border-[#FFEDD5] shadow-2xs shrink-0">
+                        {{ today_date_hi }}
+                    </span>
+                </div>
+
+                <!-- 2. Astronomical Timings Row (Sunrise & Sunset) -->
+                {% if today_panchang.sunrise or today_panchang.sunset %}
+                <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-800 bg-[#FFF8E8] p-2.5 rounded-xl border border-[#FDE68A]">
+                    {% if today_panchang.sunrise %}
+                    <div class="flex items-center space-x-1.5">
+                        <span class="text-amber-500 text-sm shrink-0">🌅</span>
+                        <span class="text-slate-600 text-[11px] truncate">सूर्योदय: <strong class="text-slate-900 font-extrabold text-xs ml-0.5">{{ today_panchang.sunrise }}</strong></span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if today_panchang.sunset %}
+                    <div class="flex items-center space-x-1.5 justify-end">
+                        <span class="text-indigo-500 text-sm shrink-0">🌙</span>
+                        <span class="text-slate-600 text-[11px] truncate">सूर्यास्त: <strong class="text-slate-900 font-extrabold text-xs ml-0.5">{{ today_panchang.sunset }}</strong></span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- 3. Panchang Details (Tithi & Nakshatra 2-Column Grid) -->
+                {% if today_panchang %}
+                <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-800">
+                    {% if today_panchang.mithila_tithi_name %}
+                    <div class="flex items-center space-x-2.5 bg-white border border-slate-200/80 p-2.5 rounded-xl shadow-2xs min-w-0">
+                        <span class="text-amber-600 shrink-0 text-base">🪔</span>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider leading-none mb-0.5">तिथि</span>
+                            <strong class="text-slate-900 font-extrabold text-xs block truncate leading-tight">{% if today_panchang.paksha %}{{ today_panchang.paksha }} {% endif %}{{ today_panchang.mithila_tithi_name }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if today_panchang.nakshatra_name %}
+                    <div class="flex items-center space-x-2.5 bg-white border border-slate-200/80 p-2.5 rounded-xl shadow-2xs min-w-0">
+                        <span class="text-amber-500 shrink-0 text-base">⭐</span>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] text-slate-400 font-bold block uppercase tracking-wider leading-none mb-0.5">नक्षत्र</span>
+                            <strong class="text-slate-900 font-extrabold text-xs block truncate leading-tight">{{ today_panchang.nakshatra_name }}</strong>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- 4. Upcoming Festival Highlight Box -->
+                {% if upcoming_festival %}
+                <div class="pt-1 space-y-1.5">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#7D3028] flex items-center space-x-1">
+                        <span>🙏 अगिला पावन पर्व</span>
+                    </span>
+
+                    <div class="flex items-center justify-between text-xs font-black bg-gradient-to-r from-[#7D3028] to-[#9E3120] text-white p-3 rounded-xl shadow-2xs border border-maroon-800">
+                        <span class="text-white font-bold truncate text-xs">{{ upcoming_festival.title_hi }}</span>
+                        <span class="text-amber-200 font-extrabold text-xs bg-white/20 px-2.5 py-0.5 rounded-full shrink-0 ml-2 shadow-xs">{{ upcoming_festival_date_hi }}</span>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- 5. Sleek Full-Width Action Footer Bar -->
+                <div class="pt-1">
+                    <div class="w-full py-2.5 px-4 rounded-xl bg-amber-50 group-hover:bg-[#E85D2A] text-[#E85D2A] group-hover:text-white font-extrabold text-xs flex items-center justify-between transition-all duration-200 border border-amber-200/80 group-hover:border-[#E85D2A] shadow-2xs">
+                        <span>विस्तृत मिथिला पंचांग देखू</span>
+                        <span class="text-sm transform group-hover:translate-x-1 transition-transform">➔</span>
+                    </div>
+                </div>
+
+            </div>
+        </a>
+
+        <!-- 👥 2. Popular Communities Card (With Automatic Side Entrance Animation) -->
+        <div id="popular-communities-card" class="pop-comm-card bg-gradient-to-b from-white via-white to-[#FFFDF9] rounded-2xl border border-amber-200/80 shadow-saas hover:shadow-saas-lg p-4 sm:p-5 space-y-3.5 font-sans relative overflow-hidden transition-all duration-300">
+            <!-- Subtle Mithila Geometric Top Accent Line -->
+            <div class="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#E85D2A] to-transparent opacity-80"></div>
+
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-extrabold text-[#0F1F35] text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-users text-[#E85D2A]"></i>
+                        <span>Popular Communities</span>
+                        <span class="pop-comm-accent text-xs inline-block ml-1">🌸</span>
+                    </h3>
+                    <p class="text-[10px] text-[#7D3028] font-bold font-devanagari mt-0.5">मिथिला के लोगों से जुड़ें</p>
+                </div>
+                <a href="{% url 'subreddits:list' %}" class="text-[11px] font-bold text-[#E85D2A] hover:underline shrink-0">View All ➔</a>
+            </div>
+
+            <div class="space-y-2.5">
+                {% for sub in popular_communities|slice:":4" %}
+                <div class="pop-comm-item flex items-center justify-between p-2.5 rounded-xl bg-slate-50/70 hover:bg-[#FFF7ED] border border-slate-100 hover:border-[#FFEDD5] transition-all">
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#E85D2A] font-extrabold text-xs flex items-center justify-center shrink-0 border border-[#FFEDD5]">
+                            c/
+                        </div>
+                        <div class="truncate">
+                            <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="font-bold text-xs text-[#0F1F35] hover:text-[#E85D2A] truncate block">
+                                c/{{ sub.name }}
+                            </a>
+                            <span class="text-[10px] text-slate-400 block font-medium">{{ sub.member_count|default:1 }} member{{ sub.member_count|pluralize }} · {{ sub.member_count|default:1 }} सदस्य</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="text-[11px] font-extrabold text-[#E85D2A] bg-white hover:bg-[#E85D2A] hover:text-white px-3 py-1.5 rounded-full border border-[#FFEDD5] shadow-2xs transition-all shrink-0 min-h-[36px] flex items-center">
+                        Join ➔
+                    </a>
+                </div>
+                {% empty %}
+                <div class="text-xs text-slate-400 py-2 text-center">No communities found</div>
+                {% endfor %}
+            </div>
+
+            <a href="{% url 'subreddits:list' %}" class="block text-center text-xs font-extrabold text-[#E85D2A] bg-amber-50/80 hover:bg-[#E85D2A] hover:text-white p-2.5 rounded-xl border border-amber-200/80 transition-all">
+                View All Communities ➔
+            </a>
+        </div>
+
+        <!-- ➕ 3. Create a Community Card -->
+        <div class="bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF9C3] rounded-2xl border border-[#FFEDD5] shadow-2xs p-4 sm:p-5 space-y-3 font-sans">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-[#E85D2A] text-white flex items-center justify-center text-sm font-bold shadow-xs">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <div>
+                    <h4 class="font-bold text-xs text-[#0F1F35]">Create a Community</h4>
+                    <p class="text-[10px] text-[#7D3028] font-medium font-devanagari">अपना समुदाय बनाएँ</p>
+                </div>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Have a topic, village, or interest in mind? Build your own Mithila community today and connect with people.
+            </p>
+            <a href="{% url 'subreddits:create' %}" class="w-full flex items-center justify-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs transition-colors">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>+ Create Community</span>
+            </a>
+        </div>
+
+    </aside>
+
+    <!-- ✨ मिथिला Mobile Hub Modal (Contains 4 Sidebar Sections, Mobile Only) -->
+    <div x-show="mithilaModalOpen" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-8"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-8"
+         x-init="$watch('mithilaModalOpen', value => document.body.style.overflow = value ? 'hidden' : '')"
+         class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-xs lg:hidden" 
+         x-cloak>
+        
+        <!-- Modal Overlay Backdrop (Click to close) -->
+        <div @click="mithilaModalOpen = false" class="absolute inset-0"></div>
+
+        <!-- Modal Box Container -->
+        <div class="relative w-full max-w-lg bg-[#F8F8F6] rounded-t-3xl sm:rounded-3xl border border-amber-200/90 shadow-2xl overflow-hidden max-h-[88vh] flex flex-col font-sans z-10">
+            
+            <!-- Thin Decorative Top Line Accent -->
+            <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#E85D2A] via-[#D6A437] to-[#7D3028]"></div>
+
+            <!-- Modal Header -->
+            <div class="h-14 px-4 sm:px-5 bg-white border-b border-amber-200/60 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-[#FFF7ED] text-[#E85D2A] flex items-center justify-center font-black text-sm border border-[#FFEDD5]">
+                        ✨
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-[#0F1F35] font-devanagari">मिथिला विशेष</h3>
+                        <p class="text-[9px] font-bold text-[#7D3028] uppercase tracking-wider">संगीत • पंचांग • समुदाय</p>
+                    </div>
+                </div>
+                <button @click="mithilaModalOpen = false" aria-label="Close Modal" class="min-h-[44px] min-w-[44px] flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl transition-colors">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Scrollable Content Container (All 4 Sections) -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4 font-sans">
+                
+                <!-- 1. 🎵 मैथिली संगीत एवं लोकगीत -->
+                <div class="bg-white rounded-2xl border border-amber-200/80 shadow-2xs p-4 space-y-3.5 relative overflow-hidden"
+                     x-data="{ 
+                         songs: [
+                             {% for song in mithila_songs %}
+                             {
+                                 id: '{{ song.video_id }}',
+                                 title: '{{ song.title|escapejs }}',
+                                 singer: '{{ song.singer|default:"मैथिली कलाकार"|escapejs }}',
+                                 cover: 'https://img.youtube.com/vi/{{ song.video_id }}/hqdefault.jpg',
+                                 audio_url: '{{ song.audio_url|escapejs }}'
+                             }{% if not forloop.last %},{% endif %}
+                             {% empty %}
+                             { id: 'H501incNC74', title: 'मिथिलाक पावन लोकगीत', singer: 'मैथिली सुर संगीत', cover: 'https://img.youtube.com/vi/H501incNC74/hqdefault.jpg', audio_url: '' },
+                             { id: '5Jp7tGF6hbY', title: 'मैथिली सोहर एवं विवाह गीत', singer: 'मिथिला कला संस्कृति', cover: 'https://img.youtube.com/vi/5Jp7tGF6hbY/hqdefault.jpg', audio_url: '' },
+                             { id: 'R2l4yhQLHa4', title: 'भगवती वंदना - मिथिला भजन', singer: 'मैथिली भक्ति माला', cover: 'https://img.youtube.com/vi/R2l4yhQLHa4/hqdefault.jpg', audio_url: '' }
+                             {% endfor %}
+                         ],
+                         currentIndex: 0,
+                         isPlaying: false,
+                         playerState: 'IDLE',
+                         errorMessage: '',
+                         ytPlayer: null,
+
+                         get currentSong() {
+                             return this.songs[this.currentIndex] || this.songs[0];
+                         },
+
+                         init() {
+                             this.checkYTApi();
+                         },
+
+                         checkYTApi() {
+                             if (window.YT && window.YT.Player) {
+                                 this.initPlayer();
+                             } else {
+                                 window.onYouTubeIframeAPIReady = () => {
+                                     this.initPlayer();
+                                 };
+                             }
+                         },
+
+                         initPlayer() {
+                             if (this.ytPlayer) return;
+                             const el = document.getElementById('mithila-yt-player-modal');
+                             if (!el) return;
+
+                             this.ytPlayer = new YT.Player('mithila-yt-player-modal', {
+                                 height: '100%',
+                                 width: '100%',
+                                 videoId: this.currentSong.id,
+                                 playerVars: { 'playsinline': 1, 'controls': 1, 'rel': 0 },
+                                 events: {
+                                     'onStateChange': (e) => {
+                                         if (e.data === YT.PlayerState.PLAYING) {
+                                             this.isPlaying = true;
+                                         } else if (e.data === YT.PlayerState.PAUSED) {
+                                             this.isPlaying = false;
+                                         } else if (e.data === YT.PlayerState.ENDED) {
+                                             this.nextSong();
+                                         }
+                                     }
+                                 }
+                             });
+                         },
+
+                         togglePlay() {
+                             if (!this.ytPlayer || !this.ytPlayer.playVideo) {
+                                 this.initPlayer();
+                                 return;
+                             }
+                             if (this.isPlaying) {
+                                 this.ytPlayer.pauseVideo();
+                             } else {
+                                 this.ytPlayer.playVideo();
+                             }
+                         },
+
+                         nextSong() {
+                             this.currentIndex = (this.currentIndex + 1) % this.songs.length;
+                             if (this.ytPlayer && this.ytPlayer.loadVideoById) {
+                                 this.ytPlayer.loadVideoById(this.currentSong.id);
+                             }
+                         },
+
+                         prevSong() {
+                             this.currentIndex = (this.currentIndex - 1 + this.songs.length) % this.songs.length;
+                             if (this.ytPlayer && this.ytPlayer.loadVideoById) {
+                                 this.ytPlayer.loadVideoById(this.currentSong.id);
+                             }
+                         }
+                     }">
+                    
+                    <div class="flex items-center justify-between border-b border-amber-200/60 pb-2.5">
+                        <h3 class="font-extrabold text-[#0F1F35] text-xs flex items-center space-x-1.5">
+                            <span class="text-amber-500">🎵</span>
+                            <span>मैथिली संगीत एवं लोकगीत</span>
+                        </h3>
+                        <span class="text-[9px] font-black text-[#E85D2A] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">PLAYER</span>
+                    </div>
+
+                    <div class="flex items-center space-x-3 bg-amber-50/60 p-2.5 rounded-xl border border-amber-100">
+                        <img :src="currentSong.cover" alt="Cover" class="w-12 h-12 rounded-lg object-cover shadow-xs border border-amber-200/80 shrink-0">
+                        <div class="min-w-0 flex-1">
+                            <h4 class="text-xs font-black text-slate-900 truncate" x-text="currentSong.title"></h4>
+                            <p class="text-[10px] text-amber-900 font-bold truncate" x-text="currentSong.singer"></p>
+                        </div>
+                        <button @click="togglePlay()" type="button" class="w-10 h-10 rounded-full bg-[#E85D2A] text-white flex items-center justify-center shadow-xs shrink-0 cursor-pointer min-h-[44px] min-w-[44px]">
+                            <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play ml-0.5'"></i>
+                        </button>
+                    </div>
+
+                    <div class="hidden">
+                        <div id="mithila-yt-player-modal"></div>
+                    </div>
+                </div>
+
+                <!-- 2. 🔔 आज मिथिला में -->
+                <a href="{% url 'mithila_panchang:panchang_home' %}" class="block group">
+                    <div class="bg-gradient-to-b from-white via-[#FFFDF9] to-[#FFF8EE] rounded-2xl border border-amber-200/90 shadow-2xs hover:border-[#E85D2A]/50 transition-all p-4 space-y-3.5 font-sans relative overflow-hidden">
+                        <div class="flex items-center justify-between border-b border-amber-200/60 pb-2.5">
+                            <div class="flex items-center space-x-2">
+                                <span class="relative flex h-2.5 w-2.5 shrink-0">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#E85D2A] opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#E85D2A]"></span>
+                                </span>
+                                <h3 class="font-black text-[#0F1F35] text-xs">🔔 आज मिथिला में</h3>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-[#FFF7ED] text-[#E85D2A] font-extrabold text-[11px] border border-[#FFEDD5]">
+                                {{ today_date_hi }}
+                            </span>
+                        </div>
+
+                        {% if today_panchang.sunrise or today_panchang.sunset %}
+                        <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-800 bg-[#FFF8E8] p-2 rounded-xl border border-[#FDE68A]">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="text-amber-500 text-xs">🌅</span>
+                                <span class="text-slate-600 text-[10px] truncate">सूर्योदय: <strong class="text-slate-900 font-extrabold text-xs ml-0.5">{{ today_panchang.sunrise }}</strong></span>
+                            </div>
+                            <div class="flex items-center space-x-1.5 justify-end">
+                                <span class="text-indigo-500 text-xs">🌙</span>
+                                <span class="text-slate-600 text-[10px] truncate">सूर्यास्त: <strong class="text-slate-900 font-extrabold text-xs ml-0.5">{{ today_panchang.sunset }}</strong></span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if today_panchang %}
+                        <div class="grid grid-cols-2 gap-2 text-xs font-medium text-slate-800">
+                            <div class="flex items-center space-x-2 bg-white border border-slate-200/80 p-2 rounded-xl min-w-0">
+                                <span class="text-amber-600 shrink-0 text-sm">🪔</span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">तिथि</span>
+                                    <strong class="text-slate-900 font-extrabold text-xs block truncate">{% if today_panchang.paksha %}{{ today_panchang.paksha }} {% endif %}{{ today_panchang.mithila_tithi_name }}</strong>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-2 bg-white border border-slate-200/80 p-2 rounded-xl min-w-0">
+                                <span class="text-amber-500 shrink-0 text-sm">⭐</span>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wider">नक्षत्र</span>
+                                    <strong class="text-slate-900 font-extrabold text-xs block truncate">{{ today_panchang.nakshatra_name }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if upcoming_festival %}
+                        <div class="pt-0.5 space-y-1">
+                            <span class="text-[9px] font-extrabold uppercase tracking-wider text-[#7D3028]">🙏 अगिला पावन पर्व</span>
+                            <div class="flex items-center justify-between text-xs font-black bg-gradient-to-r from-[#7D3028] to-[#9E3120] text-white p-2.5 rounded-xl shadow-2xs">
+                                <span class="text-white font-bold truncate text-xs">{{ upcoming_festival.title_hi }}</span>
+                                <span class="text-amber-200 font-extrabold text-[11px] bg-white/20 px-2 py-0.5 rounded-full shrink-0 ml-2">{{ upcoming_festival_date_hi }}</span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="pt-0.5">
+                            <div class="w-full py-2 px-3 rounded-xl bg-amber-50 group-hover:bg-[#E85D2A] text-[#E85D2A] group-hover:text-white font-extrabold text-xs flex items-center justify-between transition-all border border-amber-200/80">
+                                <span>विस्तृत मिथिला पंचांग देखू</span>
+                                <span class="text-xs">➔</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- 3. 👥 Popular Communities -->
+                <div class="bg-gradient-to-b from-white via-white to-[#FFFDF9] rounded-2xl border border-amber-200/80 shadow-2xs p-4 space-y-3 font-sans relative overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                        <div>
+                            <h3 class="font-extrabold text-[#0F1F35] text-xs flex items-center space-x-1.5">
+                                <i class="fa-solid fa-users text-[#E85D2A]"></i>
+                                <span>Popular Communities</span>
+                                <span class="text-xs">🌸</span>
+                            </h3>
+                            <p class="text-[9px] text-[#7D3028] font-bold font-devanagari mt-0.5">मिथिला के लोगों से जुड़ें</p>
+                        </div>
+                        <a href="{% url 'subreddits:list' %}" class="text-[10px] font-bold text-[#E85D2A] hover:underline">View All ➔</a>
+                    </div>
+
+                    <div class="space-y-2">
+                        {% for sub in popular_communities|slice:":4" %}
+                        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50/70 hover:bg-[#FFF7ED] border border-slate-100 transition-all">
+                            <div class="flex items-center space-x-2.5 min-w-0">
+                                <div class="w-7 h-7 rounded-lg bg-[#FFF7ED] text-[#E85D2A] font-extrabold text-xs flex items-center justify-center shrink-0 border border-[#FFEDD5]">
+                                    c/
+                                </div>
+                                <div class="truncate">
+                                    <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="font-bold text-xs text-[#0F1F35] truncate block">
+                                        c/{{ sub.name }}
+                                    </a>
+                                    <span class="text-[9px] text-slate-400 block font-medium">{{ sub.member_count|default:1 }} member{{ sub.member_count|pluralize }}</span>
+                                </div>
+                            </div>
+                            <a href="{% url 'subreddits:subreddit_detail' sub.slug %}" class="text-[10px] font-extrabold text-[#E85D2A] bg-white hover:bg-[#E85D2A] hover:text-white px-2.5 py-1 rounded-full border border-[#FFEDD5] min-h-[36px] flex items-center">
+                                Join ➔
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="text-xs text-slate-400 py-2 text-center">No communities found</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- 4. ➕ Create a Community Card -->
+                <div class="bg-gradient-to-br from-[#FFF7ED] via-white to-[#FEF9C3] rounded-2xl border border-[#FFEDD5] shadow-2xs p-4 space-y-2.5 font-sans">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-7 h-7 rounded-xl bg-[#E85D2A] text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xs text-[#0F1F35]">Create a Community</h4>
+                            <p class="text-[9px] text-[#7D3028] font-bold font-devanagari">अपना समुदाय बनाएँ</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Have a topic or village in mind? Build your own Mithila community today.
+                    </p>
+                    <a href="{% url 'subreddits:create' %}" class="w-full flex items-center justify-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs transition-colors min-h-[44px]">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>+ Create Community</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Alpine & AJAX Vote Controller -->
+<script>
+function feedVoteApp() {
+    return {
+        userVotes: {},
+        async upvotePost(subredditSlug, postSlug, event) {
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'users:login' %}";
+                return;
+            {% endif %}
+            try {
+                const response = await fetch(`/r/${subredditSlug}/post/${postSlug}/upvote/?format=json`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const scoreElem = document.getElementById(`score-${postSlug}`);
+                    if (scoreElem) scoreElem.innerText = data.score;
+                    const mobScoreElem = document.getElementById(`score-mobile-${postSlug}`);
+                    if (mobScoreElem) mobScoreElem.innerText = data.score;
+                    this.userVotes[postSlug] = data.user_vote;
+                }
+            } catch (err) {
+                console.error("Upvote failed:", err);
+            }
+        },
+        async downvotePost(subredditSlug, postSlug, event) {
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'users:login' %}";
+                return;
+            {% endif %}
+            try {
+                const response = await fetch(`/r/${subredditSlug}/post/${postSlug}/downvote/?format=json`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const scoreElem = document.getElementById(`score-${postSlug}`);
+                    if (scoreElem) scoreElem.innerText = data.score;
+                    const mobScoreElem = document.getElementById(`score-mobile-${postSlug}`);
+                    if (mobScoreElem) mobScoreElem.innerText = data.score;
+                    this.userVotes[postSlug] = data.user_vote;
+                }
+            } catch (err) {
+                console.error("Downvote failed:", err);
+            }
+        },
+        triggerShare(url, title, event) {
+            if (navigator.share && window.innerWidth < 768) {
+                navigator.share({ title: title, url: url }).catch(() => {});
+            }
+        },
+        copyLink(url) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert("लिंक कॉपी भ गेल! (Link copied!)");
+            });
+        }
+    };
+}
+
+// Popular Communities Slow Off-Screen Right-Side Reveal Animation via IntersectionObserver
+document.addEventListener('DOMContentLoaded', function() {
+    const popCommSection = document.getElementById('popular-communities-card');
+    if (!popCommSection) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        popCommSection.classList.add('is-visible');
+        return;
+    }
+
+    const observer = new IntersectionObserver(function(entries, obs) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                popCommSection.classList.add('is-visible');
+                obs.unobserve(entry.target); // Trigger ONCE only! Never re-animates
+            }
+        });
+    }, { 
+        threshold: 0.15,
+        rootMargin: '0px 0px -80px 0px' 
+    });
+
+    observer.observe(popCommSection);
+});
+</script>
+
+<style>
+/* Popular Communities 100% Off-Screen Right-Side Reveal Entrance Animation */
+@media (max-width: 767px) {
+    .pop-comm-card {
+        opacity: 0 !important;
+        transform: translateX(100%) !important;
+        transition: opacity 800ms ease, transform 1000ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+        will-change: opacity, transform;
+        pointer-events: none;
+    }
+
+    .pop-comm-card.is-visible {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        pointer-events: auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .pop-comm-card {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 600ms ease, transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: opacity, transform;
+    }
+
+    .pop-comm-card.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pop-comm-card .pop-comm-item {
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity 500ms ease, transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+}
+
+.pop-comm-card.is-visible .pop-comm-item {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.pop-comm-card.is-visible .pop-comm-item:nth-child(1) { transition-delay: 200ms; }
+.pop-comm-card.is-visible .pop-comm-item:nth-child(2) { transition-delay: 300ms; }
+.pop-comm-card.is-visible .pop-comm-item:nth-child(3) { transition-delay: 400ms; }
+.pop-comm-card.is-visible .pop-comm-item:nth-child(4) { transition-delay: 500ms; }
+
+.pop-comm-card .pop-comm-accent {
+    opacity: 0;
+    transform: scale(0.6) rotate(-15deg);
+    transition: opacity 450ms ease-out 250ms, transform 450ms cubic-bezier(0.22, 1, 0.36, 1) 250ms;
+}
+
+.pop-comm-card.is-visible .pop-comm-accent {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pop-comm-card, 
+    .pop-comm-card .pop-comm-item, 
+    .pop-comm-card .pop-comm-accent {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
+</style>
+{% endblock %}

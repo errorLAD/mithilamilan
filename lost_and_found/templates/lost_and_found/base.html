@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Lost & Found Network - OkLocal{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-6 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Lost & Found Header -->
+        <div class="bg-white rounded-3xl border border-slate-200 p-6 mb-8 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="space-y-1 text-center md:text-left">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center md:justify-start space-x-2">
+                    <i class="fa-solid fa-box-open text-purple-500"></i>
+                    <span>Community Lost & Found Network</span>
+                </h1>
+                <p class="text-xs text-slate-500">Report lost items, upload photos, and reconnect owners with lost belongings in {% if active_city %}{{ active_city.name }}{% else %}your city{% endif %}</p>
+            </div>
+
+            <div class="flex items-center space-x-2 text-xs font-semibold">
+                <a href="{% url 'lost_and_found:item_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">All Items</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'lost_and_found:my_items' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">My Reports</a>
+                <a href="{% url 'lost_and_found:create_item' %}" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white shadow-xs">
+                    <i class="fa-solid fa-plus mr-1"></i>Report Item
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% block lost_and_found_content %}
+        {% endblock %}
+
+    </div>
+</div>
+{% endblock %}

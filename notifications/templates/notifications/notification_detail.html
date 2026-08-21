@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ notification.title }} - OkLocal Updates{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        
+        <div class="mb-4">
+            <a href="{% url 'notifications:notification_list' %}" class="inline-flex items-center text-xs font-bold text-orange-600 hover:underline">
+                <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Announcement List
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+            
+            <div class="space-y-3 border-b border-slate-100 pb-6">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-bold {% if notification.priority == 'high' %}bg-rose-100 text-rose-700{% elif notification.priority == 'medium' %}bg-amber-100 text-amber-700{% else %}bg-slate-100 text-slate-700{% endif %}">
+                        {{ notification.get_priority_display }} Priority
+                    </span>
+                    <span class="text-xs text-slate-400">• Posted by u/{{ notification.author.username }} • {{ notification.created_at|date:"M d, Y" }}</span>
+                </div>
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">{{ notification.title }}</h1>
+            </div>
+
+            <div class="text-sm text-slate-700 leading-relaxed space-y-4">
+                {{ notification.content|linebreaks }}
+            </div>
+
+            <!-- Comments Section -->
+            <div class="border-t border-slate-100 pt-6 space-y-4">
+                <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-2">
+                    <i class="fa-regular fa-comments text-orange-500"></i>
+                    <span>Discussion & Comments ({{ comments.count }})</span>
+                </h3>
+
+                {% if user.is_authenticated %}
+                <form method="post" class="space-y-3">
+                    {% csrf_token %}
+                    <textarea name="content" rows="3" placeholder="Add your comment..." class="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs focus:outline-none focus:border-orange-500 focus:bg-white"></textarea>
+                    <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-xs px-4 py-2 rounded-xl transition-all">
+                        Post Comment
+                    </button>
+                </form>
+                {% else %}
+                <p class="text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <a href="{% url 'users:login' %}" class="text-orange-600 font-bold hover:underline">Log in</a> to join the discussion.
+                </p>
+                {% endif %}
+
+                <div class="space-y-3 pt-2">
+                    {% for comment in comments %}
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 text-xs">
+                        <div class="flex items-center justify-between font-semibold text-slate-800">
+                            <span>u/{{ comment.author.username }}</span>
+                            <span class="text-[10px] text-slate-400">{{ comment.created_at|timesince }} ago</span>
+                        </div>
+                        <p class="text-slate-600">{{ comment.content }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-slate-400 py-2">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Top Communities Leaderboard | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">🏆 Top Communities Leaderboard</h1>
+        <p class="text-xs text-slate-500 mt-1">Rankings by member subscriber count and total feed posts created.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- Top by Members -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between font-heading">
+            <span>Top Communities by Members</span>
+            <i class="fa-solid fa-users text-indigo-600"></i>
+        </h2>
+        <div class="space-y-3">
+            {% for c in top_by_members %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs flex items-center justify-between">
+                <div class="font-bold text-slate-900">#{{ forloop.counter }} r/{{ c.name }}</div>
+                <div class="font-black text-indigo-600 text-sm">{{ c.m_count }} Subscribers</div>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-6 text-center">No community data.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Top by Posts -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-3 flex items-center justify-between font-heading">
+            <span>Top Communities by Posts</span>
+            <i class="fa-solid fa-file-lines text-emerald-600"></i>
+        </h2>
+        <div class="space-y-3">
+            {% for c in top_by_posts %}
+            <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs flex items-center justify-between">
+                <div class="font-bold text-slate-900">#{{ forloop.counter }} r/{{ c.name }}</div>
+                <div class="font-black text-emerald-600 text-sm">{{ c.p_count }} Posts</div>
+            </div>
+            {% empty %}
+            <div class="text-slate-400 text-xs py-6 text-center">No community data.</div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'storytelling/base.html' %}
+
+{% block storytelling_content %}
+<div class="space-y-6">NNNNNNNNNNN
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h2 class="text-base font-bold text-slate-900">Community Experiences</h2>
+        <form method="get" class="flex w-full sm:w-auto max-w-sm gap-2">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Search story experiences..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-600 focus:bg-white">
+            <button type="submit" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-colors">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for story in page_obj %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg hover:border-sky-200 transition-all overflow-hidden flex flex-col justify-between">
+            
+            {% if story.image %}
+            <div class="h-44 bg-slate-100 overflow-hidden">
+                <img src="{{ story.image.url }}" alt="{{ story.title }}" class="w-full h-full object-cover">
+            </div>
+            {% endif %}
+
+            <div class="p-5 space-y-3 flex-1">
+                <div class="flex items-center justify-between">
+                    <span class="px-2.5 py-0.5 rounded-md bg-sky-50 text-sky-700 font-bold text-[10px] border border-sky-100">
+                        {{ story.get_category_display }}
+                    </span>
+                    <span class="text-[10px] text-slate-400"><i class="fa-regular fa-eye mr-1"></i>{{ story.views }} views</span>
+                </div>
+
+                <h3 class="text-base font-bold text-slate-900 leading-snug hover:text-sky-600 transition-colors">
+                    <a href="{% url 'storytelling:story_detail' story.pk %}">{{ story.title }}</a>
+                </h3>
+
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {{ story.content }}
+                </p>
+            </div>
+
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span>By u/{{ story.author.username }}</span>
+                <a href="{% url 'storytelling:story_detail' story.pk %}" class="text-sky-600 font-bold hover:underline">Read Full Story ➔</a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-8 text-center space-y-3 shadow-saas">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-book-open-reader"></i>
+            </div>
+            <h3 class="font-bold text-slate-900 text-sm">No stories posted yet</h3>
+            <p class="text-xs text-slate-500">Be the first to share your local commute or city story!</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

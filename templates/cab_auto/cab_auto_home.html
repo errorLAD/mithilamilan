@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cab & Auto - Local Transport Directory - OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-10">
+
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-600 via-yellow-600 to-amber-700 p-8 md:p-12 text-white shadow-xl">
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="relative z-10 max-w-2xl space-y-4">
+            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+                <i class="fa-solid fa-taxi text-amber-300"></i>
+                <span>Local Transport & Ride Directory</span>
+            </div>
+            <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
+                Cab & Auto Directory
+            </h1>
+            <p class="text-amber-100 text-sm md:text-base font-normal leading-relaxed">
+                Connect directly with verified local Auto-Rickshaws, E-Rickshaws, and Taxis across Mithila and Delhi NCR. Instant call and WhatsApp booking.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-3">
+                <a href="{% url 'cab_auto:driver_register' %}" class="inline-flex items-center space-x-2 bg-slate-900 text-white hover:bg-slate-800 font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-2xl shadow-lg transition-all hover:scale-105">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>+ List as Driver</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXACTLY 3 LARGE CARDS: Bus (Coming Soon), Auto, Taxi -->
+    <div class="space-y-4">
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">Select Transport Service</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- CARD 1: BUS (COMING SOON) -->
+            <div class="relative bg-slate-100 rounded-3xl p-8 border-2 border-dashed border-slate-300 flex flex-col justify-between space-y-6 select-none opacity-80 group">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="w-16 h-16 rounded-2xl bg-slate-200 text-slate-500 flex items-center justify-center text-3xl">
+                            <i class="fa-solid fa-bus"></i>
+                        </div>
+                        <span class="bg-amber-500 text-slate-900 font-black text-[10px] uppercase tracking-wider px-3 py-1 rounded-full shadow-xs">
+                            Coming Soon
+                        </span>
+                    </div>
+
+                    <h3 class="text-2xl font-black text-slate-700">Bus Routes</h3>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        Intercity bus schedules, routes, fare calculator, and local bus stand timetables coming soon.
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200 text-slate-400 font-bold text-xs flex items-center space-x-1">
+                    <span>Route Timetables Under Development</span>
+                </div>
+            </div>
+
+            <!-- CARD 2: AUTO (FUNCTIONAL) -->
+            <a href="{% url 'cab_auto:auto_list' %}" class="bg-white rounded-3xl p-8 border-2 border-amber-300 shadow-saas hover:shadow-saas-lg flex flex-col justify-between space-y-6 transition-all duration-300 hover:-translate-y-1 group">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 group-hover:bg-amber-500 group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                            <i class="fa-solid fa-truck-monster"></i>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full">
+                            Active Directory
+                        </span>
+                    </div>
+
+                    <h3 class="text-2xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">
+                        Auto & E-Rickshaw
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Find local Auto-Rickshaws and E-Rickshaws for local town trips, railway station drops, and daily commute.
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 text-amber-700 font-extrabold text-xs flex items-center justify-between">
+                    <span>Browse Auto Drivers ({{ auto_count }})</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <!-- CARD 3: TAXI (FUNCTIONAL) -->
+            <a href="{% url 'cab_auto:taxi_list' %}" class="bg-white rounded-3xl p-8 border-2 border-rose-300 shadow-saas hover:shadow-saas-lg flex flex-col justify-between space-y-6 transition-all duration-300 hover:-translate-y-1 group">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white flex items-center justify-center text-3xl transition-colors">
+                            <i class="fa-solid fa-taxi"></i>
+                        </div>
+                        <span class="bg-emerald-100 text-emerald-800 font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 rounded-full">
+                            Active Directory
+                        </span>
+                    </div>
+
+                    <h3 class="text-2xl font-black text-slate-900 group-hover:text-rose-600 transition-colors">
+                        Taxi & Outstation Cab
+                    </h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        Book verified AC Taxis, Hatchbacks, Sedans, and SUVs for airport transfers, outstation family trips, and daily hire.
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 text-rose-600 font-extrabold text-xs flex items-center justify-between">
+                    <span>Browse Taxi Services ({{ taxi_count }})</span>
+                    <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <!-- Featured Driver Profiles Showcase -->
+    {% if featured_drivers %}
+    <div class="space-y-4">
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">Verified Local Drivers</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for driver in featured_drivers %}
+            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-saas space-y-4 flex flex-col justify-between">
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                            {% if driver.photo %}
+                            <img src="{{ driver.photo.url }}" alt="{{ driver.full_name }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <div class="w-full h-full bg-amber-600 text-white font-black text-xl flex items-center justify-center">
+                                {{ driver.full_name|first }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <span class="text-[10px] font-extrabold text-amber-600 uppercase block">{{ driver.get_vehicle_type_display }}</span>
+                            <h3 class="font-bold text-slate-900 text-sm truncate">
+                                <a href="{{ driver.get_absolute_url }}">{{ driver.full_name }}</a>
+                            </h3>
+                            <span class="text-xs text-slate-500 font-medium block truncate">{{ driver.vehicle_model }}</span>
+                        </div>
+                    </div>
+
+                    <div class="text-xs text-slate-600 space-y-1">
+                        <div class="flex items-center space-x-1 text-slate-500">
+                            <i class="fa-solid fa-location-dot text-rose-500"></i>
+                            <span class="truncate">{{ driver.service_area }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs font-bold">
+                    <a href="tel:{{ driver.mobile_number }}" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded-xl text-center flex items-center justify-center space-x-1">
+                        <i class="fa-solid fa-phone text-xs"></i>
+                        <span>Call</span>
+                    </a>
+                    <a href="{{ driver.get_whatsapp_url }}" target="_blank" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-center flex items-center justify-center space-x-1">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Submit Event or Festival - OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-saas space-y-6">
+        <div>
+            <div class="inline-flex items-center space-x-2 bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-xs font-bold mb-2">
+                <i class="fa-solid fa-plus-circle"></i>
+                <span>Community Submission</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+                Submit an Event or Festival
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Share upcoming cultural, religious, educational, or community events. User submissions undergo quick Admin moderation before appearing publicly.
+            </p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6 text-xs font-semibold">
+            {% csrf_token %}
+
+            <div class="space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-2">Basic Event Information</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="sm:col-span-2 space-y-1">
+                        <label class="text-slate-700">Event / Festival Name <span class="text-rose-500">*</span></label>
+                        {{ form.title }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Category <span class="text-rose-500">*</span></label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Cover Image</label>
+                        {{ form.cover_image }}
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Short Description (Cards summary) <span class="text-rose-500">*</span></label>
+                    {{ form.short_description }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Full Event Description / About <span class="text-rose-500">*</span></label>
+                    {{ form.about }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Festival History & Cultural Origin (Optional)</label>
+                    {{ form.history_background }}
+                </div>
+            </div>
+
+            <!-- Dates & Location -->
+            <div class="space-y-4 pt-4 border-t border-slate-100">
+                <h3 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-2">Dates & Location</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Start Date <span class="text-rose-500">*</span></label>
+                        {{ form.start_date }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">End Date <span class="text-rose-500">*</span></label>
+                        {{ form.end_date }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">City / Location <span class="text-rose-500">*</span></label>
+                        {{ form.location }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Organizer Name</label>
+                        {{ form.organizer }}
+                    </div>
+
+                    <div class="sm:col-span-2 space-y-1">
+                        <label class="text-slate-700">Venue Address Details</label>
+                        {{ form.venue_info }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Contact Info (Phone / Email)</label>
+                        {{ form.contact_info }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Google Maps Share Link</label>
+                        {{ form.map_location }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Schedule Breakdown for Multi-day events -->
+            <div class="space-y-4 pt-4 border-t border-slate-100" x-data="{ days: [{ title: 'Day 1 Program', morning: '', afternoon: '', evening: '' }] }">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <h3 class="text-sm font-extrabold text-slate-900">Multi-Day Schedule Program (Optional)</h3>
+                    <button type="button" @click="days.push({ title: 'Day ' + (days.length + 1) + ' Program', morning: '', afternoon: '', evening: '' })" class="text-xs font-bold text-[#FF6026] hover:text-[#E5531B]">
+                        + Add Schedule Day
+                    </button>
+                </div>
+
+                <template x-for="(day, index) in days" :key="index">
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-slate-800" x-text="'Day ' + (index + 1)"></span>
+                            <button type="button" @click="days.splice(index, 1)" x-show="days.length > 1" class="text-rose-500 font-bold text-[10px]">Remove</button>
+                        </div>
+                        <input type="text" name="schedule_day_title[]" x-model="day.title" placeholder="Day title e.g. Day 1 — Saptami Puja" class="w-full bg-white border border-slate-200 rounded-xl p-2 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <input type="text" name="schedule_morning[]" x-model="day.morning" placeholder="Morning program" class="bg-white border border-slate-200 rounded-xl p-2 text-xs">
+                            <input type="text" name="schedule_afternoon[]" x-model="day.afternoon" placeholder="Afternoon program" class="bg-white border border-slate-200 rounded-xl p-2 text-xs">
+                            <input type="text" name="schedule_evening[]" x-model="day.evening" placeholder="Evening program" class="bg-white border border-slate-200 rounded-xl p-2 text-xs">
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Submitter Information -->
+            <div class="space-y-4 pt-4 border-t border-slate-100">
+                <h3 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-2">Submitter Contact Information</h3>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Your Full Name</label>
+                        {{ form.submitter_name }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Your Email Address</label>
+                        {{ form.submitter_email }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 flex justify-end gap-3">
+                <a href="{% url 'events:event_list' %}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-2.5 rounded-2xl transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-[#FF6026] hover:bg-[#E5531B] text-white font-bold px-6 py-2.5 rounded-2xl shadow-md transition-all">
+                    Submit Event for Approval
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

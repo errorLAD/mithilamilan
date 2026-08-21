@@ -1,0 +1,369 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Events & Festivals{% endblock %}
+
+{% block extra_head %}
+<!-- SEO & Open Graph Meta Tags -->
+<meta name="description" content="{{ event.short_description|truncatewords:30 }}">
+<meta property="og:title" content="{{ event.title }}">
+<meta property="og:description" content="{{ event.short_description }}">
+<meta property="og:type" content="article">
+{% if event.cover_image %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ event.cover_image.url }}">
+{% endif %}
+
+<!-- Schema.org JSON-LD Structured Data for Event -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "{{ event.title|escapejs }}",
+  "startDate": "{{ event.start_date|date:'Y-m-d' }}",
+  "endDate": "{{ event.end_date|date:'Y-m-d' }}",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "Place",
+    "name": "{{ event.location|escapejs }}",
+    "address": "{{ event.venue_info|default:event.location|escapejs }}"
+  },
+  "description": "{{ event.short_description|escapejs }}",
+  "organizer": {
+    "@type": "Organization",
+    "name": "{{ event.organizer|default:'Local Samiti'|escapejs }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8">
+
+    <!-- Top Navigation Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'events:event_list' %}" class="hover:text-[#FF6026] flex items-center space-x-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>All Events</span>
+        </a>
+        <span>/</span>
+        <span class="text-slate-900 truncate max-w-xs">{{ event.title }}</span>
+    </div>
+
+    <!-- Event Hero Section -->
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas overflow-hidden">
+        <div class="relative h-64 sm:h-80 md:h-96 bg-gradient-to-r from-amber-700 via-orange-600 to-rose-700 overflow-hidden">
+            {% if event.cover_image %}
+                <img src="{{ event.cover_image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-transparent"></div>
+            {% else %}
+                <div class="w-full h-full flex flex-col items-center justify-center text-white text-center p-6 bg-gradient-to-tr from-amber-700 via-orange-600 to-rose-700">
+                    <i class="fa-solid fa-gopuram text-6xl mb-3 text-amber-200/90"></i>
+                </div>
+            {% endif %}
+
+            <!-- Category & Timing Badges -->
+            <div class="absolute top-4 left-4 flex flex-wrap gap-2">
+                <span class="bg-slate-900/80 backdrop-blur-md text-white font-extrabold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+                    {{ event.get_category_display }}
+                </span>
+                <span class="px-3.5 py-1.5 rounded-full text-xs font-extrabold shadow-md
+                    {% if event.timing_status == 'Ongoing' %}bg-emerald-500 text-white
+                    {% elif event.timing_status == 'Upcoming' %}bg-blue-600 text-white
+                    {% else %}bg-slate-700 text-white{% endif %}">
+                    {{ event.timing_status }}
+                </span>
+            </div>
+
+            <!-- Title & Basic Info Overlay -->
+            <div class="absolute bottom-6 left-6 right-6 text-white space-y-2">
+                <h1 class="text-2xl sm:text-4xl font-black tracking-tight drop-shadow-md">
+                    {{ event.title }}
+                </h1>
+                <div class="flex flex-wrap items-center gap-4 text-xs sm:text-sm font-semibold text-amber-100">
+                    <span class="flex items-center space-x-1.5">
+                        <i class="fa-regular fa-calendar-check text-amber-300"></i>
+                        <span>{{ event.start_date|date:"d F Y" }} {% if event.is_multi_day %}– {{ event.end_date|date:"d F Y" }}{% endif %}</span>
+                    </span>
+                    <span class="flex items-center space-x-1.5">
+                        <i class="fa-solid fa-location-dot text-rose-300"></i>
+                        <span>{{ event.location }}</span>
+                    </span>
+                    {% if event.organizer %}
+                    <span class="flex items-center space-x-1.5">
+                        <i class="fa-solid fa-user-group text-amber-300"></i>
+                        <span>{{ event.organizer }}</span>
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Action Bar -->
+        <div class="p-6 bg-slate-50 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div class="flex items-center space-x-3">
+                <!-- Add to Calendar Button -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" class="inline-flex items-center space-x-2 bg-[#FF6026] hover:bg-[#E5531B] text-white font-bold px-4 py-2.5 rounded-2xl shadow-xs transition-colors">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                        <span>Add to Calendar</span>
+                        <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                    </button>
+
+                    <div x-show="open" @click.away="open = false" x-cloak class="origin-top-left absolute left-0 mt-2 w-48 rounded-2xl bg-white border border-slate-200 shadow-xl py-1.5 z-50 text-slate-700 font-medium">
+                        <a href="{% url 'events:event_ics' event.slug %}" class="flex items-center space-x-2 px-4 py-2 hover:bg-amber-50 hover:text-[#FF6026]">
+                            <i class="fa-solid fa-download w-4"></i>
+                            <span>iCalendar (.ics file)</span>
+                        </a>
+                        <a href="https://calendar.google.com/calendar/render?action=TEMPLATE&text={{ event.title|urlencode }}&details={{ event.short_description|urlencode }}&location={{ event.location|urlencode }}&dates={{ event.start_date|date:'Ymd' }}/{{ event.end_date|date:'Ymd' }}" target="_blank" class="flex items-center space-x-2 px-4 py-2 hover:bg-amber-50 hover:text-[#FF6026]">
+                            <i class="fa-brands fa-google w-4"></i>
+                            <span>Google Calendar</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Share WhatsApp -->
+                <a href="https://api.whatsapp.com/send?text={{ event.title|urlencode }}%20-%20{{ request.build_absolute_uri|urlencode }}" target="_blank" class="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2.5 rounded-2xl shadow-xs transition-colors">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>Share on WhatsApp</span>
+                </a>
+            </div>
+
+            <!-- Generic Share Dropdown -->
+            <div class="flex items-center space-x-2" x-data="{ copied: false }">
+                <button @click="navigator.clipboard.writeText(window.location.href); copied = true; setTimeout(() => copied = false, 3000)" class="inline-flex items-center space-x-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold px-3.5 py-2.5 rounded-2xl">
+                    <i class="fa-regular fa-copy"></i>
+                    <span x-text="copied ? 'Link Copied!' : 'Copy Link'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Layout (Left Detail, Right Sidebar) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left 2 Columns: Schedule, About, History, Timings -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- About Section -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-info text-[#FF6026]"></i>
+                    <span>About the Festival / Event</span>
+                </h2>
+                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                    {{ event.about }}
+                </div>
+            </div>
+
+            <!-- History & Cultural Background -->
+            {% if event.history_background %}
+            <div class="bg-amber-50/60 rounded-3xl p-6 sm:p-8 border border-amber-200/80 space-y-4">
+                <h2 class="text-xl font-bold text-amber-900 border-b border-amber-200/80 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-landmark text-amber-600"></i>
+                    <span>Festival History & Significance</span>
+                </h2>
+                <div class="text-amber-950 text-sm leading-relaxed whitespace-pre-line">
+                    {{ event.history_background }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Day-by-Day Schedule for Multi-Day Events -->
+            {% if schedule_days %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-[#FF6026]"></i>
+                        <span>Full Day-by-Day Schedule</span>
+                    </h2>
+                    <span class="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full">
+                        {{ schedule_days|length }} Days Program
+                    </span>
+                </div>
+
+                <div class="space-y-6">
+                    {% for day in schedule_days %}
+                    <div class="bg-slate-50/80 rounded-2xl p-5 border border-slate-200/80 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                            <span class="font-extrabold text-slate-900 text-base flex items-center space-x-2">
+                                <span class="w-7 h-7 bg-[#FF6026] text-white rounded-full flex items-center justify-center text-xs">
+                                    {{ day.day_number }}
+                                </span>
+                                <span>{{ day.title }}</span>
+                            </span>
+                            {% if day.date %}
+                            <span class="text-xs text-slate-500 font-semibold">{{ day.date|date:"d M Y" }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-xs">
+                            {% if day.morning_program %}
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                                <span class="font-extrabold text-amber-700 uppercase tracking-wider block">
+                                    <i class="fa-solid fa-sun text-amber-500 mr-1"></i>Morning Program
+                                </span>
+                                <p class="text-slate-700 leading-relaxed">{{ day.morning_program }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if day.afternoon_program %}
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                                <span class="font-extrabold text-orange-700 uppercase tracking-wider block">
+                                    <i class="fa-solid fa-cloud-sun text-orange-500 mr-1"></i>Afternoon Program
+                                </span>
+                                <p class="text-slate-700 leading-relaxed">{{ day.afternoon_program }}</p>
+                            </div>
+                            {% endif %}
+
+                            {% if day.evening_program %}
+                            <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 space-y-1">
+                                <span class="font-extrabold text-indigo-700 uppercase tracking-wider block">
+                                    <i class="fa-solid fa-moon text-indigo-500 mr-1"></i>Evening Program
+                                </span>
+                                <p class="text-slate-700 leading-relaxed">{{ day.evening_program }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Important Dates / Puja Timings -->
+            {% if important_dates %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-bell text-[#FF6026]"></i>
+                    <span>Important Ritual & Puja Timings</span>
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for d in important_dates %}
+                    <div class="p-4 rounded-2xl bg-amber-50/50 border border-amber-200/60 space-y-1">
+                        <span class="font-bold text-slate-900 text-sm block">{{ d.title }}</span>
+                        <span class="text-xs text-amber-800 font-extrabold block">{{ d.date_info }}</span>
+                        {% if d.details %}
+                        <p class="text-xs text-slate-600">{{ d.details }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Photo Gallery -->
+            {% if gallery %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-images text-[#FF6026]"></i>
+                    <span>Event Gallery</span>
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {% for g in gallery %}
+                    <div class="group relative rounded-2xl overflow-hidden bg-slate-100 aspect-square">
+                        <img src="{{ g.image.url }}" alt="{{ g.caption }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        {% if g.caption %}
+                        <div class="absolute bottom-0 inset-x-0 bg-slate-900/70 p-2 text-[10px] text-white font-medium truncate">
+                            {{ g.caption }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Right 1 Column: Venue, Organizer, Map, Nearby Events -->
+        <div class="space-y-6">
+
+            <!-- Venue & Contact Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                    Venue & Contact Info
+                </h3>
+
+                <div class="space-y-3">
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">LOCATION</span>
+                        <span class="font-bold text-slate-800 text-sm flex items-center space-x-1.5 mt-0.5">
+                            <i class="fa-solid fa-location-dot text-rose-500"></i>
+                            <span>{{ event.location }}</span>
+                        </span>
+                    </div>
+
+                    {% if event.venue_info %}
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">ADDRESS / VENUE</span>
+                        <p class="text-slate-700 mt-0.5 leading-relaxed">{{ event.venue_info }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if event.organizer %}
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">ORGANIZER</span>
+                        <p class="text-slate-800 font-semibold mt-0.5">{{ event.organizer }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if event.contact_info %}
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">CONTACT DETAILS</span>
+                        <p class="text-slate-800 font-semibold mt-0.5">{{ event.contact_info }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if event.map_location %}
+                <div class="pt-2">
+                    <a href="{{ event.map_location }}" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-2xl flex items-center justify-center space-x-2 transition-colors">
+                        <i class="fa-solid fa-map-location-dot text-rose-500"></i>
+                        <span>Open Map & Directions</span>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Nearby / Related Events -->
+            {% if related_events %}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-compass text-amber-500"></i>
+                    <span>Nearby / Related Events</span>
+                </h3>
+
+                <div class="space-y-4">
+                    {% for item in related_events %}
+                    <div class="flex items-start space-x-3 group">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex-shrink-0 flex items-center justify-center font-bold text-xs overflow-hidden">
+                            {% if item.cover_image %}
+                            <img src="{{ item.cover_image.url }}" alt="{{ item.title }}" class="w-full h-full object-cover">
+                            {% else %}
+                            <i class="fa-solid fa-calendar"></i>
+                            {% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-900 group-hover:text-[#FF6026] truncate">
+                                <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                            </h4>
+                            <span class="text-[10px] text-amber-700 font-semibold block">
+                                {{ item.start_date|date:"d M Y" }}
+                            </span>
+                            <span class="text-[10px] text-slate-500 truncate block">
+                                <i class="fa-solid fa-location-dot text-rose-400 mr-0.5"></i>{{ item.location }}
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

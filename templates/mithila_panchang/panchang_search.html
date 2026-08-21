@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}पंचांग खोज - Search Mithila Panchang | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 pb-12">
+
+    <!-- Search Header -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-4">
+        <h1 class="text-2xl sm:text-4xl font-black tracking-tight">
+            पंचांग खोज (Panchang Search)
+        </h1>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium">
+            तिथि, पाबनि-तिहार, नक्षत्र, मास या मुहूर्त का नाम लिखकर खोजें (e.g. "विवाह", "मुड़न", "छठ", "रोहिणी")।
+        </p>
+
+        <form method="get" class="relative max-w-xl">
+            <input type="text" name="q" value="{{ search_query }}" placeholder="खोजें (Search Panchang)..." class="w-full bg-white text-slate-900 border border-white rounded-2xl pl-10 pr-24 py-3 text-xs sm:text-sm font-semibold focus:outline-none shadow-md">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 sm:top-4 text-amber-700 text-sm"></i>
+            <button type="submit" class="absolute right-2 top-1.5 bottom-1.5 bg-[#7D281E] text-white text-xs font-bold px-4 rounded-xl hover:bg-[#601F17] transition-colors">
+                खोजें
+            </button>
+        </form>
+    </div>
+
+    {% if search_query %}
+    <!-- Search Results Section -->
+    <div class="space-y-6">
+        
+        <!-- Festivals Results -->
+        {% if festivals %}
+        <div class="space-y-3">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center space-x-2 border-b border-amber-200 pb-2">
+                <i class="fa-solid fa-gopuram text-rose-600"></i>
+                <span>पाबनि-तिहार परिणाम (Festivals)</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for f in festivals %}
+                <a href="{% url 'mithila_panchang:festival_detail' f.pk %}" class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas hover:shadow-saas-lg space-y-1 block">
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-500">
+                        <span class="text-amber-900">{{ f.date|date:"d F Y" }}</span>
+                        <span>{{ f.mithila_month_name }}</span>
+                    </div>
+                    <h4 class="font-black text-slate-900 text-base text-[#7D281E]">{{ f.title_hi }}</h4>
+                    <p class="text-xs text-slate-600 line-clamp-2">{{ f.short_description }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Muhurat Results -->
+        {% if muhurats %}
+        <div class="space-y-3">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center space-x-2 border-b border-amber-200 pb-2">
+                <i class="fa-solid fa-heart text-emerald-600"></i>
+                <span>शुभ मुहूर्त परिणाम (Muhurats)</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {% for m in muhurats %}
+                <a href="{% url 'mithila_panchang:muhurat_detail' m.pk %}" class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas hover:shadow-saas-lg space-y-1 block">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        {{ m.category.name_hi }}
+                    </span>
+                    <h4 class="font-black text-slate-900 text-sm mt-1">{{ m.gregorian_date|date:"d F Y" }}</h4>
+                    <p class="text-xs text-slate-600">{{ m.mithila_month_name }} {{ m.tithi_name }} • {{ m.nakshatra_name }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Panchang Days Results -->
+        {% if days %}
+        <div class="space-y-3">
+            <h3 class="font-extrabold text-slate-900 text-base flex items-center space-x-2 border-b border-amber-200 pb-2">
+                <i class="fa-regular fa-calendar-days text-amber-600"></i>
+                <span>दैनिक पंचांग परिणाम (Daily Records)</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {% for d in days %}
+                <a href="{% url 'mithila_panchang:date_detail' d.date|date:'Y-m-d' %}" class="bg-white p-4 rounded-2xl border border-amber-200 shadow-saas hover:shadow-saas-lg space-y-1 block">
+                    <h4 class="font-black text-slate-900 text-sm">{{ d.date|date:"d F Y" }} ({{ d.weekday_name }})</h4>
+                    <p class="text-xs text-[#7D281E] font-bold">{{ d.mithila_month_name }} {{ d.paksha }} {{ d.mithila_tithi_name }}</p>
+                    <p class="text-[11px] text-slate-500">{{ d.nakshatra_name }} नक्षत्र</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not festivals and not muhurats and not days %}
+        <div class="bg-white rounded-3xl p-12 text-center border border-amber-200 text-slate-500 space-y-2">
+            <i class="fa-solid fa-magnifying-glass text-4xl text-amber-400"></i>
+            <p class="font-bold text-slate-800">"{{ search_query }}" के लिए कोई परिणाम नहीं मिला</p>
+            <p class="text-xs">कृपया अन्य शब्द या तिथि खोजें।</p>
+        </div>
+        {% endif %}
+
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Matrimonial Profile: {{ profile.full_name }} - Ghatkaiti{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8" x-data="{ reportModalOpen: false }">
+
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'ghatkaiti:profile_list' %}" class="hover:text-emerald-700">&larr; Ghatkaiti Matrimonial</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">{{ profile.full_name }}</span>
+    </div>
+
+    <!-- Main Profile Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-saas space-y-8">
+
+        <!-- Top Profile Header -->
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-slate-100 pb-6 text-center sm:text-left">
+            <div class="w-28 h-28 rounded-3xl overflow-hidden bg-slate-100 border-2 border-emerald-500 flex-shrink-0 shadow-md">
+                {% if profile.profile_photo %}
+                <img src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-tr from-emerald-800 to-teal-600 text-white font-black text-4xl flex items-center justify-center">
+                    {{ profile.full_name|first }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 flex-1 min-w-0">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <span class="bg-emerald-100 text-emerald-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                        {{ profile.get_looking_for_display }}
+                    </span>
+                    <span class="bg-slate-100 text-slate-700 font-extrabold text-xs px-3 py-1 rounded-full">
+                        {{ profile.get_gender_display }}
+                    </span>
+                </div>
+
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">{{ profile.full_name }} ({{ profile.age }} Yrs)</h1>
+                <p class="text-sm font-bold text-slate-600">{{ profile.profession }} • {{ profile.education }}</p>
+
+                <!-- Protected Contact on WhatsApp CTA -->
+                <div class="pt-4 flex flex-wrap justify-center sm:justify-start gap-3">
+                    <a href="{{ profile.get_whatsapp_url }}" target="_blank" class="bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs px-6 py-3 rounded-2xl shadow-md flex items-center space-x-2 transition-all">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>💬 Contact Family on WhatsApp</span>
+                    </a>
+
+                    <button @click="reportModalOpen = true" class="bg-rose-50 hover:bg-rose-100 text-rose-700 font-extrabold text-xs px-4 py-3 rounded-2xl border border-rose-200 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-flag"></i>
+                        <span>Report Profile</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Information Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs font-semibold">
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">CURRENT CITY</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ profile.location }}</span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">NATIVE ROOTS</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ profile.native_place }}</span>
+            </div>
+
+            {% if profile.height %}
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">HEIGHT</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ profile.height }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Detailed Sections -->
+        <div class="space-y-6 text-xs font-medium">
+
+            <!-- About Candidate -->
+            <div class="space-y-2">
+                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">About Candidate</h2>
+                <p class="text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                    {{ profile.about_person }}
+                </p>
+            </div>
+
+            <!-- Family Background -->
+            <div class="space-y-2">
+                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">Family Information</h2>
+                <p class="text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                    {{ profile.family_info }}
+                </p>
+            </div>
+
+            <!-- Expectations -->
+            <div class="space-y-2">
+                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">Partner Expectations</h2>
+                <p class="text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                    {{ profile.expectations }}
+                </p>
+            </div>
+
+            {% if profile.community_family_details %}
+            <div class="space-y-2">
+                <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider border-b border-slate-100 pb-2">Roots & Lineage</h2>
+                <p class="text-slate-700 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                    {{ profile.community_family_details }}
+                </p>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-amber-950 text-xs leading-relaxed">
+            <i class="fa-solid fa-shield-halved text-amber-600 mr-1.5"></i>
+            <span class="font-bold">Safety Note:</span> Contact details are protected. Always verify credentials and consult family elders before finalizing matchmaking decisions.
+        </div>
+
+    </div>
+
+    <!-- Report Profile Modal -->
+    <div x-show="reportModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div @click.away="reportModalOpen = false" class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-4 border border-slate-200 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-black text-slate-900">Report Profile</h3>
+                <button @click="reportModalOpen = false" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form method="post" class="space-y-4 text-xs font-semibold">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="report">
+                
+                <div class="space-y-1">
+                    <label class="text-slate-700">Reason for Report</label>
+                    {{ report_form.reason }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Details</label>
+                    {{ report_form.details }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Your Name (Optional)</label>
+                    {{ report_form.reporter_name }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Your Email (Optional)</label>
+                    {{ report_form.reporter_email }}
+                </div>
+
+                <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 rounded-2xl shadow-md text-xs">
+                    Submit Report to Admin
+                </button>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

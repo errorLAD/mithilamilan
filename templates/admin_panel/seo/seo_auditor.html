@@ -1,0 +1,50 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Content SEO Auditor | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Content SEO Auditor & Score Engine</h1>
+        <p class="text-xs text-slate-500 mt-1">Real-time SEO scoring algorithm (0-100) evaluating content titles, meta tags, schema, and images.</p>
+    </div>
+</div>
+
+<div class="space-y-4">
+    {% for item in audited_content %}
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="space-y-2 flex-1">
+            <div class="flex items-center gap-3">
+                <span class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-[#E85D2A] border border-orange-200">
+                    {{ item.type }}
+                </span>
+                <h2 class="text-sm font-bold text-slate-900 font-heading">{{ item.title }}</h2>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 text-[11px] font-medium pt-1">
+                {% for check in item.checks %}
+                <span class="px-2.5 py-1 rounded-full border flex items-center gap-1.5 {% if check.status %}bg-emerald-50 text-emerald-800 border-emerald-200{% else %}bg-amber-50 text-amber-800 border-amber-200{% endif %}">
+                    <i class="fa-solid {% if check.status %}fa-circle-check text-emerald-600{% else %}fa-circle-exclamation text-amber-600{% endif %}"></i>
+                    <span>{{ check.name }}</span>
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- SEO Score Circle / Badge -->
+        <div class="flex items-center gap-4 shrink-0 border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-6">
+            <div class="text-center">
+                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">SEO Score</div>
+                <div class="text-2xl font-black font-heading mt-1 {% if item.score >= 80 %}text-emerald-600{% elif item.score >= 60 %}text-amber-600{% else %}text-rose-600{% endif %}">
+                    {{ item.score }} / 100
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="p-12 text-center text-slate-400 bg-white border border-slate-200/80 rounded-2xl">
+        No content items found for auditing.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

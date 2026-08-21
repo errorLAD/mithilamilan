@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}समाचार भेजें (+ Submit News) | MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto space-y-8 font-sans pb-16">
+
+    <!-- Global Back Button -->
+    <div>
+        <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'news:news_list' %}';" 
+                class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 text-xs font-bold transition-all shadow-2xs">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>← वापस</span>
+        </button>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-saas space-y-6">
+        
+        <div class="border-b border-slate-100 pb-4 space-y-1">
+            <span class="text-xs font-extrabold text-[#E85D2A] uppercase tracking-wider">Mithila Digital News</span>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-pen-to-square text-[#E85D2A]"></i>
+                <span>+ समाचार भेजें</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">अपनी स्थानीय या महत्वपूर्ण खबर हमारे साथ साझा करें। समीक्षा के बाद समाचार लाइव होगा।</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-5 text-xs">
+            {% csrf_token %}
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">समाचार शीर्षक (Headline) *</label>
+                <input type="text" name="title" required placeholder="मुख्य समाचार का शीर्षक लिखें..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">श्रेणी (Category) *</label>
+                    <select name="category" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                        {% for cat_code, cat_label in categories %}
+                        <option value="{{ cat_code }}">{{ cat_label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">स्थान (Location)</label>
+                    <input type="text" name="location" placeholder="स्थान (जैसे: दरभंगा, पटना, दिल्ली)..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">संक्षिप्त सारांश (Short Summary)</label>
+                <input type="text" name="summary" placeholder="समाचार का 1-2 वाक्य में मुख्य सारांश..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">विस्तृत समाचार (Full Content) *</label>
+                <textarea name="content" rows="8" required placeholder="समाचार का पूरा विवरण लिखें..." class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs leading-relaxed"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-extrabold text-slate-800 mb-1">कवर फोटो (Cover Image)</label>
+                <input type="file" name="image" accept="image/*" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-2xl text-slate-600 text-xs">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">स्रोत का नाम (Source Name)</label>
+                    <input type="text" name="source_name" placeholder="यदि कोई स्रोत हो (जैसे: दैनिक रिपोर्टer)..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                </div>
+                <div>
+                    <label class="block font-extrabold text-slate-800 mb-1">स्रोत URL (Source URL)</label>
+                    <input type="url" name="source_url" placeholder="https://..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-[#E85D2A] font-medium text-xs">
+                </div>
+            </div>
+
+            <div class="pt-4 flex items-center justify-end space-x-3">
+                <a href="{% url 'news:news_list' %}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors">Cancel</a>
+                <button type="submit" class="px-7 py-3 rounded-2xl bg-[#E85D2A] hover:bg-[#d44c1a] text-white font-extrabold shadow-lg transition-transform transform active:scale-95">
+                    समाचार जमा करें (Submit News)
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}

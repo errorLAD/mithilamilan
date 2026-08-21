@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}बारह महीने - 12 Mithila Months | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 pb-12">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-3">
+        <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+            <i class="fa-solid fa-layer-group text-amber-300"></i>
+            <span>पारम्परिक मैथिली मास</span>
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+            बारह महीने (Twelve Mithila Months)
+        </h1>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium">
+            मिथिला पंचांग के १२ मास एवं उनके समतुल्य अंग्रेजी कैलेंडर अवधि। किसी भी महीने पर क्लिक करके उसका मासिक कैलेंडर देखें।
+        </p>
+    </div>
+
+    <!-- 12 Months Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {% for m in months %}
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 m.month_order %}" 
+           class="group bg-white rounded-2xl p-6 border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between hover:border-[#7D281E]">
+            <div class="space-y-2">
+                <div class="flex items-center justify-between text-xs font-bold text-amber-800">
+                    <span class="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-900 text-xs font-black">
+                        {{ m.month_order }}
+                    </span>
+                    <span class="text-[10px] bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                        {{ m.name_en }}
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 group-hover:text-[#7D281E] transition-colors">
+                    {{ m.name_hi }}
+                </h3>
+                <p class="text-xs font-bold text-amber-900">
+                    {{ m.gregorian_range_hi }} <span class="text-slate-500 font-normal">({{ m.gregorian_range_en }})</span>
+                </p>
+            </div>
+            <div class="pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-[#7D281E]">
+                <span>मासिक कैलेंडर</span>
+                <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
+        {% empty %}
+        <!-- Fallback Static 12 Months if seed not executed yet -->
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 4 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">वैशाख (बैशाख)</h3>
+            <p class="text-xs font-bold text-amber-900">अप्रैल – मई (April – May)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 5 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">ज्येष्ठ (जेठ)</h3>
+            <p class="text-xs font-bold text-amber-900">मई – जून (May – June)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 6 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">आषाढ (असाढ़)</h3>
+            <p class="text-xs font-bold text-amber-900">जून – जुलाई (June – July)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 7 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">श्रावण (साओन)</h3>
+            <p class="text-xs font-bold text-amber-900">जुलाई – अगस्त (July – August)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 8 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">भाद्रपद (भादो)</h3>
+            <p class="text-xs font-bold text-amber-900">अगस्त – सितंबर (August – September)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 9 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">आश्विन (आसिन)</h3>
+            <p class="text-xs font-bold text-amber-900">सितंबर – अक्टूबर (September – October)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 10 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">कार्तिक</h3>
+            <p class="text-xs font-bold text-amber-900">अक्टूबर – नवंबर (October – November)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 11 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">मार्गशीर्ष (अगहन)</h3>
+            <p class="text-xs font-bold text-amber-900">नवंबर – दिसंबर (November – December)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2026 12 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">पौष (पूस)</h3>
+            <p class="text-xs font-bold text-amber-900">दिसंबर – जनवरी (December – January)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2027 1 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">माघ</h3>
+            <p class="text-xs font-bold text-amber-900">जनवरी – फरवरी (January – February)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2027 2 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">फाल्गुन (फागुन)</h3>
+            <p class="text-xs font-bold text-amber-900">फरवरी – मार्च (February – March)</p>
+        </a>
+        <a href="{% url 'mithila_panchang:monthly_calendar_specified' 2027 3 %}" class="bg-white rounded-2xl p-6 border border-amber-200 shadow-saas hover:shadow-saas-lg transition-all space-y-2">
+            <h3 class="text-2xl font-black text-slate-900">चैत्र</h3>
+            <p class="text-xs font-bold text-amber-900">मार्च – अप्रैल (March – April)</p>
+        </a>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

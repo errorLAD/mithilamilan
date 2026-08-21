@@ -1,0 +1,28 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Comments Tree Admin | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Comments Moderation</h1>
+        <p class="text-xs text-slate-500 mt-1">Review user comments and nested discussion replies.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+    <div class="space-y-3 divide-y divide-slate-100 text-xs">
+        {% for c in comments %}
+        <div class="pt-3.5 first:pt-0">
+            <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1.5 font-medium">
+                <span class="font-bold text-slate-900">u/{{ c.author.username }} on "{{ c.post.title|truncatechars:40 }}"</span>
+                <span>{{ c.created_at|date:"d M Y, H:i" }}</span>
+            </div>
+            <div class="text-slate-800 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/70 font-medium">{{ c.content }}</div>
+        </div>
+        {% empty %}
+        <div class="text-slate-400 text-xs py-6 text-center">No comments found.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

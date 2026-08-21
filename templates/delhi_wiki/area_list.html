@@ -1,0 +1,64 @@
+{% extends 'delhi_wiki/base.html' %}
+
+{% block wiki_content %}
+<div class="space-y-6 font-devanagari">
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <h2 class="text-base font-bold text-[#0F1F35]">मिथिला के प्रमुख क्षेत्र एवं स्थान (Mithila Areas Directory)</h2>
+        {% if user.is_authenticated %}
+        <a href="{% url 'delhi_wiki:area_create' %}" class="px-4 py-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-semibold text-xs rounded-xl shadow-xs transition-colors">
+            + क्षेत्र जोड़ें (Add Area)
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for area in areas %}
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-2xs hover:shadow-saas-lg hover:border-[#E85D2A]/40 transition-all overflow-hidden flex flex-col justify-between">
+            
+            {% if area.image %}
+            <div class="h-44 bg-slate-100 overflow-hidden">
+                <img src="{{ area.image.url }}" alt="{{ area.name }}" class="w-full h-full object-cover">
+            </div>
+            {% endif %}
+
+            <div class="p-5 space-y-3 flex-1">
+                <div class="flex items-center justify-between">
+                    <span class="px-2.5 py-0.5 rounded-md bg-[#FFF7ED] text-[#E85D2A] font-bold text-[10px] border border-[#FFEDD5]">
+                        मिथिला क्षेत्र
+                    </span>
+                    {% if area.is_verified %}
+                    <span class="text-[10px] font-bold text-emerald-600"><i class="fa-solid fa-circle-check mr-1"></i>सत्यापित</span>
+                    {% endif %}
+                </div>
+
+                <h3 class="text-base font-bold text-[#0F1F35] leading-snug hover:text-[#E85D2A] transition-colors">
+                    <a href="{% url 'delhi_wiki:area_detail' area.slug %}">{{ area.name }}</a>
+                </h3>
+
+                <p class="text-xs text-slate-500"><i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>{{ area.location }}</p>
+
+                <p class="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    {{ area.description }}
+                </p>
+            </div>
+
+            <div class="p-4 bg-[#F8F8F6] border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                <span>{{ area.landmarks.count }} दर्शनीय स्थल</span>
+                <a href="{% url 'delhi_wiki:area_detail' area.slug %}" class="text-[#E85D2A] font-bold hover:underline">विस्तार से देखें ➔</a>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-8 text-center space-y-3 shadow-2xs">
+            <div class="w-12 h-12 mx-auto rounded-xl bg-[#FFF7ED] text-[#E85D2A] flex items-center justify-center text-xl">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <h3 class="font-bold text-[#0F1F35] text-sm">अभी यहाँ कोई क्षेत्र सूचीबद्ध नहीं है</h3>
+            <p class="text-xs text-slate-500">मिथिला परिचय में पहला स्थान जोड़ने वाले योगदानकर्ता बनें।</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

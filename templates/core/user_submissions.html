@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Submissions & Moderation Status | MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 font-sans pb-12">
+
+    <!-- Top Header -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-saas flex flex-wrap items-center justify-between gap-4">
+        <div class="space-y-1">
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-paper-plane text-[#E85D2A]"></i>
+                <span>My Submissions & Approvals</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium">Track approval status (Pending, Approved, Rejected) and rejection notes for all your submitted items.</p>
+        </div>
+        <span class="px-4 py-2 rounded-2xl bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200">
+            Total Submissions: {{ total_submissions }}
+        </span>
+    </div>
+
+    <!-- 1. News Submissions -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-newspaper text-[#E85D2A]"></i>
+            <span>Submitted News Articles ({{ my_news.count }})</span>
+        </h2>
+
+        {% if my_news %}
+        <div class="space-y-3">
+            {% for item in my_news %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="space-y-1 max-w-xl">
+                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
+                    <span class="text-slate-400 text-[10px] block">Category: {{ item.get_category_display }} • Submitted: {{ item.created_at|date:"d M Y, H:i" }}</span>
+                    {% if item.rejection_reason %}
+                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
+                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
+                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
+                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
+                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                        {{ item.get_status_display }}
+                    </span>
+                    {% if item.status == 'APPROVED' %}
+                    <a href="{% url 'news:news_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 italic">No news articles submitted yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- 2. Story Submissions -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-book-open text-[#E85D2A]"></i>
+            <span>Submitted Stories ({{ my_stories.count }})</span>
+        </h2>
+
+        {% if my_stories %}
+        <div class="space-y-3">
+            {% for item in my_stories %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="space-y-1 max-w-xl">
+                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
+                    <span class="text-slate-400 text-[10px] block">Category: {{ item.get_category_display }} • Submitted: {{ item.created_at|date:"d M Y" }}</span>
+                    {% if item.rejection_reason %}
+                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
+                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
+                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
+                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
+                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                        {{ item.get_status_display }}
+                    </span>
+                    {% if item.status == 'APPROVED' %}
+                    <a href="{% url 'storytelling:story_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 italic">No stories submitted yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- 3. PG Rental Listings -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-house-user text-[#E85D2A]"></i>
+            <span>Submitted PG & Rental Listings ({{ my_rentals.count }})</span>
+        </h2>
+
+        {% if my_rentals %}
+        <div class="space-y-3">
+            {% for item in my_rentals %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="space-y-1 max-w-xl">
+                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
+                    <span class="text-slate-400 text-[10px] block">Rent: ₹{{ item.price_per_month }}/mo • Locality: {{ item.locality }}</span>
+                    {% if item.rejection_reason %}
+                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
+                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
+                        {% if item.approval_status == 'Pending' %}bg-amber-100 text-amber-900 border border-amber-300
+                        {% elif item.approval_status == 'Approved' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                        {% elif item.approval_status == 'Rejected' %}bg-rose-100 text-rose-900 border border-rose-300
+                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                        {{ item.approval_status }}
+                    </span>
+                    {% if item.approval_status == 'Approved' %}
+                    <a href="{% url 'pg_rental:pg_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 italic">No rental listings submitted yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- 4. Job Postings -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-briefcase text-[#E85D2A]"></i>
+            <span>Submitted Job Postings ({{ my_jobs.count }})</span>
+        </h2>
+
+        {% if my_jobs %}
+        <div class="space-y-3">
+            {% for item in my_jobs %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="space-y-1 max-w-xl">
+                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }} ({{ item.company }})</span>
+                    <span class="text-slate-400 text-[10px] block">Location: {{ item.location }} • Category: {{ item.category.name }}</span>
+                    {% if item.rejection_reason %}
+                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
+                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
+                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
+                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
+                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                        {{ item.get_status_display }}
+                    </span>
+                    {% if item.status == 'APPROVED' %}
+                    <a href="{{ item.get_absolute_url }}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 italic">No job postings submitted yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- 5. Lost & Found Submissions -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
+            <i class="fa-solid fa-box-open text-[#E85D2A]"></i>
+            <span>Submitted Lost & Found Items ({{ my_lost_found.count }})</span>
+        </h2>
+
+        {% if my_lost_found %}
+        <div class="space-y-3">
+            {% for item in my_lost_found %}
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div class="space-y-1 max-w-xl">
+                    <span class="font-bold text-slate-900 text-sm block">[{{ item.get_item_type_display }}] {{ item.title }}</span>
+                    <span class="text-slate-400 text-[10px] block">Location: {{ item.location }} • Date: {{ item.date_lost_found }}</span>
+                    {% if item.rejection_reason %}
+                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
+                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex items-center space-x-3 shrink-0">
+                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
+                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
+                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
+                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
+                        {% else %}bg-slate-200 text-slate-700{% endif %}">
+                        {{ item.get_status_display }}
+                    </span>
+                    {% if item.status == 'APPROVED' %}
+                    <a href="{% url 'lost_and_found:item_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-xs text-slate-400 italic">No lost/found items submitted yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

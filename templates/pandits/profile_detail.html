@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile.full_name }} - {{ profile.designation }}{% endblock %}
+
+{% block extra_head %}
+<!-- SEO & Open Graph Meta Tags -->
+<meta name="description" content="{{ profile.full_name }} - {{ profile.designation }}. Experience: {{ profile.experience_years }} years. Location: {{ profile.location }}. Specializations: {{ profile.specialization }}">
+<meta property="og:title" content="{{ profile.full_name }} | Verified {{ profile.get_profile_type_display }}">
+<meta property="og:description" content="{{ profile.about|truncatewords:30 }}">
+{% if profile.profile_photo %}
+<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ profile.profile_photo.url }}">
+{% endif %}
+
+<!-- Schema.org JSON-LD Structured Data for Professional Service -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "{{ profile.full_name|escapejs }}",
+  "description": "{{ profile.designation|escapejs }}",
+  "telephone": "{{ profile.phone_number|default:profile.whatsapp_number|escapejs }}",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ profile.location|escapejs }}",
+    "streetAddress": "{{ profile.address_area|default:profile.location|escapejs }}"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8" x-data="{ showConsultationModal: false }">
+
+    <!-- Top Navigation Breadcrumb -->
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'pandits:profile_list' %}" class="hover:text-amber-700 flex items-center space-x-1">
+            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+            <span>Directory</span>
+        </a>
+        <span>/</span>
+        <span class="text-slate-900 truncate max-w-xs">{{ profile.full_name }}</span>
+    </div>
+
+    <!-- Profile Hero Card -->
+    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-saas overflow-hidden p-6 sm:p-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+
+            <!-- Profile Photo -->
+            <div class="relative w-36 h-36 sm:w-44 sm:h-44 rounded-3xl overflow-hidden bg-slate-100 border-4 border-amber-200 shadow-md flex-shrink-0">
+                {% if profile.profile_photo %}
+                <img src="{{ profile.profile_photo.url }}" alt="{{ profile.full_name }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-tr from-amber-700 via-yellow-700 to-amber-900 text-white font-black text-5xl flex items-center justify-center">
+                    {{ profile.full_name|first }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Overview Details -->
+            <div class="flex-1 text-center md:text-left space-y-3">
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                    <span class="bg-amber-100 text-amber-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                        {{ profile.get_profile_type_display }}
+                    </span>
+                    {% if profile.is_verified %}
+                    <span class="bg-emerald-100 text-emerald-800 font-extrabold text-xs px-3 py-1 rounded-full flex items-center space-x-1">
+                        <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                        <span>Verified Specialist</span>
+                    </span>
+                    {% endif %}
+                </div>
+
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                    {{ profile.full_name }}
+                </h1>
+
+                <p class="text-xs sm:text-sm font-semibold text-slate-600">
+                    {{ profile.designation }}
+                </p>
+
+                <!-- Key Attributes Badges -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2 text-xs font-semibold text-slate-600">
+                    <div class="flex items-center space-x-1 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-briefcase text-amber-600"></i>
+                        <span>{{ profile.experience_years }}+ Years Experience</span>
+                    </div>
+                    <div class="flex items-center space-x-1 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-location-dot text-rose-500"></i>
+                        <span>{{ profile.location }}</span>
+                    </div>
+                    <div class="flex items-center space-x-1 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200">
+                        <i class="fa-solid fa-language text-blue-500"></i>
+                        <span>{{ profile.languages }}</span>
+                    </div>
+                </div>
+
+                <!-- CTAs: Chat on WhatsApp & Request Consultation -->
+                <div class="pt-4 flex flex-wrap items-center justify-center md:justify-start gap-3 text-xs">
+                    <!-- Prominent WhatsApp CTA -->
+                    <a href="{{ default_whatsapp_url }}" target="_blank" class="inline-flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow-lg transition-all hover:scale-105">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Chat on WhatsApp</span>
+                    </a>
+
+                    <!-- Request Consultation CTA -->
+                    <button @click="showConsultationModal = true" class="inline-flex items-center space-x-2 bg-amber-700 hover:bg-amber-800 text-white font-extrabold px-5 py-3 rounded-2xl shadow-md transition-all">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Request a Consultation</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Main Profile Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left 2 Columns -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- About & Profile Description -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-user-check text-amber-600"></i>
+                    <span>About {{ profile.full_name }}</span>
+                </h2>
+                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                    {{ profile.about }}
+                </div>
+            </div>
+
+            <!-- Specializations & Services Offered -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-6">
+                <div class="space-y-3">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-star text-amber-500"></i>
+                        <span>Core Specializations</span>
+                    </h2>
+                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
+                        {% for spec in profile.specialization.split %}
+                        <span class="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1.5 rounded-xl">
+                            {{ spec }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-4 border-t border-slate-100">
+                    <h2 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-hands-praying text-amber-600"></i>
+                        <span>Services & Pujas Offered</span>
+                    </h2>
+                    <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+                        {{ profile.services_offered }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Pricing (where applicable) -->
+            {% if profile.service_pricing %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-indian-rupee-sign text-emerald-600"></i>
+                    <span>Service Rates & Dakshina Guidelines</span>
+                </h2>
+                <div class="text-slate-700 text-sm leading-relaxed whitespace-pre-line bg-emerald-50/50 p-4 rounded-2xl border border-emerald-200/60">
+                    {{ profile.service_pricing }}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Photo Gallery -->
+            {% if gallery %}
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas space-y-4">
+                <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-images text-amber-600"></i>
+                    <span>Certificates & Puja Gallery</span>
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    {% for g in gallery %}
+                    <div class="group relative rounded-2xl overflow-hidden bg-slate-100 aspect-square border border-slate-200">
+                        <img src="{{ g.image.url }}" alt="{{ g.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Right 1 Column: Information & Related -->
+        <div class="space-y-6">
+
+            <!-- Availability & Address Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                    Availability & Location
+                </h3>
+
+                <div class="space-y-3">
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">AVAILABILITY HOURS</span>
+                        <p class="font-bold text-slate-800 mt-0.5 flex items-center space-x-1.5">
+                            <i class="fa-regular fa-clock text-amber-600"></i>
+                            <span>{{ profile.availability }}</span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">CITY / REGION</span>
+                        <p class="font-bold text-slate-800 mt-0.5 flex items-center space-x-1.5">
+                            <i class="fa-solid fa-location-dot text-rose-500"></i>
+                            <span>{{ profile.location }}</span>
+                        </p>
+                    </div>
+
+                    {% if profile.address_area %}
+                    <div>
+                        <span class="font-extrabold text-slate-400 uppercase tracking-wider block text-[10px]">ADDRESS / AREA</span>
+                        <p class="text-slate-700 mt-0.5 leading-relaxed">{{ profile.address_area }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="pt-3 border-t border-slate-100 space-y-2">
+                    <a href="{{ default_whatsapp_url }}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-2xl flex items-center justify-center space-x-2 transition-colors">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span>Start WhatsApp Chat</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Related Profiles -->
+            {% if related_profiles %}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4">
+                <h3 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                    Similar Specialists
+                </h3>
+
+                <div class="space-y-4">
+                    {% for r in related_profiles %}
+                    <div class="flex items-center space-x-3 group">
+                        <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex-shrink-0 flex items-center justify-center font-bold text-sm overflow-hidden">
+                            {% if r.profile_photo %}
+                            <img src="{{ r.profile_photo.url }}" alt="{{ r.full_name }}" class="w-full h-full object-cover">
+                            {% else %}
+                            {{ r.full_name|first }}
+                            {% endif %}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-900 group-hover:text-amber-700 truncate">
+                                <a href="{{ r.get_absolute_url }}">{{ r.full_name }}</a>
+                            </h4>
+                            <span class="text-[10px] text-slate-500 truncate block">{{ r.designation }}</span>
+                            <span class="text-[10px] text-amber-700 font-semibold block">{{ r.experience_years }} Yrs Exp • {{ r.location }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Structured Consultation Request Modal -->
+    <div x-show="showConsultationModal" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+        <div @click.away="showConsultationModal = false" class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-calendar-check text-amber-700"></i>
+                    <span>Request Consultation</span>
+                </h3>
+                <button @click="showConsultationModal = false" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <p class="text-xs text-slate-600">
+                Submit details below to send a structured inquiry to <strong>{{ profile.full_name }}</strong> via WhatsApp.
+            </p>
+
+            <form method="post" class="space-y-4 text-xs font-semibold">
+                {% csrf_token %}
+                <div class="space-y-1">
+                    <label class="text-slate-700">Your Full Name <span class="text-rose-500">*</span></label>
+                    {{ consultation_form.user_name }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Phone Number <span class="text-rose-500">*</span></label>
+                        {{ consultation_form.user_phone }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">WhatsApp Number</label>
+                        {{ consultation_form.user_whatsapp }}
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Service Required <span class="text-rose-500">*</span></label>
+                    {{ consultation_form.service_required }}
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Preferred Date <span class="text-rose-500">*</span></label>
+                        {{ consultation_form.preferred_date }}
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-slate-700">Preferred Time</label>
+                        {{ consultation_form.preferred_time }}
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Consultation Mode</label>
+                    {{ consultation_form.location_type }}
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-slate-700">Short Note / Details</label>
+                    {{ consultation_form.message }}
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" @click="showConsultationModal = false" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-2xl">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-5 py-2.5 rounded-2xl shadow-md flex items-center space-x-1.5">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>Send & Open WhatsApp</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}SEO Alerts & Issues | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">⚠ SEO Issues & Optimization Alerts</h1>
+        <p class="text-xs text-slate-500 mt-1">Automated technical SEO crawler detecting missing meta descriptions, broken links, and schema gaps.</p>
+    </div>
+</div>
+
+<div class="space-y-3">
+    {% for alert in alerts %}
+    <div class="p-5 bg-white border border-slate-200/80 rounded-2xl shadow-xs flex items-center justify-between gap-4">
+        <div class="space-y-1 text-xs">
+            <div class="flex items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase {% if alert.severity == 'Critical' %}bg-rose-50 text-rose-700 border border-rose-200{% elif alert.severity == 'Warning' %}bg-amber-50 text-amber-700 border border-amber-200{% else %}bg-emerald-50 text-emerald-700 border border-emerald-200{% endif %}">
+                    {{ alert.severity }}
+                </span>
+                <span class="font-bold text-slate-900 text-sm font-heading">{{ alert.type }}</span>
+            </div>
+            <div class="text-slate-600 font-medium">{{ alert.desc }}</div>
+            <div class="text-[11px] text-slate-400">Impact: {{ alert.impact }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

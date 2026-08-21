@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - Mithila Store{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-saas flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-cart-shopping text-rose-600"></i>
+                <span>Your Shopping Cart</span>
+            </h1>
+            <p class="text-xs text-slate-500">Review your selected items before proceeding to checkout</p>
+        </div>
+        <a href="{% url 'store:product_list' %}" class="text-xs font-bold text-rose-600 hover:underline">&larr; Continue Shopping</a>
+    </div>
+
+    {% if cart_items %}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Cart Items List -->
+        <div class="lg:col-span-2 space-y-4">
+            {% for item in cart_items %}
+            <div class="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-saas flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex-shrink-0">
+                        {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}" class="w-full h-full object-cover">
+                        {% else %}
+                        <div class="w-full h-full bg-rose-700 text-white font-bold text-xs flex items-center justify-center">
+                            {{ item.product.title|first }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="space-y-1 text-xs">
+                        <span class="font-extrabold text-slate-900 text-sm block truncate max-w-xs">{{ item.product.title }}</span>
+                        <span class="text-slate-500 block">Unit Price: ₹{{ item.product.price }}</span>
+                        <span class="font-black text-rose-600 text-sm block">Subtotal: ₹{{ item.total_price }}</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4 text-xs font-bold">
+                    <!-- Quantity controls -->
+                    <div class="flex items-center space-x-1 bg-slate-100 rounded-xl p-1">
+                        <form method="post" action="{% url 'store:update_cart_item' item.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="decrease">
+                            <button type="submit" class="w-7 h-7 rounded-lg bg-white text-slate-700 shadow-xs flex items-center justify-center font-black hover:bg-slate-200">-</button>
+                        </form>
+
+                        <span class="px-3 font-black text-slate-800">{{ item.quantity }}</span>
+
+                        <form method="post" action="{% url 'store:update_cart_item' item.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="increase">
+                            <button type="submit" class="w-7 h-7 rounded-lg bg-white text-slate-700 shadow-xs flex items-center justify-center font-black hover:bg-slate-200">+</button>
+                        </form>
+                    </div>
+
+                    <!-- Remove -->
+                    <a href="{% url 'store:remove_from_cart' item.pk %}" class="text-rose-500 hover:text-rose-700 p-2" title="Remove item">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Order Summary Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-saas space-y-4 text-xs">
+            <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3">Order Summary</h2>
+
+            <div class="space-y-2 text-slate-600 font-semibold">
+                <div class="flex justify-between">
+                    <span>Subtotal ({{ cart.total_items }} items)</span>
+                    <span class="font-bold text-slate-800">₹{{ cart.subtotal }}</span>
+                </div>
+
+                <div class="flex justify-between">
+                    <span>Delivery Charge</span>
+                    <span class="font-bold text-slate-800">
+                        {% if cart.delivery_charge == 0 %}<span class="text-emerald-600">FREE</span>{% else %}₹{{ cart.delivery_charge }}{% endif %}
+                    </span>
+                </div>
+
+                {% if cart.subtotal <= 999 %}
+                <p class="text-[10px] text-amber-700 italic bg-amber-50 p-2 rounded-xl border border-amber-200">
+                    Add ₹{{ 1000|add:"-cart.subtotal" }} more to qualify for FREE Delivery!
+                </p>
+                {% endif %}
+
+                <div class="flex justify-between text-sm font-black text-slate-900 border-t border-slate-100 pt-3">
+                    <span>Total Amount</span>
+                    <span class="text-rose-600">₹{{ cart.grand_total }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'store:checkout_view' %}" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-3 rounded-2xl flex items-center justify-center space-x-2 shadow-md transition-all">
+                <span>Proceed to Checkout</span>
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+            </a>
+        </div>
+
+    </div>
+
+    {% else %}
+    <div class="bg-white rounded-3xl p-12 text-center border border-slate-200/80 space-y-4">
+        <div class="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-cart-arrow-down"></i>
+        </div>
+        <h2 class="text-lg font-bold text-slate-900">Your shopping cart is empty</h2>
+        <p class="text-xs text-slate-500">Explore authentic Madhubani paintings and handicrafts to add items!</p>
+        <a href="{% url 'store:product_list' %}" class="inline-block bg-rose-600 text-white text-xs font-extrabold px-6 py-3 rounded-2xl shadow-md">
+            Browse Mithila Store
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

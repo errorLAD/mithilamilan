@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Bus Route {{ route.route_short_name }} - OkLocal Transit{% endblock %}
+
+{% block content %}
+<div class="bg-slate-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        
+        <div class="mb-6">
+            <a href="{% url 'bus_service:route_search' %}" class="inline-flex items-center text-xs font-bold text-orange-600 hover:underline">
+                <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Bus Route Search
+            </a>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+            
+            <div class="flex items-center space-x-4 border-b border-slate-100 pb-6">
+                <div class="w-14 h-14 rounded-2xl bg-orange-500 text-white font-extrabold text-xl flex items-center justify-center shadow-md">
+                    {{ route.route_short_name }}
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900">{{ route.route_long_name }}</h1>
+                    <p class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-bus text-orange-500 mr-1.5"></i>Agency: {{ route.agency.agency_name }}</p>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-slate-900 text-sm mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-list-ol text-orange-500"></i>
+                    <span>Stops Along This Route</span>
+                </h3>
+
+                <div class="relative border-l-2 border-orange-200 ml-4 space-y-6">
+                    {% for stop in stops %}
+                    <div class="relative pl-6">
+                        <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-orange-500 border-2 border-white"></div>
+                        <h4 class="font-bold text-slate-900 text-sm">{{ stop.stop_name }}</h4>
+                        <p class="text-xs text-slate-500">Stop Code: {{ stop.stop_code|default:"N/A" }} • Zone: {{ stop.zone_id|default:"Standard" }}</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-xs text-slate-500 pl-6">No specific stops cataloged for this route.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

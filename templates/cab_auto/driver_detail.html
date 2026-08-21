@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ driver.full_name }} - {{ driver.get_vehicle_type_display }} Driver Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-8">
+
+    <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+        <a href="{% url 'cab_auto:cab_auto_home' %}" class="hover:text-amber-600">&larr; Transport Directory</a>
+        <span>/</span>
+        <span class="text-slate-900 font-bold">{{ driver.full_name }}</span>
+    </div>
+
+    <!-- Main Card -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-saas space-y-8">
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 border-b border-slate-100 pb-6 text-center sm:text-left">
+            <div class="w-32 h-32 rounded-3xl overflow-hidden bg-slate-100 border-2 border-amber-400 flex-shrink-0 shadow-md">
+                {% if driver.photo %}
+                <img src="{{ driver.photo.url }}" alt="{{ driver.full_name }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full bg-gradient-to-tr from-amber-600 to-yellow-500 text-white font-black text-4xl flex items-center justify-center">
+                    {{ driver.full_name|first }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="space-y-2 flex-1 min-w-0">
+                <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <span class="bg-amber-100 text-amber-900 font-extrabold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+                        {{ driver.get_vehicle_type_display }}
+                    </span>
+                    {% if driver.is_verified %}
+                    <span class="bg-emerald-100 text-emerald-900 font-extrabold text-xs px-3 py-1 rounded-full flex items-center space-x-1">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>Verified Driver</span>
+                    </span>
+                    {% endif %}
+                </div>
+
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">{{ driver.full_name }}</h1>
+                <p class="text-sm font-bold text-slate-600">{{ driver.vehicle_model }} {% if driver.vehicle_number %}({{ driver.vehicle_number }}){% endif %}</p>
+
+                <!-- Call & WhatsApp CTAs -->
+                <div class="pt-3 flex flex-wrap justify-center sm:justify-start gap-3">
+                    <a href="tel:{{ driver.mobile_number }}" class="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs px-6 py-3 rounded-2xl shadow-md flex items-center space-x-2 transition-all">
+                        <i class="fa-solid fa-phone text-sm"></i>
+                        <span>📞 Call Driver</span>
+                    </a>
+                    <a href="{{ driver.get_whatsapp_url }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-6 py-3 rounded-2xl shadow-md flex items-center space-x-2 transition-all">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>💬 WhatsApp Booking</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Driver Specifications & Details Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs font-semibold">
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">SERVICE AREA</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ driver.service_area }}</span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">EXPERIENCE</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ driver.experience_years }} Years</span>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-1">
+                <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">AVAILABLE HOURS</span>
+                <span class="font-bold text-slate-800 text-sm block">{{ driver.available_hours }}</span>
+            </div>
+        </div>
+
+        <!-- About Driver -->
+        {% if driver.about %}
+        <div class="space-y-2 text-xs">
+            <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">About Driver & Services</h2>
+            <p class="text-slate-600 leading-relaxed bg-slate-50 p-5 rounded-2xl border border-slate-100 font-medium">
+                {{ driver.about }}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

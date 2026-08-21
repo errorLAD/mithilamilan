@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}शुभ मुहूर्त हब - Auspicious Muhurat Hub | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 pb-12">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-3">
+        <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+            <i class="fa-solid fa-heart text-amber-300"></i>
+            <span>पारम्परिक मैथिली मुहूर्त</span>
+        </span>
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight">
+            शुभ मुहूर्त (Auspicious Dates Hub)
+        </h1>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium">
+            मैथिली पंचांग द्वारा प्रमाणित वर्ष २०२६–२०२७ के शुद्ध विवाह, मुड़न, उपनयन जनेऊ, द्विरागमन, गृहप्रवेश एवं गृहारंभ मुहूर्त।
+        </p>
+    </div>
+
+    <!-- Muhurat Category Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for cat_item in category_data %}
+        {% with cat=cat_item.category count=cat_item.total_count upcoming=cat_item.upcoming %}
+        <a href="{% url 'mithila_panchang:muhurat_category_list' cat.slug %}" 
+           class="group bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all space-y-4 flex flex-col justify-between hover:border-[#7D281E]">
+            
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-900 flex items-center justify-center text-xl font-bold group-hover:scale-110 transition-transform">
+                        <i class="fa-solid {{ cat.icon }}"></i>
+                    </div>
+                    <span class="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full text-xs font-extrabold">
+                        {{ count }} तिथियाँ
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-black text-slate-900 group-hover:text-[#7D281E] transition-colors">
+                        {{ cat.name_hi }}
+                    </h3>
+                    <p class="text-xs text-slate-600 mt-1 line-clamp-2">
+                        {{ cat.description|default:"प्रमाणित मैथिली पंचांगानुसार शुद्ध शुभ तिथि सूची।" }}
+                    </p>
+                </div>
+
+                {% if upcoming %}
+                <div class="bg-[#FAF7F2] p-3 rounded-2xl border border-amber-100 space-y-1 text-xs">
+                    <span class="text-[10px] text-amber-900 font-extrabold uppercase tracking-wider block">निकटतम आगामी मुहूर्त</span>
+                    <div class="flex items-center justify-between font-bold text-slate-900">
+                        <span>{{ upcoming.gregorian_date|date:"d M Y" }} ({{ upcoming.weekday_name }})</span>
+                        <span class="text-[#7D281E] text-[11px]">{{ upcoming.mithila_month_name }} {{ upcoming.tithi_name }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="pt-3 border-t border-amber-100 flex items-center justify-between text-xs font-bold text-[#7D281E]">
+                <span>सभी मुहूर्त देखें</span>
+                <i class="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform"></i>
+            </div>
+        </a>
+        {% endwith %}
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

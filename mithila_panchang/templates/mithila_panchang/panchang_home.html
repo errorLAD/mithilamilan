@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}मिथिला पंचांग - Mithila Panchang | OK Delhi{% endblock %}
+
+{% block extra_head %}
+<style>
+    .mithila-bg { background-color: #FDFBF7; }
+    .mithila-hero-card {
+        background: linear-gradient(135deg, #7D281E 0%, #B83A1B 50%, #D9531E 100%);
+        box-shadow: 0 10px 30px -5px rgba(125, 40, 30, 0.25);
+    }
+    .mithila-card-border {
+        border: 1px solid rgba(217, 119, 6, 0.25);
+        background-color: #FFFFFF;
+    }
+    .mithila-card-border:hover {
+        border-color: rgba(217, 119, 6, 0.5);
+    }
+    .madhubani-accent {
+        background-image: radial-gradient(#C23D0D 0.75px, transparent 0.75px), radial-gradient(#C23D0D 0.75px, #FFFFFF 0.75px);
+        background-size: 15px 15px;
+        background-position: 0 0, 7.5px 7.5px;
+        opacity: 0.04;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 pb-12">
+
+    <!-- Sub-navigation toolbar -->
+    <div class="bg-white rounded-2xl p-3 border border-amber-200/70 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs font-bold text-slate-700">
+        <div class="flex items-center space-x-1 sm:space-x-3 overflow-x-auto no-scrollbar py-1">
+            <a href="{% url 'mithila_panchang:panchang_home' %}" class="px-3.5 py-2 rounded-xl bg-[#7D281E] text-white flex items-center space-x-1.5 shrink-0 shadow-xs">
+                <i class="fa-solid fa-house-chimney"></i>
+                <span>होम</span>
+            </a>
+            <a href="{% url 'mithila_panchang:today_panchang' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-solid fa-sun text-amber-600"></i>
+                <span>आजक पंचांग</span>
+            </a>
+            <a href="{% url 'mithila_panchang:monthly_calendar' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-regular fa-calendar-days text-amber-600"></i>
+                <span>मासिक पंचांग</span>
+            </a>
+            <a href="{% url 'mithila_panchang:twelve_months' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-solid fa-layer-group text-amber-600"></i>
+                <span>बारह महीने</span>
+            </a>
+            <a href="{% url 'mithila_panchang:festivals_list' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-solid fa-gopuram text-rose-600"></i>
+                <span>पाबनि-तिहार</span>
+            </a>
+            <a href="{% url 'mithila_panchang:muhurat_hub' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-solid fa-heart text-rose-500"></i>
+                <span>शुभ मुहूर्त</span>
+            </a>
+            <a href="{% url 'mithila_panchang:scanned_panchang' %}" class="px-3 py-2 rounded-xl hover:bg-amber-50 hover:text-amber-900 transition-colors shrink-0 flex items-center space-x-1.5">
+                <i class="fa-solid fa-book-open text-blue-600"></i>
+                <span>मूल पंचांग पृष्ठ</span>
+            </a>
+        </div>
+
+        <!-- Global Search trigger -->
+        <form action="{% url 'mithila_panchang:panchang_search' %}" method="get" class="relative w-full sm:w-64">
+            <input type="text" name="q" placeholder="खोज (तिथि, पाबनि, मुहूर्त)..." class="w-full bg-[#FAF7F2] border border-amber-200/80 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#7D281E]/20">
+            <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-amber-700/60 text-xs"></i>
+        </form>
+    </div>
+
+    <!-- Top Hero Card -->
+    <div class="relative overflow-hidden rounded-3xl mithila-hero-card p-6 md:p-10 text-white">
+        <div class="absolute inset-0 madhubani-accent"></div>
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Info -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-md px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100 border border-white/20">
+                    <i class="fa-solid fa-om text-amber-300"></i>
+                    <span>मिथिलाक परम्परा के डिजिटल रूप</span>
+                </div>
+
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                    मिथिला पंचांग
+                </h1>
+                
+                <p class="text-amber-100 text-sm md:text-base font-medium leading-relaxed max-w-xl">
+                    विश्वसनीय पारम्परिक मैथिली पंचांग • दैनिक तिथि, नक्षत्र, पाबनि-तिहार एवं शुद्ध विवाह, मुड़न, उपनयन, द्विरागमन शुभ मुहूर्त।
+                </p>
+
+                <!-- Location Selector -->
+                <div class="pt-2 flex flex-wrap items-center gap-3">
+                    <span class="text-xs text-amber-200 font-semibold">स्थान चयन:</span>
+                    <div class="flex flex-wrap gap-2">
+                        {% for loc in locations %}
+                        <a href="?loc={{ loc.id }}" class="px-3 py-1.5 rounded-full text-xs font-bold transition-all border 
+                            {% if selected_location.id == loc.id %}
+                                bg-white text-[#7D281E] border-white shadow-xs
+                            {% else %}
+                                bg-black/20 text-white border-white/20 hover:bg-white/10
+                            {% endif %}">
+                            <i class="fa-solid fa-location-dot text-[10px] mr-1"></i>{{ loc.name_hi }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Today Summary Card -->
+            <div class="lg:col-span-5 bg-white/95 backdrop-blur-md rounded-2xl p-6 text-slate-900 shadow-xl border border-amber-200/50 space-y-4">
+                <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+                    <div>
+                        <span class="text-[11px] font-extrabold text-amber-800 uppercase tracking-wider">आजक पंचांग</span>
+                        <h2 class="text-xl font-bold text-slate-900">{{ today|date:"d F Y" }}</h2>
+                    </div>
+                    <a href="{% url 'mithila_panchang:today_panchang' %}" class="bg-[#7D281E] hover:bg-[#601F17] text-white text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-xs transition-colors">
+                        विस्तृत पंचांग &rarr;
+                    </a>
+                </div>
+
+                {% if today_panchang %}
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-amber-100">
+                        <span class="text-[10px] font-semibold text-slate-500 block">मास</span>
+                        <span class="font-extrabold text-slate-900 text-sm">{{ today_panchang.mithila_month_name }}</span>
+                    </div>
+                    <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-amber-100">
+                        <span class="text-[10px] font-semibold text-slate-500 block">पक्ष / तिथि</span>
+                        <span class="font-extrabold text-[#7D281E] text-sm">{{ today_panchang.paksha }} {{ today_panchang.mithila_tithi_name }}</span>
+                    </div>
+                    <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-amber-100">
+                        <span class="text-[10px] font-semibold text-slate-500 block">नक्षत्र</span>
+                        <span class="font-bold text-slate-800">{{ today_panchang.nakshatra_name }}</span>
+                    </div>
+                    <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-amber-100">
+                        <span class="text-[10px] font-semibold text-slate-500 block">वार</span>
+                        <span class="font-bold text-slate-800">{{ today_panchang.weekday_name }}</span>
+                    </div>
+                </div>
+
+                <!-- Sun & Moon Quick Timings -->
+                <div class="pt-2 border-t border-amber-100 grid grid-cols-2 gap-2 text-[11px] text-slate-700">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-sun text-amber-500"></i>
+                        <span>सूर्योदय: <strong>{{ astronomical_timings.sunrise }}</strong></span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-moon text-indigo-500"></i>
+                        <span>चन्द्रोदय: <strong>{{ astronomical_timings.moonrise }}</strong></span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Section (आज / आगामी पाबनि / शुभ मुहूर्त) -->
+    <div class="space-y-4">
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-6 bg-[#7D281E] rounded-full"></span>
+            <h2 class="text-xl font-black text-slate-900 tracking-tight">त्वरित पहुँच • Quick Access</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Card 1: Today Shortcut -->
+            <a href="{% url 'mithila_panchang:today_panchang' %}" class="group mithila-card-border p-5 rounded-2xl shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-calendar-day text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                        आज
+                    </span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-base group-hover:text-[#7D281E] transition-colors">आजक पंचांग</h3>
+                    <p class="text-xs text-slate-600 mt-1">आज की तिथि, नक्षत्र, अभिजित मुहूर्त, सूर्योदय व राहुकाल</p>
+                </div>
+                <div class="text-xs font-bold text-[#7D281E] flex items-center space-x-1">
+                    <span>देखें</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </div>
+            </a>
+
+            <!-- Card 2: Upcoming Pabni Tihar -->
+            <a href="{% url 'mithila_panchang:festivals_list' %}" class="group mithila-card-border p-5 rounded-2xl shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-800 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-gopuram text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
+                        पाबनि
+                    </span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-base group-hover:text-[#7D281E] transition-colors">मिथिला पाबनि-तिहार</h3>
+                    <p class="text-xs text-slate-600 mt-1">मधुश्रावणी, छठ पूजा, कोजागरा, सामा चकेवा व प्रमुख व्रत सूची</p>
+                </div>
+                <div class="text-xs font-bold text-[#7D281E] flex items-center space-x-1">
+                    <span>पूरी सूची</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </div>
+            </a>
+
+            <!-- Card 3: Vivah Muhurat -->
+            <a href="{% url 'mithila_panchang:muhurat_category_list' 'vivah' %}" class="group mithila-card-border p-5 rounded-2xl shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-ring text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        विवाह
+                    </span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-base group-hover:text-[#7D281E] transition-colors">विवाहक मुहूर्त</h3>
+                    <p class="text-xs text-slate-600 mt-1">वर्ष २०२६–२०२७ के प्रमाणित विवाह मुहूर्त तिथि सूची</p>
+                </div>
+                <div class="text-xs font-bold text-[#7D281E] flex items-center space-x-1">
+                    <span>मुहूर्त देखें</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </div>
+            </a>
+
+            <!-- Card 4: Mundan / Upanayan -->
+            <a href="{% url 'mithila_panchang:muhurat_hub' %}" class="group mithila-card-border p-5 rounded-2xl shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-scissors text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-purple-50 text-purple-800 border border-purple-200">
+                        संस्कार
+                    </span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-base group-hover:text-[#7D281E] transition-colors">मुड़न / उपनयन मुहूर्त</h3>
+                    <p class="text-xs text-slate-600 mt-1">मुंडन, उपनयन जनेऊ, द्विरागमन व गृहप्रवेश मुहूर्त हब</p>
+                </div>
+                <div class="text-xs font-bold text-[#7D281E] flex items-center space-x-1">
+                    <span>मुहूर्त हब</span>
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Upcoming Festivals Showcase -->
+    {% if upcoming_festivals %}
+    <div class="space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-6 bg-rose-600 rounded-full"></span>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">आगामी पाबनि-तिहार (Festivals)</h2>
+            </div>
+            <a href="{% url 'mithila_panchang:festivals_list' %}" class="text-xs font-bold text-[#7D281E] hover:underline">सभी देखें &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {% for item in upcoming_festivals %}
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/70 shadow-saas hover:shadow-saas-lg transition-all space-y-3 flex flex-col justify-between">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                        <span class="text-amber-800 font-extrabold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                            {{ item.date|date:"d M Y" }}
+                        </span>
+                        <span>{{ item.mithila_month_name }}</span>
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900 hover:text-[#7D281E]">
+                        <a href="{% url 'mithila_panchang:festival_detail' item.pk %}">{{ item.title_hi }}</a>
+                    </h3>
+                    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                        {{ item.short_description }}
+                    </p>
+                </div>
+                <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <a href="{% url 'mithila_panchang:download_ics' 'festival' item.pk %}" class="text-slate-500 hover:text-slate-900 font-medium" title="Add to Calendar">
+                        <i class="fa-regular fa-calendar-plus mr-1"></i>कैलेंडर में जोड़ें
+                    </a>
+                    <a href="{% url 'mithila_panchang:festival_detail' item.pk %}" class="font-bold text-[#7D281E]">
+                        विवरण &rarr;
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Upcoming Muhurat Teasers -->
+    <div class="space-y-4 pt-2">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-6 bg-emerald-600 rounded-full"></span>
+                <h2 class="text-xl font-black text-slate-900 tracking-tight">आगामी शुभ मुहूर्त (Upcoming Dates)</h2>
+            </div>
+            <a href="{% url 'mithila_panchang:muhurat_hub' %}" class="text-xs font-bold text-[#7D281E] hover:underline">शुभ मुहूर्त हब &rarr;</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {% for m_item in upcoming_muhurats_by_cat %}
+            {% with m=m_item.next_date cat=m_item.category %}
+            <div class="bg-white rounded-2xl border border-amber-200/80 shadow-saas hover:shadow-saas-lg overflow-hidden transition-all flex flex-col justify-between">
+                <div class="p-5 space-y-3">
+                    <div class="flex items-center justify-between border-b border-amber-100 pb-2">
+                        <span class="text-xs font-extrabold text-amber-900 flex items-center space-x-1.5">
+                            <i class="fa-solid {{ cat.icon }} text-amber-600"></i>
+                            <span>{{ cat.name_hi }}</span>
+                        </span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                            आगामी
+                        </span>
+                    </div>
+
+                    <!-- Reference Card Style -->
+                    <div class="flex items-start space-x-4">
+                        <div class="bg-[#7D281E] text-white rounded-xl p-2.5 text-center shrink-0 w-16">
+                            <span class="block text-[10px] font-extrabold uppercase tracking-wider">{{ m.gregorian_date|date:"M" }}</span>
+                            <span class="block text-2xl font-black leading-none">{{ m.gregorian_date|date:"d" }}</span>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-extrabold text-slate-900 text-sm">
+                                {{ m.mithila_month_name }} {{ m.paksha }} {{ m.tithi_name }}
+                            </h4>
+                            <p class="text-xs text-slate-600 font-medium">
+                                {{ m.weekday_name }} • {{ m.nakshatra_name }} नक्षत्र
+                            </p>
+                            <p class="text-[11px] text-amber-800 font-bold">
+                                {% if m.start_time %}{{ m.start_time }}{% else %}विवाहक दिन{% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#FAF7F2] px-5 py-2.5 border-t border-amber-100 flex items-center justify-between text-xs">
+                    <a href="{% url 'mithila_panchang:date_detail' m.gregorian_date|date:'Y-m-d' %}" class="text-slate-600 hover:text-slate-900 font-semibold">
+                        <i class="fa-regular fa-calendar mr-1"></i>तिथि पंचांग देखें
+                    </a>
+                    <a href="{% url 'mithila_panchang:muhurat_category_list' cat.slug %}" class="font-bold text-[#7D281E]">
+                        सूची देखें &rarr;
+                    </a>
+                </div>
+            </div>
+            {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

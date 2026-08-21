@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}मिथिलाक गीत - Mithila Songs | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8 pb-12 font-sans"
+     x-data="{ 
+         activeSongId: null, 
+         activeSongTitle: '',
+         activeSinger: '',
+         playerOpen: false,
+         playerState: 'IDLE',
+         errorMessage: '',
+         ytModalPlayer: null,
+         
+         playSong(id, title, singer) {
+             this.activeSongId = id;
+             this.activeSongTitle = title;
+             this.activeSinger = singer;
+             this.playerOpen = true;
+             this.errorMessage = '';
+             this.playerState = 'LOADING';
+
+             setTimeout(() => {
+                 this.initModalPlayer();
+             }, 300);
+         },
+
+         closePlayer() {
+             if (this.ytModalPlayer && this.ytModalPlayer.stopVideo) {
+                 this.ytModalPlayer.stopVideo();
+             }
+             this.playerOpen = false;
+             this.activeSongId = null;
+             this.playerState = 'IDLE';
+         },
+
+         initModalPlayer() {
+             const el = document.getElementById('modal-yt-player');
+             if (!el) return;
+
+             if (this.ytModalPlayer && this.ytModalPlayer.loadVideoById) {
+                 this.ytModalPlayer.loadVideoById(this.activeSongId);
+                 this.ytModalPlayer.playVideo();
+                 return;
+             }
+
+             if (window.YT && window.YT.Player) {
+                 this.ytModalPlayer = new YT.Player('modal-yt-player', {
+                     height: '100%',
+                     width: '100%',
+                     videoId: this.activeSongId,
+                     playerVars: { 'playsinline': 1, 'autoplay': 1, 'controls': 1, 'rel': 0 },
+                     events: {
+                         'onStateChange': (e) => {
+                             if (e.data === YT.PlayerState.PLAYING) {
+                                 this.playerState = 'PLAYING';
+                             } else if (e.data === YT.PlayerState.PAUSED) {
+                                 this.playerState = 'PAUSED';
+                             }
+                         },
+                         'onError': (e) => {
+                             console.error('Modal YT Error:', e.data);
+                             this.playerState = 'ERROR';
+                             this.errorMessage = 'यह गीत अभी वेबसाइट पर नहीं चल सकता।';
+                         }
+                     }
+                 });
+             }
+         }
+     }">
+
+    <!-- Top Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-3">
+        <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100">
+            <i class="fa-solid fa-music text-amber-300"></i>
+            <span>मिथिला संगीत संग्रह</span>
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight">
+            मिथिलाक मधुर गीत
+        </h1>
+        <p class="text-amber-100 text-xs sm:text-sm font-medium max-w-2xl">
+            पारम्परिक मैथिली सोहर, भगवती वंदना, समदाओन, बटगवनी, कजरी एवं सांस्कृतिक लोकगीतक अनुपम संग्रह।
+        </p>
+    </div>
+
+    <!-- Songs Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        {% for song in songs %}
+        <div @click="playSong('{{ song.video_id }}', '{{ song.title|escapejs }}', '{{ song.singer|escapejs }}')"
+             class="group bg-white rounded-3xl p-4 border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all cursor-pointer flex flex-col justify-between space-y-3 relative overflow-hidden"
+             :class="activeSongId === '{{ song.video_id }}' ? 'ring-2 ring-amber-500 border-amber-400 bg-amber-50/50' : ''">
+            
+            <!-- Living Cover Thumbnail -->
+            <div class="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 shadow-sm">
+                <img src="{% if song.thumbnail_url %}{{ song.thumbnail_url }}{% else %}https://img.youtube.com/vi/{{ song.video_id }}/hqdefault.jpg{% endif %}" 
+                     alt="{{ song.title }}" 
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                     :class="activeSongId === '{{ song.video_id }}' ? 'animate-living-cover' : ''">
+                
+                <!-- Play Button Overlay -->
+                <div class="absolute inset-0 bg-slate-950/30 flex items-center justify-center group-hover:bg-slate-950/20 transition-colors">
+                    <template x-if="activeSongId === '{{ song.video_id }}' && playerState === 'PLAYING'">
+                        <div class="w-12 h-12 rounded-full bg-[#FF6026] text-white flex items-center justify-center text-lg animate-pulse shadow-lg">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </div>
+                    </template>
+                    <template x-if="activeSongId !== '{{ song.video_id }}' || playerState !== 'PLAYING'">
+                        <div class="w-12 h-12 rounded-full bg-white/90 text-[#FF6026] flex items-center justify-center text-base group-hover:scale-110 transition-transform shadow-lg">
+                            <i class="fa-solid fa-play ml-1"></i>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Song Info -->
+            <div class="space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                        {{ song.category|default:"पारम्परिक" }}
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-bold">YouTube</span>
+                </div>
+                <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-[#7D281E] transition-colors leading-snug">
+                    {{ song.title }}
+                </h3>
+                <p class="text-xs text-slate-500 font-medium truncate">
+                    {{ song.singer|default:"मैथिली कलाकार" }}
+                </p>
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- YouTube Official Floating Player Modal -->
+    <div x-show="playerOpen" 
+         x-transition.opacity
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-xs" 
+         x-cloak>
+        <div @click.away="closePlayer()" 
+             class="bg-white rounded-3xl p-5 sm:p-6 max-w-xl w-full space-y-4 shadow-2xl border border-amber-200">
+            
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="min-w-0 flex-1 pr-3">
+                    <span class="text-[10px] font-extrabold uppercase text-[#FF6026] tracking-wider block">Now Playing • मिथिला संगीत</span>
+                    <h4 class="font-extrabold text-slate-900 text-base truncate" x-text="activeSongTitle"></h4>
+                    <p class="text-xs text-slate-500 truncate" x-text="activeSinger"></p>
+                </div>
+                <button @click="closePlayer()" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors shrink-0">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Error message if embed restricted -->
+            <template x-if="playerState === 'ERROR'">
+                <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-800 font-bold flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                    <span x-text="errorMessage"></span>
+                </div>
+            </template>
+
+            <!-- YouTube Official Embedded Player Frame -->
+            <div class="relative aspect-video rounded-2xl overflow-hidden bg-black shadow-inner">
+                <div id="modal-yt-player" class="w-full h-full"></div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs pt-1">
+                <span class="text-slate-500 text-[11px]"><i class="fa-solid fa-shield-halved text-emerald-600 mr-1"></i>Official YouTube Player</span>
+                <button @click="closePlayer()" class="font-bold text-slate-700 hover:text-slate-900">Close Player</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

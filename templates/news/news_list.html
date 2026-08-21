@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}समाचार — मिथिला आ आसपासक समाचार | MithilaMilan{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 font-sans pb-12">
+
+    <!-- Top News Portal Header -->
+    <div class="bg-gradient-to-r from-[#7D3028] via-[#9E3120] to-[#E85D2A] rounded-3xl p-6 sm:p-10 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+        <div class="space-y-2 z-10">
+            <span class="inline-flex items-center space-x-2 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-200">
+                <i class="fa-solid fa-newspaper text-amber-300"></i>
+                <span>मिथिला डिजिटल समाचार</span>
+            </span>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tight">
+                समाचार (News)
+            </h1>
+            <p class="text-amber-100 text-xs sm:text-sm font-medium max-w-xl">
+                मिथिला आ आसपासक हर ताजा, विश्वसनीय आ महत्वपूर्ण समाचार आ अपडेट।
+            </p>
+        </div>
+
+        <a href="{% url 'news:news_create' %}" class="z-10 bg-white text-[#7D3028] hover:bg-amber-50 font-black px-6 py-3 rounded-2xl shadow-lg transition-transform transform active:scale-95 flex items-center space-x-2 text-sm shrink-0">
+            <i class="fa-solid fa-plus text-[#E85D2A]"></i>
+            <span>+ समाचार भेजें</span>
+        </a>
+    </div>
+
+    <!-- Category Pills Navigation Bar -->
+    <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-2 text-xs font-bold border-b border-slate-200">
+        <a href="{% url 'news:news_list' %}" class="px-4 py-2 rounded-full shrink-0 transition-all {% if not selected_category %}bg-[#E85D2A] text-white shadow-xs{% else %}bg-white border border-slate-200 text-slate-700 hover:bg-amber-50{% endif %}">
+            सबै समाचार (All News)
+        </a>
+        {% for cat_code, cat_label in categories %}
+        <a href="?category={{ cat_code }}" class="px-4 py-2 rounded-full shrink-0 transition-all {% if selected_category == cat_code %}bg-[#E85D2A] text-white shadow-xs{% else %}bg-white border border-slate-200 text-slate-700 hover:bg-amber-50{% endif %}">
+            {{ cat_label }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Search Bar & Active Filter Info -->
+    <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <form method="get" class="flex items-center space-x-2 w-full sm:w-auto flex-1 max-w-md">
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+            <div class="relative w-full">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400"></i>
+                <input type="text" name="q" value="{{ query }}" placeholder="समाचार खोजें (Search news)..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#E85D2A] text-xs font-medium">
+            </div>
+            <button type="submit" class="bg-slate-900 text-white font-bold px-4 py-2 rounded-xl hover:bg-slate-800 transition-colors">Search</button>
+        </form>
+
+        <span class="text-slate-500 font-medium">
+            {% if query %}Showing search results for "<strong class="text-slate-900">{{ query }}</strong>"{% endif %}
+        </span>
+    </div>
+
+    <!-- Main Content Layout (Desktop 2-Column: Main Feed + Right Sidebar) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Left Main News Feed (Cols 1 & 2) -->
+        <div class="lg:col-span-2 space-y-8">
+            
+            {% if featured_news %}
+            {% if not page_obj.number or page_obj.number == 1 %}
+            <!-- Featured Major Story -->
+            <div class="bg-white rounded-3xl border border-amber-200/80 shadow-saas overflow-hidden group">
+                <div class="relative aspect-video bg-slate-900 overflow-hidden">
+                    <img src="{% if featured_news.image %}{{ featured_news.image.url }}{% else %}https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80{% endif %}" 
+                         alt="{{ featured_news.title }}" 
+                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute top-4 left-4">
+                        <span class="bg-[#E85D2A] text-white text-xs font-extrabold px-3 py-1 rounded-full shadow-md">
+                            {{ featured_news.get_category_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-3">
+                    <div class="flex items-center space-x-3 text-xs text-slate-400 font-medium">
+                        <span><i class="fa-regular fa-user mr-1 text-[#E85D2A]"></i>u/{{ featured_news.author.username }}</span>
+                        <span>•</span>
+                        <span><i class="fa-regular fa-clock mr-1"></i>{{ featured_news.created_at|date:"d M Y" }}</span>
+                        {% if featured_news.location %}
+                        <span>•</span>
+                        <span><i class="fa-solid fa-location-dot mr-1 text-amber-600"></i>{{ featured_news.location }}</span>
+                        {% endif %}
+                    </div>
+
+                    <a href="{% url 'news:news_detail' featured_news.pk %}" class="block">
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-[#E85D2A] transition-colors leading-snug">
+                            {{ featured_news.title }}
+                        </h2>
+                    </a>
+
+                    <p class="text-xs sm:text-sm text-slate-600 font-medium line-clamp-3 leading-relaxed">
+                        {% if featured_news.summary %}{{ featured_news.summary }}{% else %}{{ featured_news.content|truncatewords:35 }}{% endif %}
+                    </p>
+
+                    <div class="pt-2">
+                        <a href="{% url 'news:news_detail' featured_news.pk %}" class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-[#E85D2A] hover:underline">
+                            <span>पूरा समाचार पढ़ें</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- News Grid List -->
+            {% if page_obj %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {% for item in page_obj %}
+                <div class="bg-white rounded-3xl border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all overflow-hidden flex flex-col justify-between group">
+                    <div>
+                        <div class="relative aspect-video bg-slate-900 overflow-hidden">
+                            <img src="{% if item.image %}{{ item.image.url }}{% else %}https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80{% endif %}" 
+                                 alt="{{ item.title }}" 
+                                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-xs text-slate-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-xs">
+                                {{ item.get_category_display }}
+                            </span>
+                        </div>
+
+                        <div class="p-5 space-y-2">
+                            <div class="flex items-center space-x-2 text-[11px] text-slate-400 font-medium">
+                                <span>{{ item.created_at|date:"d M Y" }}</span>
+                                {% if item.location %}<span>•</span><span>{{ item.location }}</span>{% endif %}
+                            </div>
+
+                            <a href="{% url 'news:news_detail' item.pk %}" class="block">
+                                <h3 class="font-extrabold text-slate-900 text-base group-hover:text-[#E85D2A] transition-colors leading-snug line-clamp-2">
+                                    {{ item.title }}
+                                </h3>
+                            </a>
+
+                            <p class="text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed">
+                                {% if item.summary %}{{ item.summary }}{% else %}{{ item.content|truncatewords:20 }}{% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="p-5 pt-0 flex items-center justify-between border-t border-slate-100 mt-2">
+                        <span class="text-[11px] font-bold text-slate-500">u/{{ item.author.username }}</span>
+                        <a href="{% url 'news:news_detail' item.pk %}" class="text-[11px] font-extrabold text-[#E85D2A] hover:underline">Read ➔</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="flex items-center justify-center space-x-2 pt-4">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs hover:bg-amber-50">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                <span class="text-xs font-bold text-slate-600 px-3 py-1 bg-white border rounded-full">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="w-9 h-9 rounded-full bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs hover:bg-amber-50">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- Empty State -->
+            <div class="bg-white rounded-3xl p-12 text-center border border-amber-200/80 shadow-saas space-y-4">
+                <i class="fa-solid fa-newspaper text-5xl text-amber-300"></i>
+                <h3 class="text-lg font-bold text-slate-800">अभी कोई समाचार उपलब्ध नहीं है</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">आप पहला समाचार साझा कर सकते हैं। एडमिन द्वारा समीक्षा के बाद समाचार लाइव होगा।</p>
+                <a href="{% url 'news:news_create' %}" class="inline-block bg-[#E85D2A] text-white font-extrabold px-6 py-2.5 rounded-2xl text-xs hover:bg-[#d44c1a] transition-colors">
+                    + समाचार भेजें
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- Right Sidebar (Trending & Categories) -->
+        <div class="space-y-6">
+            
+            <!-- Trending News Sidebar Card -->
+            <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4 font-sans">
+                <h3 class="font-extrabold text-slate-900 text-sm flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-fire text-[#E85D2A]"></i>
+                    <span>ट्रेंडिंग समाचार (Trending)</span>
+                </h3>
+
+                <div class="space-y-3">
+                    {% for item in trending_news %}
+                    <a href="{% url 'news:news_detail' item.pk %}" class="flex items-start space-x-3 group p-2 rounded-2xl hover:bg-amber-50/50 transition-colors">
+                        <span class="text-xs font-mono font-black text-amber-800 w-5 shrink-0 pt-0.5">0{{ forloop.counter }}</span>
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <h4 class="text-xs font-extrabold text-slate-900 group-hover:text-[#E85D2A] transition-colors line-clamp-2 leading-snug">
+                                {{ item.title }}
+                            </h4>
+                            <span class="text-[10px] text-slate-400 font-medium block">{{ item.views }} views • {{ item.created_at|date:"d M" }}</span>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <p class="text-xs text-slate-400 italic">No trending articles yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Categories Quick Widget -->
+            <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-3">
+                <h3 class="font-extrabold text-slate-900 text-sm border-b border-slate-100 pb-3">
+                    श्रेणियां (Categories)
+                </h3>
+                <div class="flex flex-wrap gap-1.5">
+                    {% for cat_code, cat_label in categories %}
+                    <a href="?category={{ cat_code }}" class="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition-all">
+                        {{ cat_label }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

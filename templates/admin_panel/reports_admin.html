@@ -1,0 +1,32 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}Safety & Reports Admin | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">Reports & Moderation Safety Queue</h1>
+        <p class="text-xs text-slate-500 mt-1">Review user flags regarding spam, fake info, harassment, and inappropriate content.</p>
+    </div>
+</div>
+
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+    <div class="space-y-3 divide-y divide-slate-100 text-xs">
+        {% for r in reports %}
+        <div class="pt-3.5 first:pt-0 flex items-center justify-between">
+            <div>
+                <div class="font-bold text-rose-600">Report: {{ r.reason }}</div>
+                <div class="text-slate-700 mt-1 font-medium">{{ r.details }}</div>
+                <div class="text-[11px] text-slate-500 mt-1">Reported by u/{{ r.reported_by.username|default:"Guest" }} • {{ r.created_at|date:"d M Y" }}</div>
+            </div>
+            <span class="px-3 py-1 rounded-full text-[10px] bg-rose-50 text-rose-700 font-bold border border-rose-200">Action Needed</span>
+        </div>
+        {% empty %}
+        <div class="text-slate-500 text-xs py-10 text-center">
+            <i class="fa-solid fa-shield-halved text-3xl mb-2 block text-emerald-500"></i>
+            No reported items. Community safety queue is clean!
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

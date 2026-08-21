@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}आजक पंचांग - Today's Mithila Panchang | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 pb-12">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#A83220] to-[#C23D0D] rounded-3xl p-6 sm:p-8 text-white shadow-lg space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100 mb-2">
+                    <i class="fa-solid fa-sun text-amber-300"></i>
+                    <span>आजक पंचांग</span>
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+                    {{ day_record.date|date:"d F Y" }}
+                </h1>
+                <p class="text-amber-100 text-xs sm:text-sm font-semibold mt-1">
+                    {{ day_record.weekday_name }} • {{ day_record.mithila_month_name }} {{ day_record.paksha }} {{ day_record.mithila_tithi_name }}
+                </p>
+            </div>
+
+            <!-- Location switcher selector -->
+            <div class="bg-black/20 backdrop-blur-md rounded-2xl p-3 border border-white/20 text-xs space-y-1">
+                <span class="text-amber-200 font-semibold block text-[10px]">स्थान (Location):</span>
+                <div class="flex flex-wrap gap-1.5">
+                    {% for loc in locations %}
+                    <a href="?loc={{ loc.id }}" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all 
+                        {% if location_info.id == loc.id %}bg-white text-[#7D281E]{% else %}text-white hover:bg-white/10{% endif %}">
+                        {{ loc.name_hi }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Basic Panchang Section -->
+    <div class="space-y-4">
+        <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-6 bg-[#7D281E] rounded-full"></span>
+            <h2 class="text-lg font-extrabold text-slate-900">मुख्य पंचांग विवरण (Basic Panchang)</h2>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            
+            <!-- Card: Month -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-regular fa-calendar-days text-amber-600"></i>
+                    <span>मास (Month)</span>
+                </div>
+                <p class="text-lg font-black text-slate-900">{{ day_record.mithila_month_name }}</p>
+                <p class="text-[10px] text-slate-500">Mithila Month</p>
+            </div>
+
+            <!-- Card: Tithi -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-moon text-amber-600"></i>
+                    <span>तिथि (Tithi)</span>
+                </div>
+                <p class="text-lg font-black text-[#7D281E]">{{ day_record.mithila_tithi_name }}</p>
+                <p class="text-[10px] text-slate-500">
+                    {% if day_record.tithi_end_time %}{{ day_record.tithi_end_time }}{% else %}दिन भर{% endif %}
+                </p>
+            </div>
+
+            <!-- Card: Paksha -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-yin-yang text-amber-600"></i>
+                    <span>पक्ष (Paksha)</span>
+                </div>
+                <p class="text-lg font-black text-slate-900">{{ day_record.paksha }}</p>
+                <p class="text-[10px] text-slate-500">Fortnight</p>
+            </div>
+
+            <!-- Card: Nakshatra -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-star text-amber-600"></i>
+                    <span>नक्षत्र (Nakshatra)</span>
+                </div>
+                <p class="text-lg font-black text-slate-900">{{ day_record.nakshatra_name }}</p>
+                <p class="text-[10px] text-slate-500">
+                    {% if day_record.nakshatra_end_time %}{{ day_record.nakshatra_end_time }}{% else %}उपलब्ध{% endif %}
+                </p>
+            </div>
+
+            <!-- Card: Yoga -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-atom text-amber-600"></i>
+                    <span>योग (Yoga)</span>
+                </div>
+                <p class="text-base font-extrabold text-slate-900">{{ day_record.yoga_name }}</p>
+            </div>
+
+            <!-- Card: Karana -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-dharmachakra text-amber-600"></i>
+                    <span>करण (Karana)</span>
+                </div>
+                <p class="text-base font-extrabold text-slate-900">{{ day_record.karana_name }}</p>
+            </div>
+
+            <!-- Card: Weekday -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-regular fa-clock text-amber-600"></i>
+                    <span>वार (Weekday)</span>
+                </div>
+                <p class="text-base font-extrabold text-slate-900">{{ day_record.weekday_name }}</p>
+            </div>
+
+            <!-- Card: Samvat -->
+            <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas space-y-1">
+                <div class="flex items-center space-x-2 text-amber-800 text-xs font-bold">
+                    <i class="fa-solid fa-scroll text-amber-600"></i>
+                    <span>संशा / संवत्</span>
+                </div>
+                <p class="text-base font-extrabold text-slate-900">२०८३ - ८४</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 2. Sun, Moon & Rashi Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <!-- Sun Timings & Rashi -->
+        <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+            <div class="flex items-center space-x-2 border-b border-amber-100 pb-3">
+                <i class="fa-solid fa-sun text-amber-500 text-xl"></i>
+                <h3 class="font-extrabold text-slate-900 text-base">सूर्य स्थिति (Sun Timings & Rashi)</h3>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="bg-[#FAF7F2] p-3 rounded-xl border border-amber-100">
+                    <span class="text-[10px] text-slate-500 font-semibold block">सूर्योदय (Sunrise)</span>
+                    <span class="font-black text-slate-900 text-sm">{{ astronomical_timings.sunrise }}</span>
+                </div>
+                <div class="bg-[#FAF7F2] p-3 rounded-xl border border-amber-100">
+                    <span class="text-[10px] text-slate-500 font-semibold block">सूर्यास्त (Sunset)</span>
+                    <span class="font-black text-slate-900 text-sm">{{ astronomical_timings.sunset }}</span>
+                </div>
+            </div>
+
+            <div class="bg-amber-50/70 p-3 rounded-xl border border-amber-200/60 text-xs flex justify-between items-center">
+                <span class="font-bold text-amber-900">सूर्य राशि:</span>
+                <span class="font-black text-slate-900 text-sm">{{ day_record.sun_rashi }}</span>
+            </div>
+        </div>
+
+        <!-- Moon Timings & Rashi -->
+        <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+            <div class="flex items-center space-x-2 border-b border-amber-100 pb-3">
+                <i class="fa-solid fa-moon text-indigo-500 text-xl"></i>
+                <h3 class="font-extrabold text-slate-900 text-base">चन्द्र स्थिति (Moon Timings & Rashi)</h3>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="bg-[#FAF7F2] p-3 rounded-xl border border-amber-100">
+                    <span class="text-[10px] text-slate-500 font-semibold block">चन्द्रोदय (Moonrise)</span>
+                    <span class="font-black text-slate-900 text-sm">{{ astronomical_timings.moonrise }}</span>
+                </div>
+                <div class="bg-[#FAF7F2] p-3 rounded-xl border border-amber-100">
+                    <span class="text-[10px] text-slate-500 font-semibold block">चन्द्रास्त (Moonset)</span>
+                    <span class="font-black text-slate-900 text-sm">{{ astronomical_timings.moonset }}</span>
+                </div>
+            </div>
+
+            <div class="bg-indigo-50/70 p-3 rounded-xl border border-indigo-200/60 text-xs flex justify-between items-center">
+                <span class="font-bold text-indigo-900">चन्द्र राशि:</span>
+                <span class="font-black text-slate-900 text-sm">{{ day_record.moon_rashi }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Auspicious & Inauspicious Timings -->
+    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
+        <div class="flex items-center space-x-2 border-b border-amber-100 pb-3">
+            <i class="fa-solid fa-stopwatch text-[#7D281E] text-xl"></i>
+            <h3 class="font-extrabold text-slate-900 text-base">शुभ एवं अशुभ काल (Daily Muhurat Timings)</h3>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+            
+            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200/80 space-y-1">
+                <span class="text-emerald-800 font-extrabold text-[11px] block">
+                    <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>अभिजित मुहूर्त
+                </span>
+                <p class="font-black text-emerald-950 text-sm">{{ astronomical_timings.abhijit_muhurta }}</p>
+                <p class="text-[10px] text-emerald-700 font-semibold">अत्यन्त शुभ समय</p>
+            </div>
+
+            <div class="bg-rose-50 p-4 rounded-2xl border border-rose-200/80 space-y-1">
+                <span class="text-rose-800 font-extrabold text-[11px] block">
+                    <i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i>राहुकाल
+                </span>
+                <p class="font-black text-rose-950 text-sm">{{ astronomical_timings.rahukaal }}</p>
+                <p class="text-[10px] text-rose-700 font-semibold">अशुभ समय (वर्जित)</p>
+            </div>
+
+            <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200/80 space-y-1">
+                <span class="text-amber-900 font-extrabold text-[11px] block">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-600 mr-1"></i>यमगण्ड
+                </span>
+                <p class="font-black text-amber-950 text-sm">{{ day_record.yamaganda }}</p>
+                <p class="text-[10px] text-amber-800 font-semibold">वर्जित काल</p>
+            </div>
+
+            <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-1">
+                <span class="text-slate-800 font-extrabold text-[11px] block">
+                    <i class="fa-solid fa-circle-info text-slate-500 mr-1"></i>गुलिक काल
+                </span>
+                <p class="font-black text-slate-900 text-sm">{{ day_record.gulika }}</p>
+                <p class="text-[10px] text-slate-600">सामान्य काल</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

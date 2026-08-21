@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Mithila Store{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-16">
+
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.04)] space-y-3">
+        <a href="javascript:history.back()" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-rose-700 transition-colors">
+            <i class="fa-solid fa-arrow-left text-[11px]"></i>
+            <span>Back</span>
+        </a>
+        <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
+                <i class="fa-solid fa-credit-card text-rose-600"></i>
+                <span>Secure Checkout</span>
+            </h1>
+            <p class="text-xs text-slate-500 mt-1">Provide shipping address and payment method to complete order</p>
+        </div>
+    </div>
+
+    <style>
+        /* Style raw Django widget output (form itself supplies no classes) */
+        .checkout-form input[type="text"],
+        .checkout-form input[type="tel"],
+        .checkout-form input[type="number"],
+        .checkout-form input[type="email"],
+        .checkout-form textarea,
+        .checkout-form select {
+            width: 100%;
+            background-color: rgb(248 250 252);
+            border: 1px solid rgb(226 232 240);
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgb(15 23 42);
+            transition: box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .checkout-form textarea {
+            min-height: 4.5rem;
+            resize: vertical;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+        .checkout-form input::placeholder,
+        .checkout-form textarea::placeholder {
+            color: rgb(148 163 184);
+            font-weight: 500;
+        }
+        .checkout-form input:focus,
+        .checkout-form textarea:focus,
+        .checkout-form select:focus {
+            outline: none;
+            background-color: #ffffff;
+            border-color: rgb(225 29 72);
+            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+        }
+        .checkout-form select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.9rem center;
+            background-size: 1.1rem;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
+    </style>
+
+    <form method="post" class="checkout-form grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {% csrf_token %}
+
+        <!-- Left 2 Columns: Address & Payment -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Shipping Address Form -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.04)] space-y-5 text-xs font-semibold">
+                <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-truck text-rose-600"></i>
+                    <span>Delivery Address</span>
+                </h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Full Name <span class="text-rose-500">*</span></label>
+                        {{ form.customer_name }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Email Address <span class="text-rose-500">*</span></label>
+                        {{ form.customer_email }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Mobile Phone <span class="text-rose-500">*</span></label>
+                        {{ form.customer_mobile }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Pincode <span class="text-rose-500">*</span></label>
+                        {{ form.pincode }}
+                    </div>
+
+                    <div class="sm:col-span-2 space-y-1.5">
+                        <label class="text-slate-700">Full Delivery Address <span class="text-rose-500">*</span></label>
+                        {{ form.delivery_address }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">City <span class="text-rose-500">*</span></label>
+                        {{ form.city }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">State <span class="text-rose-500">*</span></label>
+                        {{ form.state }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Method Selection -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.04)] space-y-4 text-xs font-semibold">
+                <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-wallet text-rose-600"></i>
+                    <span>Payment Method</span>
+                </h2>
+
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-rose-400 hover:bg-rose-50/40 has-[:checked]:border-rose-600 has-[:checked]:bg-rose-50/60 has-[:checked]:ring-2 has-[:checked]:ring-rose-500/15 transition-all">
+                        <input type="radio" name="payment_method" value="cod" checked class="accent-rose-600 w-4 h-4">
+                        <div>
+                            <span class="font-bold text-slate-900 block text-sm">Cash on Delivery (COD)</span>
+                            <span class="text-[11px] text-slate-500 block">Pay with cash upon delivery at your doorstep</span>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-rose-400 hover:bg-rose-50/40 has-[:checked]:border-rose-600 has-[:checked]:bg-rose-50/60 has-[:checked]:ring-2 has-[:checked]:ring-rose-500/15 transition-all">
+                        <input type="radio" name="payment_method" value="upi" class="accent-rose-600 w-4 h-4">
+                        <div>
+                            <span class="font-bold text-slate-900 block text-sm">UPI / QR Code</span>
+                            <span class="text-[11px] text-slate-500 block">Pay via GPay, PhonePe, Paytm, or BHIM UPI</span>
+                        </div>
+                    </label>
+
+                    <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 bg-slate-50 cursor-pointer hover:border-rose-400 hover:bg-rose-50/40 has-[:checked]:border-rose-600 has-[:checked]:bg-rose-50/60 has-[:checked]:ring-2 has-[:checked]:ring-rose-500/15 transition-all">
+                        <input type="radio" name="payment_method" value="card" class="accent-rose-600 w-4 h-4">
+                        <div>
+                            <span class="font-bold text-slate-900 block text-sm">Debit / Credit Card / Netbanking</span>
+                            <span class="text-[11px] text-slate-500 block">Secure online bank payment gateway</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right 1 Column: Order Summary & Place Order -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-[0_4px_20px_rgba(15,23,42,0.04)] space-y-4 text-xs h-fit lg:sticky lg:top-6">
+            <h2 class="text-base font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <i class="fa-solid fa-bag-shopping text-rose-600 text-sm"></i>
+                Order Items <span class="text-slate-400 font-semibold">({{ cart.total_items }})</span>
+            </h2>
+
+            <div class="space-y-3 divide-y divide-slate-100 max-h-60 overflow-y-auto pr-1">
+                {% for item in cart_items %}
+                <div class="pt-2 flex justify-between items-center font-medium">
+                    <div>
+                        <span class="font-bold text-slate-900 block truncate max-w-[170px]">{{ item.product.title }}</span>
+                        <span class="text-slate-400 text-[10px]">{{ item.quantity }} x ₹{{ item.product.price }}</span>
+                    </div>
+                    <span class="font-bold text-slate-900">₹{{ item.total_price }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="space-y-2 text-slate-600 font-semibold border-t border-slate-100 pt-3">
+                <div class="flex justify-between">
+                    <span>Subtotal</span>
+                    <span class="font-bold text-slate-800">₹{{ cart.subtotal }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Delivery Charge</span>
+                    <span class="font-bold text-slate-800">
+                        {% if cart.delivery_charge == 0 %}<span class="text-emerald-600">FREE</span>{% else %}₹{{ cart.delivery_charge }}{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between text-sm font-black text-slate-900 border-t border-slate-100 pt-3">
+                    <span>Total Amount</span>
+                    <span class="text-rose-600">₹{{ cart.grand_total }}</span>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-rose-600/25 transition-all hover:scale-[1.02] active:scale-[0.98] text-sm flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-lock"></i>
+                <span>Place Order Now</span>
+            </button>
+
+            <p class="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-semibold pt-1">
+                <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+                100% Secure Checkout
+            </p>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'admin_panel/base_admin.html' %}
+
+{% block title %}SEO Page Meta Manager | MithilaMilan Admin OS{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-heading">SEO Page Meta Manager</h1>
+        <p class="text-xs text-slate-500 mt-1">Manage SEO Titles, Meta Descriptions, Focus Keywords, and OpenGraph details for any route dynamically.</p>
+    </div>
+</div>
+
+<!-- ADD / EDIT SEO META FORM -->
+<div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+    <h2 class="text-sm font-bold text-slate-900 font-heading uppercase tracking-wider border-b border-slate-100 pb-3">Set SEO Meta Tags for Route</h2>
+    <form method="post" class="space-y-4 text-xs">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Target Route / Path *</label>
+                <input type="text" name="path" required placeholder="e.g. / or /news/ or /store/"
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">SEO Title *</label>
+                <input type="text" name="seo_title" required placeholder="Optimized HTML Title..."
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+            <div>
+                <label class="block text-slate-700 font-bold mb-1">Focus Keyword</label>
+                <input type="text" name="focus_keyword" placeholder="Target keyword phrase..."
+                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium">
+            </div>
+        </div>
+        <div>
+            <label class="block text-slate-700 font-bold mb-1">Meta Description *</label>
+            <textarea name="meta_description" rows="2" placeholder="Summary snippet for search engine SERP results..."
+                      class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-slate-900 focus:outline-none focus:border-[#E85D2A] focus:bg-white font-medium"></textarea>
+        </div>
+        <button type="submit" class="bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-bold py-2.5 px-5 rounded-xl shadow-xs transition-all">
+            💾 Save SEO Meta Tag
+        </button>
+    </form>
+</div>
+
+<!-- EXISTING SEO METAS TABLE -->
+<div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
+    <div class="p-4 border-b border-slate-100 font-bold text-xs text-slate-900 uppercase tracking-wider font-heading">
+        Database-Backed SEO Meta Tags
+    </div>
+    <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+            <thead class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200">
+                <tr>
+                    <th class="px-4 py-3.5">Route Path</th>
+                    <th class="px-4 py-3.5">SEO Title</th>
+                    <th class="px-4 py-3.5">Focus Keyword</th>
+                    <th class="px-4 py-3.5">Meta Description Snippet</th>
+                    <th class="px-4 py-3.5 text-right">Robots</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for page in seo_pages %}
+                <tr class="hover:bg-slate-50/70 transition-colors">
+                    <td class="px-4 py-3.5 font-bold font-mono text-[#E85D2A]">{{ page.path }}</td>
+                    <td class="px-4 py-3.5 font-bold text-slate-900">{{ page.seo_title }}</td>
+                    <td class="px-4 py-3.5 text-slate-600 font-medium">{{ page.focus_keyword|default:"-" }}</td>
+                    <td class="px-4 py-3.5 text-slate-500 max-w-xs truncate">{{ page.meta_description }}</td>
+                    <td class="px-4 py-3.5 text-right">
+                        {% if page.robots_index %}<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Index</span>{% else %}<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 font-bold border border-rose-200">Noindex</span>{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="px-4 py-12 text-center text-slate-400">No SEO Meta tags configured yet. Add one above!</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

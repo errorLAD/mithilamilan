@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nominate a Mithila Personality / Scholar - OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-16">
+
+    <!-- Back button -->
+    <a href="{% url 'mithila_pride:person_list' %}" class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-blue-700 transition-colors">
+        <i class="fa-solid fa-arrow-left text-[11px]"></i>
+        <span>Back to Mithila Pride &amp; Scholars</span>
+    </a>
+
+    <!-- Header Banner -->
+    <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-950 via-indigo-900 to-slate-900 p-8 sm:p-10 text-white shadow-2xl shadow-indigo-950/30">
+        <div class="absolute inset-0 opacity-[0.07] pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
+        <div class="absolute -right-16 -top-16 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-16 w-64 h-64 bg-indigo-300/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 space-y-3">
+            <div class="inline-flex items-center space-x-2 bg-white/15 backdrop-blur-md ring-1 ring-white/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider text-blue-100">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>Nominate a Scholar / Personality</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-black tracking-tight leading-tight">
+                Mithila Pride &amp; Scholars Nomination
+            </h1>
+            <p class="text-xs sm:text-sm text-blue-100/90 max-w-2xl leading-relaxed">
+                Help document and honor scholars, writers, researchers, educators, and cultural leaders of Mithila. Nominations undergo Admin review before public publishing.
+            </p>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-1.5 pt-1 text-[11px] font-semibold text-blue-100/90">
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-heart text-blue-300"></i> Admin-reviewed</span>
+                <span class="flex items-center gap-1.5"><i class="fa-solid fa-landmark text-blue-300"></i> Preserving heritage</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-[2rem] p-6 sm:p-10 border border-slate-200/80 shadow-[0_8px_30px_rgba(15,23,42,0.06)] space-y-8">
+
+        <style>
+            /* Style raw Django widget output (form itself supplies no classes) */
+            .nomination-form input[type="text"],
+            .nomination-form input[type="tel"],
+            .nomination-form input[type="number"],
+            .nomination-form input[type="email"],
+            .nomination-form input[type="url"],
+            .nomination-form textarea,
+            .nomination-form select {
+                width: 100%;
+                background-color: rgb(248 250 252);
+                border: 1px solid rgb(226 232 240);
+                border-radius: 1rem;
+                padding: 0.7rem 1rem;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: rgb(15 23 42);
+                transition: box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+                appearance: none;
+                -webkit-appearance: none;
+            }
+            .nomination-form textarea {
+                min-height: 5.5rem;
+                resize: vertical;
+                font-weight: 500;
+                line-height: 1.5;
+            }
+            .nomination-form input::placeholder,
+            .nomination-form textarea::placeholder {
+                color: rgb(148 163 184);
+                font-weight: 500;
+            }
+            .nomination-form input:focus,
+            .nomination-form textarea:focus,
+            .nomination-form select:focus {
+                outline: none;
+                background-color: #ffffff;
+                border-color: rgb(37 99 235);
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+            }
+            .nomination-form select {
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2394a3b8'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 0.9rem center;
+                background-size: 1.1rem;
+                padding-right: 2.5rem;
+                cursor: pointer;
+            }
+            /* File input */
+            .nomination-form input[type="file"] {
+                width: 100%;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: rgb(71 85 105);
+                background-color: rgb(248 250 252);
+                border: 1.5px dashed rgb(203 213 225);
+                border-radius: 1rem;
+                padding: 0.65rem 0.9rem;
+                cursor: pointer;
+                transition: border-color 0.15s ease, background-color 0.15s ease;
+            }
+            .nomination-form input[type="file"]:hover {
+                border-color: rgb(37 99 235);
+                background-color: rgb(239 246 255);
+            }
+            .nomination-form input[type="file"]::file-selector-button {
+                background: rgb(37 99 235);
+                color: #fff;
+                border: none;
+                border-radius: 0.6rem;
+                padding: 0.4rem 0.85rem;
+                font-weight: 700;
+                font-size: 0.7rem;
+                margin-right: 0.75rem;
+                cursor: pointer;
+                transition: background-color 0.15s ease;
+            }
+            .nomination-form input[type="file"]::file-selector-button:hover {
+                background: rgb(29 78 216);
+            }
+        </style>
+
+        <form method="post" enctype="multipart/form-data" class="nomination-form space-y-9 text-xs font-semibold">
+            {% csrf_token %}
+
+            <!-- Section 1 -->
+            <div class="space-y-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-user text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">Personality Information</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Who you're nominating</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-12">
+                    <div class="sm:col-span-2 space-y-1.5">
+                        <label class="text-slate-700">Person's Full Name <span class="text-rose-500">*</span></label>
+                        {{ form.full_name }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Category / Profession <span class="text-rose-500">*</span></label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Era / Generation <span class="text-rose-500">*</span></label>
+                        {{ form.era_generation }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Native Place / Location <span class="text-rose-500">*</span></label>
+                        {{ form.place_location }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Photograph</label>
+                        {{ form.photograph }}
+                    </div>
+
+                    <div class="sm:col-span-2 space-y-1.5">
+                        <label class="text-slate-700">Organization / Institution Associated</label>
+                        {{ form.organization_institution }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2 -->
+            <div class="space-y-5 pt-8 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-book-open text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">Biography &amp; Legacy</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Their story and contributions</p>
+                    </div>
+                </div>
+
+                <div class="space-y-5 pl-0 sm:pl-12">
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Biography Overview <span class="text-rose-500">*</span></label>
+                        {{ form.biography }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Key Contributions to Mithila / Culture / Education <span class="text-rose-500">*</span></label>
+                        {{ form.contributions_to_mithila }}
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="text-slate-700">Early Life &amp; Roots</label>
+                            {{ form.early_life }}
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-slate-700">Education Details</label>
+                            {{ form.education }}
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Career Trajectory</label>
+                        {{ form.career }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Major Achievements &amp; Discoveries</label>
+                        {{ form.major_achievements }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Awards &amp; Honors Received</label>
+                        {{ form.awards }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Publications &amp; Famous Works</label>
+                        {{ form.publications_work }}
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="text-slate-700">Website / Social Links</label>
+                            {{ form.website_social_links }}
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-slate-700">References / Sources</label>
+                            {{ form.references_sources }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3 -->
+            <div class="space-y-5 pt-8 border-t border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-signature text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold text-slate-900">Nominator Information</h3>
+                        <p class="text-[11px] text-slate-400 font-medium">Optional — so we can follow up if needed</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pl-0 sm:pl-12">
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Your Full Name</label>
+                        {{ form.submitter_name }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-slate-700">Your Email Address</label>
+                        {{ form.submitter_email }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trust note -->
+            <div class="flex items-start gap-3 bg-blue-50/70 border border-blue-100 rounded-2xl p-4 text-[11px] text-blue-800 font-medium">
+                <i class="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
+                <p>Nominations are reviewed by our admin team for accuracy before appearing publicly on the Mithila Pride &amp; Scholars page.</p>
+            </div>
+
+            <div class="pt-2 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                <a href="{% url 'mithila_pride:person_list' %}" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-3 rounded-2xl transition-colors text-center">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 text-white font-bold px-6 py-3 rounded-2xl shadow-lg shadow-blue-800/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    Submit Nomination for Review
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

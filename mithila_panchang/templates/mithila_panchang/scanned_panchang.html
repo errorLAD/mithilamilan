@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}मूल पंचांग पृष्ठ - Source Viewer (Page {{ page_num }}) | OK Delhi{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 pb-12" x-data="{ zoom: 100 }">
+
+    <!-- Header Banner -->
+    <div class="bg-gradient-to-r from-[#7D281E] via-[#9E3120] to-[#C23D0D] rounded-3xl p-6 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <span class="inline-flex items-center space-x-1.5 bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-amber-100 mb-2">
+                <i class="fa-solid fa-book-open text-amber-300"></i>
+                <span>प्रमाणित स्रोत दर्शक (Original Source Viewer)</span>
+            </span>
+            <h1 class="text-2xl sm:text-3xl font-black tracking-tight">
+                मूल पंचांग — पृष्ठ {{ page_num }} / {{ total_pages }}
+            </h1>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center space-x-2 text-xs font-bold">
+            {% if prev_page %}
+            <a href="?page={{ prev_page }}" class="bg-white/20 hover:bg-white/30 text-white px-3.5 py-2 rounded-xl border border-white/20 transition-all">
+                &larr; पिछला पृष्ठ (Page {{ prev_page }})
+            </a>
+            {% endif %}
+
+            {% if next_page %}
+            <a href="?page={{ next_page }}" class="bg-white text-[#7D281E] px-3.5 py-2 rounded-xl shadow-xs hover:bg-amber-50">
+                अगला पृष्ठ (Page {{ next_page }}) &rarr;
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Zoom Toolbar & Page Jump -->
+    <div class="bg-white rounded-2xl p-3 border border-amber-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs font-bold text-slate-700">
+        <div class="flex items-center space-x-2">
+            <span>जूम (Zoom):</span>
+            <button @click="zoom = Math.max(50, zoom - 25)" class="px-2.5 py-1 bg-amber-50 rounded-lg hover:bg-amber-100 border border-amber-200">
+                <i class="fa-solid fa-minus"></i>
+            </button>
+            <span class="px-2 font-mono" x-text="zoom + '%'"></span>
+            <button @click="zoom = Math.min(200, zoom + 25)" class="px-2.5 py-1 bg-amber-50 rounded-lg hover:bg-amber-100 border border-amber-200">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <button @click="zoom = 100" class="px-2.5 py-1 bg-slate-100 rounded-lg hover:bg-slate-200 text-[10px]">Reset</button>
+        </div>
+
+        <!-- Thumbnail Jump -->
+        <form method="get" class="flex items-center space-x-2">
+            <span>पृष्ठ चुनें:</span>
+            <select name="page" onchange="this.form.submit()" class="bg-[#FAF7F2] border border-amber-200 rounded-xl px-3 py-1 text-slate-800 focus:outline-none">
+                {% for i in "x"|rjust:"34" %}
+                <option value="{{ forloop.counter }}" {% if forloop.counter == page_num %}selected{% endif %}>
+                    पृष्ठ {{ forloop.counter }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <!-- Main Scanned Page Container -->
+    <div class="bg-slate-900 rounded-3xl p-4 sm:p-8 shadow-2xl overflow-auto text-center border border-amber-900/50 min-h-[500px] flex flex-col items-center justify-center">
+        <div class="inline-block transition-transform duration-200 origin-top" :style="'transform: scale(' + (zoom / 100) + ')'">
+            {% if scanned_page %}
+                <img src="{% static scanned_page.image_path %}" alt="Panchang Page {{ page_num }}" class="max-w-full h-auto rounded-xl shadow-2xl border border-white/10 mx-auto">
+            {% else %}
+                <img src="/media/panch_ocr/page-{% if page_num < 10 %}0{% endif %}{{ page_num }}.jpg" 
+                     onerror="this.onerror=null; this.src='/static/panch_ocr/page-{% if page_num < 10 %}0{% endif %}{{ page_num }}.jpg'"
+                     alt="Scanned Panchang Page {{ page_num }}" 
+                     class="max-w-full h-auto rounded-xl shadow-2xl border border-white/10 mx-auto">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Page OCR Reference Note -->
+    {% if scanned_page and scanned_page.notes %}
+    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-xs text-amber-950 space-y-1">
+        <span class="font-bold block">पृष्ठ नोट (Page Reference Info):</span>
+        <p>{{ scanned_page.notes }}</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

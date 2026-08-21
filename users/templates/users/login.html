@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In - MithilaMilan Community{% endblock %}
+
+{% block content %}
+<div class="min-h-[55vh] flex items-center justify-center bg-slate-50/80 py-2 px-4 sm:px-6">
+    
+    <div class="w-full max-w-md">
+        
+        <!-- Card -->
+        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50 overflow-hidden">
+            
+            <!-- Top accent bar -->
+            <div class="h-1.5 bg-gradient-to-r from-[#E85D2A] via-amber-400 to-[#E85D2A]"></div>
+            
+            <div class="p-8 sm:p-10 space-y-8">
+                
+                <!-- Header -->
+                <div class="text-center space-y-4">
+                    <!-- Logo -->
+                    <div class="mx-auto w-14 h-14 rounded-2xl bg-gradient-to-br from-[#E85D2A] to-amber-500 text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-orange-500/20">
+                        M
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                            Welcome back
+                        </h1>
+                        <p class="text-sm text-slate-500">
+                            Sign in to MithilaMilan Community
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form class="space-y-5" method="post" action="{% url 'users:login' %}">
+                    {% csrf_token %}
+                    
+                    <!-- Username -->
+                    <div class="space-y-1.5">
+                        <label for="username" class="block text-sm font-semibold text-slate-700">
+                            Username
+                        </label>
+                        <div class="relative">
+                            <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input id="username" 
+                                   name="username" 
+                                   type="text" 
+                                   required 
+                                   autocomplete="username"
+                                   class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/20 focus:border-[#E85D2A] focus:bg-white transition-all"
+                                   placeholder="Enter your username">
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <label for="password" class="block text-sm font-semibold text-slate-700">
+                                Password
+                            </label>
+                            <!-- Optional: Forgot password link -->
+                            <!-- <a href="#" class="text-xs font-medium text-[#E85D2A] hover:underline">Forgot password?</a> -->
+                        </div>
+                        <div class="relative">
+                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input id="password" 
+                                   name="password" 
+                                   type="password" 
+                                   required 
+                                   autocomplete="current-password"
+                                   class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/20 focus:border-[#E85D2A] focus:bg-white transition-all"
+                                   placeholder="Enter your password">
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="submit"
+                            class="w-full flex items-center justify-center gap-2 bg-[#E85D2A] hover:bg-[#d44c1a] text-white font-semibold text-sm py-3.5 rounded-2xl shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 transition-all active:scale-[0.98]">
+                        Sign In
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-slate-100"></div>
+                    </div>
+                    <div class="relative flex justify-center text-xs">
+                        <span class="bg-white px-3 text-slate-400">or</span>
+                    </div>
+                </div>
+
+                <!-- Sign up link -->
+                <div class="text-center">
+                    <p class="text-sm text-slate-600">
+                        New to MithilaMilan?
+                        <a href="{% url 'users:signup' %}" 
+                           class="font-semibold text-[#E85D2A] hover:text-[#d44c1a] hover:underline underline-offset-2 transition-colors">
+                            Create an account
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer note -->
+        <p class="mt-6 text-center text-xs text-slate-400">
+            By signing in you agree to our Terms & Privacy Policy
+        </p>
+    </div>
+</div>
+{% endblock %}
