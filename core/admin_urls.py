@@ -46,6 +46,7 @@ urlpatterns = [
     path('homepage/', admin_views.admin_homepage_cms_view, name='homepage'),
     path('logs/', admin_views.admin_activity_logs_view, name='logs'),
     path('settings/', admin_views.admin_settings_view, name='settings'),
+    path('footer/', admin_views.admin_footer_settings_view, name='footer_settings'),
 
     # 10. SEO & Digital Marketing Suite
     path('seo/', admin_seo_views.admin_seo_dashboard_view, name='seo_dashboard'),

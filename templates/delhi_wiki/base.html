@@ -3,33 +3,41 @@
 {% block title %}मिथिला परिचय — Mithila Parichay & Guide{% endblock %}
 
 {% block content %}
-<div class="bg-[#F8F8F6] min-h-screen py-6 sm:py-8 font-devanagari">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Mithila Guide Sub-Header -->
-        <div class="bg-white rounded-3xl border border-slate-200/80 p-6 mb-8 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4 relative overflow-hidden">
-            <div class="absolute top-0 inset-x-0 h-[3px] bg-gradient-to-r from-[#E85D2A] via-[#D6A437] to-[#7D3028]"></div>
-            
-            <div class="space-y-1 text-center md:text-left">
-                <h1 class="text-xl sm:text-2xl font-extrabold text-[#0F1F35] flex items-center justify-center md:justify-start space-x-2">
-                    <i class="fa-solid fa-map-location-dot text-[#E85D2A]"></i>
-                    <span>मिथिला परिचय एवं सांस्कृतिक मार्गदर्शिका</span>
+<div class="max-w-7xl mx-auto space-y-6 font-sans pb-16 px-3 sm:px-6">
+    
+    <!-- Mithila Parichay SaaS Header Card -->
+    <div class="bg-white rounded-2xl p-5 sm:p-7 border border-amber-200/80 shadow-2xs space-y-4 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex items-center space-x-2">
+                    <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                            type="button"
+                            aria-label="Go Back"
+                            class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari">
+                        <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                        <span>पीछे</span>
+                    </button>
+                    <span class="text-xs font-bold text-slate-400">/</span>
+                    <span class="text-xs font-extrabold text-[#E85D2A] uppercase tracking-wider font-devanagari">ज्ञान कोष</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight font-devanagari">
+                    मिथिला परिचय (Mithila Parichay)
                 </h1>
-                <p class="text-xs text-[#718096]">मिथिलाक प्रसिद्ध स्थान, ऐतिहासिक स्थल, पारंपरिक धरोहर, भोजन एवं स्थानीय ज्ञान</p>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium font-devanagari max-w-xl">
+                    मिथिला, शहर, स्थान, धरोहर आ समुदाय संबंधी प्रामाणिक जानकारी।
+                </p>
             </div>
 
-            <div class="flex items-center space-x-2 text-xs font-semibold flex-wrap justify-center gap-y-2">
-                <a href="{% url 'delhi_wiki:area_list' %}" class="px-3.5 py-2 rounded-xl bg-[#FFF7ED] text-[#E85D2A] border border-[#FFEDD5] hover:bg-[#FFEDD5]">स्थान एवं क्षेत्र</a>
-                <a href="{% url 'delhi_wiki:landmark_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">ऐतिहासिक स्थल</a>
-                <a href="{% url 'delhi_wiki:food_place_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">पारंपरिक खान-पान</a>
-                <a href="{% url 'delhi_wiki:market_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">बाज़ार एवं हाट</a>
-                <a href="{% url 'delhi_wiki:event_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">आयोजन एवं पर्व</a>
+            <div class="flex items-center space-x-2 text-xs font-bold flex-wrap justify-start sm:justify-end gap-y-2 font-devanagari">
+                <a href="{% url 'delhi_wiki:area_list' %}" class="px-3 py-1.5 rounded-xl bg-amber-50 text-[#E85D2A] border border-amber-200 shadow-2xs">स्थान एवं क्षेत्र</a>
+                <a href="{% url 'delhi_wiki:landmark_list' %}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700">धरोहर स्थल</a>
+                <a href="{% url 'delhi_wiki:market_list' %}" class="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700">हाट-बाज़ार</a>
             </div>
         </div>
-
-        {% block wiki_content %}
-        {% endblock %}
-
     </div>
+
+    {% block wiki_content %}
+    {% endblock %}
+
 </div>
 {% endblock %}

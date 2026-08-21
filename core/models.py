@@ -179,3 +179,77 @@ class SEOIntegrationSetting(models.Model):
         return "SEO & Digital Marketing API Integrations"
 
 
+class FooterSetting(models.Model):
+    site_name = models.CharField(max_length=100, default="MithilaMilan")
+    tagline = models.CharField(max_length=255, default="मिथिला के लोक, संस्कृति आ समाज के एक डिजिटल मंच।")
+    short_description = models.TextField(
+        default="MithilaMilan is a community platform created to connect people, culture, businesses, stories, opportunities and information related to Mithila."
+    )
+    subline = models.CharField(max_length=100, default="Made with ❤️ in Mithila")
+    contact_email = models.EmailField(default="contact@mithilamilan.com")
+    support_email = models.EmailField(default="support@mithilamilan.com")
+    report_issue_email = models.EmailField(default="safety@mithilamilan.com")
+    
+    # Social Links
+    facebook_url = models.URLField(blank=True, default="https://facebook.com/mithilamilan")
+    instagram_url = models.URLField(blank=True, default="https://instagram.com/mithilamilan")
+    youtube_url = models.URLField(blank=True, default="https://youtube.com/@mithilamilan")
+    x_twitter_url = models.URLField(blank=True, default="https://x.com/mithilamilan")
+    linkedin_url = models.URLField(blank=True, default="https://linkedin.com/company/mithilamilan")
+    
+    # Copyright & Disclaimers
+    copyright_text = models.CharField(max_length=255, default="© 2026 MithilaMilan. All rights reserved.")
+    platform_disclaimer = models.TextField(
+        default="Important: MithilaMilan is a community and information platform. Content, listings, advertisements, products, services, events, jobs, rentals and other information may be submitted or provided by users, businesses, organizers or third parties. MithilaMilan does not automatically endorse or guarantee every third-party listing or claim.\n\nMithilaMilan is not responsible for fraudulent, misleading, unauthorized or unlawful activities carried out by third parties through information, listings, posts, advertisements, transactions or communications on the platform, subject to applicable law.\n\nUsers are responsible for verifying information, identities, offers, prices, payment details and other claims before entering into any transaction or agreement."
+    )
+    fraud_warning_title = models.CharField(max_length=100, default="⚠️ Stay Safe")
+    fraud_warning_text = models.TextField(
+        default="Never share your OTP, password, PIN, card details or other sensitive information with anyone claiming to represent MithilaMilan.\n\nMithilaMilan will never ask you to transfer money to a personal account for verification or account activation.\n\nIf you notice suspicious activity, report it to us through the platform."
+    )
+    user_content_disclaimer = models.TextField(
+        default="User-generated content belongs to its respective authors. Users are responsible for the content they submit. MithilaMilan may review, moderate, restrict or remove content that violates applicable laws, platform policies or community guidelines."
+    )
+    marketplace_disclaimer = models.TextField(
+        default="Products and services listed by independent sellers or providers may be subject to separate seller terms, availability, pricing, delivery and return conditions. Users should review the applicable details before purchasing."
+    )
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Footer & Platform Settings'
+        verbose_name_plural = 'Footer & Platform Settings'
+
+    def __str__(self):
+        return f"Footer Settings - {self.site_name}"
+
+
+class LegalPage(models.Model):
+    SLUG_CHOICES = [
+        ('terms', 'Terms of Service'),
+        ('privacy', 'Privacy Policy'),
+        ('cancellation', 'Cancellation Policy'),
+        ('community-guidelines', 'Community Guidelines'),
+        ('content-policy', 'Content Policy'),
+        ('refund-policy', 'Refund Policy'),
+        ('disclaimer', 'Disclaimer'),
+    ]
+
+    slug = models.SlugField(max_length=100, unique=True, choices=SLUG_CHOICES)
+    title = models.CharField(max_length=200)
+    summary = models.CharField(max_length=300, blank=True)
+    content = models.TextField(help_text="HTML or Markdown legal text content")
+    last_updated = models.DateField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = 'Legal Page'
+        verbose_name_plural = 'Legal Pages'
+
+    def __str__(self):
+        return self.title
+
+
+

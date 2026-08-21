@@ -1,0 +1,230 @@
+{% load static %}
+<!-- ================================================== -->
+<!-- MITHILAMILAN LIGHT SAAS FOOTER -->
+<!-- ================================================== -->
+<footer class="bg-slate-50 text-slate-700 font-sans relative border-t border-slate-200/90 pt-0 mt-16 w-full max-w-full overflow-hidden" 
+        x-data="{ openQuick: false, openCommunity: false, openLegal: false, openDisclaimers: false }">
+    
+    <!-- Madhubani Inspired Geometric Top Accent Line -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-[#800020] via-[#E85D2A] via-[#D4AF37] via-[#5D7A55] to-[#800020] relative">
+        <!-- Center Motif SVG Badge -->
+        <div class="absolute left-1/2 -top-3.5 -translate-x-1/2 w-8 h-8 rounded-full bg-white border-2 border-[#D4AF37] flex items-center justify-center text-[#E85D2A] text-xs shadow-sm z-10">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Main Footer Upper Grid -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+            
+            <!-- COLUMN 1: BRAND & IDENTITY (4 cols on lg) -->
+            <div class="lg:col-span-4 space-y-4">
+                <div class="flex items-center space-x-3">
+                    <a href="{% url 'core:home' %}" class="flex items-center space-x-2.5 group">
+                        <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E85D2A] to-[#B03B10] text-white flex items-center justify-center font-black text-xl shadow-xs group-hover:scale-105 transition-transform">
+                            म
+                        </span>
+                        <div class="flex flex-col">
+                            <span class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
+                                MithilaMilan
+                                <span class="text-[9px] font-bold py-0.5 px-1.5 rounded-full bg-[#E85D2A]/10 text-[#E85D2A] border border-[#E85D2A]/20">मंच</span>
+                            </span>
+                            <span class="text-[11px] font-semibold text-[#B03B10] font-devanagari">
+                                {{ footer_settings.tagline|default:"मिथिला के लोक, संस्कृति आ समाज के एक डिजिटल मंच।" }}
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <p class="text-xs text-slate-600 leading-relaxed max-w-sm">
+                    {{ footer_settings.short_description|default:"MithilaMilan is a community platform created to connect people, culture, businesses, stories, opportunities and information related to Mithila." }}
+                </p>
+
+                <!-- Social Media Links -->
+                <div class="pt-2">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">Follow Our Community</span>
+                    <div class="flex items-center space-x-2">
+                        {% if footer_settings.facebook_url %}
+                        <a href="{{ footer_settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook" class="w-8 h-8 rounded-lg bg-white hover:bg-[#E85D2A] text-slate-600 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-200 shadow-2xs">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% if footer_settings.instagram_url %}
+                        <a href="{{ footer_settings.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram" class="w-8 h-8 rounded-lg bg-white hover:bg-[#E85D2A] text-slate-600 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-200 shadow-2xs">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if footer_settings.youtube_url %}
+                        <a href="{{ footer_settings.youtube_url }}" target="_blank" rel="noopener" aria-label="YouTube" class="w-8 h-8 rounded-lg bg-white hover:bg-rose-600 text-slate-600 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-200 shadow-2xs">
+                            <i class="fa-brands fa-youtube"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if footer_settings.x_twitter_url %}
+                        <a href="{{ footer_settings.x_twitter_url }}" target="_blank" rel="noopener" aria-label="X / Twitter" class="w-8 h-8 rounded-lg bg-white hover:bg-slate-800 text-slate-600 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-200 shadow-2xs">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        {% endif %}
+
+                        {% if footer_settings.linkedin_url %}
+                        <a href="{{ footer_settings.linkedin_url }}" target="_blank" rel="noopener" aria-label="LinkedIn" class="w-8 h-8 rounded-lg bg-white hover:bg-sky-600 text-slate-600 hover:text-white flex items-center justify-center text-xs transition-colors border border-slate-200 shadow-2xs">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: QUICK LINKS (3 cols on lg, Mobile Accordion) -->
+            <div class="lg:col-span-3 border-t lg:border-t-0 border-slate-200 pt-4 lg:pt-0">
+                <button @click="openQuick = !openQuick" class="w-full flex items-center justify-between lg:cursor-default py-2 lg:py-0 text-left">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-[#B03B10] flex items-center gap-1.5">
+                        <i class="fa-solid fa-grid-2 text-xs text-[#E85D2A]"></i>
+                        Quick Links (मिथिला सेवा)
+                    </h3>
+                    <span class="lg:hidden text-slate-500 font-bold text-sm" x-text="openQuick ? '−' : '+'"></span>
+                </button>
+
+                <ul class="mt-3 grid grid-cols-2 gap-y-2 gap-x-2 text-xs font-medium text-slate-600" 
+                    x-show="openQuick || window.innerWidth >= 1024" x-collapse>
+                    <li><a href="{% url 'mithila_panchang:panchang_home' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-calendar-days text-[10px] text-amber-600"></i> मिथिला पंचांग</a></li>
+                    <li><a href="{% url 'events:event_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-calendar-star text-[10px] text-[#E85D2A]"></i> पावन पर्व एवं आयोजन</a></li>
+                    <li><a href="{% url 'mithila_pride:person_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-graduation-cap text-[10px] text-sky-600"></i> मिथिला गौरव एवं विद्वान</a></li>
+                    <li><a href="{% url 'delhi_wiki:area_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-map-location-dot text-[10px] text-teal-600"></i> मिथिला परिचय</a></li>
+                    <li><a href="{% url 'news:news_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-newspaper text-[10px] text-blue-600"></i> समाचार</a></li>
+                    <li><a href="{% url 'storytelling:story_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-book-open text-[10px] text-orange-600"></i> कहानी</a></li>
+                    <li><a href="{% url 'job_portal:job_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-briefcase text-[10px] text-emerald-600"></i> रोजगार</a></li>
+                    <li><a href="{% url 'pg_rental:listings' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-house-user text-[10px] text-indigo-600"></i> किरायाक घर</a></li>
+                    <li><a href="{% url 'lost_and_found:item_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-magnifying-glass-location text-[10px] text-rose-600"></i> हरायल आ भेटल वस्तु</a></li>
+                    <li><a href="{% url 'cab_auto:cab_auto_home' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-taxi text-[10px] text-amber-600"></i> कैब एवं ऑटो</a></li>
+                    <li><a href="{% url 'ghatkaiti:profile_list' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-ring text-[10px] text-pink-600"></i> घटकैती</a></li>
+                    <li><a href="{% url 'store:store_home' %}" class="hover:text-[#E85D2A] transition-colors flex items-center gap-1.5 py-0.5"><i class="fa-solid fa-bag-shopping text-[10px] text-emerald-700"></i> मिथिला स्टोर</a></li>
+                </ul>
+            </div>
+
+            <!-- COLUMN 3: COMMUNITY (2 cols on lg, Mobile Accordion) -->
+            <div class="lg:col-span-2 border-t lg:border-t-0 border-slate-200 pt-4 lg:pt-0">
+                <button @click="openCommunity = !openCommunity" class="w-full flex items-center justify-between lg:cursor-default py-2 lg:py-0 text-left">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Community</h3>
+                    <span class="lg:hidden text-slate-500 font-bold text-sm" x-text="openCommunity ? '−' : '+'"></span>
+                </button>
+
+                <ul class="mt-3 space-y-2 text-xs font-medium text-slate-600" 
+                    x-show="openCommunity || window.innerWidth >= 1024" x-collapse>
+                    <li><a href="{% url 'subreddits:list' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Popular Communities</a></li>
+                    <li><a href="{% url 'subreddits:create' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Create a Community</a></li>
+                    <li><a href="{% url 'core:home' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Your Feed</a></li>
+                    <li><a href="{% url 'posts:create' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Submit Content</a></li>
+                    <li><a href="{% url 'core:support' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Help & Support</a></li>
+                    <li><a href="{% url 'core:contact' %}" class="hover:text-[#E85D2A] transition-colors py-0.5 block">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <!-- COLUMN 4: LEGAL & POLICIES (3 cols on lg, Mobile Accordion) -->
+            <div class="lg:col-span-3 border-t lg:border-t-0 border-slate-200 pt-4 lg:pt-0">
+                <button @click="openLegal = !openLegal" class="w-full flex items-center justify-between lg:cursor-default py-2 lg:py-0 text-left">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                        <i class="fa-solid fa-scale-balanced text-indigo-600 text-xs"></i>
+                        Legal & Policies
+                    </h3>
+                    <span class="lg:hidden text-slate-500 font-bold text-sm" x-text="openLegal ? '−' : '+'"></span>
+                </button>
+
+                <ul class="mt-3 space-y-2 text-xs font-medium text-slate-600" 
+                    x-show="openLegal || window.innerWidth >= 1024" x-collapse>
+                    <li><a href="/terms/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-file-contract text-[10px] text-slate-400"></i> Terms of Service</a></li>
+                    <li><a href="/privacy/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-user-shield text-[10px] text-slate-400"></i> Privacy Policy</a></li>
+                    <li><a href="/cancellation/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-ban text-[10px] text-slate-400"></i> Cancellation Policy</a></li>
+                    <li><a href="/community-guidelines/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-users text-[10px] text-slate-400"></i> Community Guidelines</a></li>
+                    <li><a href="/content-policy/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-[10px] text-slate-400"></i> Content Policy</a></li>
+                    <li><a href="/refund-policy/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-[10px] text-slate-400"></i> Refund Policy</a></li>
+                    <li><a href="/disclaimer/" class="hover:text-[#E85D2A] transition-colors py-0.5 flex items-center gap-1.5"><i class="fa-solid fa-shield-cat text-[10px] text-slate-400"></i> Disclaimer</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- PLATFORM & MARKETPLACE DISCLAIMERS ACCORDION -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 text-[11px] text-slate-600 leading-relaxed shadow-2xs">
+            <button @click="openDisclaimers = !openDisclaimers" class="w-full flex items-center justify-between text-left text-xs font-bold text-slate-800 uppercase tracking-wider">
+                <span class="flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-[#D4AF37]"></i>
+                    Important Platform & Marketplace Disclaimers
+                </span>
+                <span class="text-slate-500 text-xs" x-text="openDisclaimers ? 'Hide Details ▲' : 'Show Details ▼'"></span>
+            </button>
+
+            <div x-show="openDisclaimers" x-collapse class="space-y-3 pt-2 border-t border-slate-100">
+                <div>
+                    <strong class="text-slate-800 block mb-1">Platform Information Disclaimer:</strong>
+                    <p>{{ footer_settings.platform_disclaimer|default:"Important: MithilaMilan is a community and information platform. Content, listings, advertisements, products, services, events, jobs, rentals and other information may be submitted or provided by users, businesses, organizers or third parties. MithilaMilan does not automatically endorse or guarantee every third-party listing or claim. MithilaMilan is not responsible for fraudulent, misleading, unauthorized or unlawful activities carried out by third parties through information, listings, posts, advertisements, transactions or communications on the platform, subject to applicable law. Users are responsible for verifying information, identities, offers, prices, payment details and other claims before entering into any transaction or agreement." }}</p>
+                </div>
+
+                <div>
+                    <strong class="text-slate-800 block mb-1">User Content Disclaimer:</strong>
+                    <p>{{ footer_settings.user_content_disclaimer|default:"User-generated content belongs to its respective authors. Users are responsible for the content they submit. MithilaMilan may review, moderate, restrict or remove content that violates applicable laws, platform policies or community guidelines." }}</p>
+                </div>
+
+                <div>
+                    <strong class="text-slate-800 block mb-1">Marketplace Disclaimer (Mithila Store):</strong>
+                    <p>{{ footer_settings.marketplace_disclaimer|default:"Products and services listed by independent sellers or providers may be subject to separate seller terms, availability, pricing, delivery and return conditions. Users should review the applicable details before purchasing." }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEDICATION & COPYRIGHT BOTTOM BAR -->
+    <div class="border-t border-slate-200 bg-white py-6 text-slate-600 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 text-center">
+            
+            <!-- Legal Links Dot-Separated Row -->
+            <div class="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11px] font-semibold text-slate-600">
+                <a href="/terms/" class="hover:text-[#E85D2A] transition-colors">Terms of Service</a>
+                <span class="text-slate-300">·</span>
+                <a href="/privacy/" class="hover:text-[#E85D2A] transition-colors">Privacy Policy</a>
+                <span class="text-slate-300">·</span>
+                <a href="/cancellation/" class="hover:text-[#E85D2A] transition-colors">Cancellation Policy</a>
+                <span class="text-slate-300">·</span>
+                <a href="/community-guidelines/" class="hover:text-[#E85D2A] transition-colors">Community Guidelines</a>
+                <span class="text-slate-300">·</span>
+                <a href="/content-policy/" class="hover:text-[#E85D2A] transition-colors">Content Policy</a>
+                <span class="text-slate-300">·</span>
+                <a href="/refund-policy/" class="hover:text-[#E85D2A] transition-colors">Refund Policy</a>
+                <span class="text-slate-300">·</span>
+                <a href="/disclaimer/" class="hover:text-[#E85D2A] transition-colors">Disclaimer</a>
+            </div>
+
+            <div class="h-px w-24 bg-slate-200 mx-auto"></div>
+
+            <!-- Dedicated to my Baba Line -->
+            <div class="text-slate-700 text-xs sm:text-sm font-semibold italic">
+                ❤️ Dedicated to my Baba,<br class="sm:hidden">
+                <span class="font-sans font-extrabold not-italic text-slate-900">Vinay Kant Mishra (Kanhaiya Ji)</span>
+            </div>
+
+            <!-- Made with ❤️ in Mithila -->
+            <div class="text-xs text-[#E85D2A] font-extrabold tracking-wide">
+                {{ footer_settings.subline|default:"Made with ❤️ in Mithila" }}
+            </div>
+
+            <!-- Copyright Notice -->
+            <div class="text-[11px] text-slate-500 font-medium">
+                {{ footer_settings.copyright_text|default:"© 2026 MithilaMilan. All rights reserved." }}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Sticky Bottom Safety Bar -->
+    <div class="bg-amber-100/80 border-t border-amber-200 text-amber-950 text-[11px] font-extrabold py-2 px-4 text-center tracking-tight">
+        ⚠️ Stay Safe — Never share OTP, PIN, password or payment credentials with anyone.
+    </div>
+
+</footer>

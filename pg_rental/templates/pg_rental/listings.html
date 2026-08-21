@@ -1,120 +1,139 @@
 {% extends 'pg_rental/base.html' %}
 
 {% block pg_content %}
-<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-    
-    <!-- Filter Sidebar (Collapsible on Mobile, Sticky on Desktop) -->
-    <div class="lg:col-span-1" x-data="{ showFilter: false }">
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-saas space-y-4 lg:sticky lg:top-20">
-            <div @click="showFilter = !showFilter" class="flex items-center justify-between cursor-pointer lg:cursor-default">
-                <h3 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider flex items-center space-x-2">
-                    <i class="fa-solid fa-filter text-emerald-600"></i>
-                    <span>Filter Accommodations (किरायाक घर)</span>
-                </h3>
-                <button type="button" class="lg:hidden text-slate-500 font-bold text-xs flex items-center space-x-1 min-h-[36px]">
-                    <span x-text="showFilter ? 'Hide ▴' : 'Show Filter ▾'"></span>
-                </button>
+<div class="space-y-6 font-sans pb-16">
+
+    <!-- Clean Light SaaS Header Card -->
+    <div class="bg-white rounded-2xl p-5 sm:p-7 border border-amber-200/80 shadow-2xs space-y-4 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex items-center space-x-2">
+                    <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                            type="button"
+                            aria-label="Go Back"
+                            class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari">
+                        <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                        <span>पीछे</span>
+                    </button>
+                    <span class="text-xs font-bold text-slate-400">/</span>
+                    <span class="text-xs font-extrabold text-indigo-700 uppercase tracking-wider font-devanagari">आवास सेवा</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight font-devanagari">
+                    किरायाक घर (PG & Rentals)
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium font-devanagari max-w-xl">
+                    मिथिला आ आसपासक क्षेत्र में उपलब्ध किरायाक घर, कमरा आ PG लिस्टिंग।
+                </p>
             </div>
 
-            <form method="get" class="space-y-4 text-xs lg:block" :class="showFilter ? 'block' : 'hidden lg:block'">
-                <div>
-                    <label for="locality" class="block font-semibold text-slate-700 mb-1">Search Locality</label>
-                    <input type="text" id="locality" name="locality" value="{{ locality_query|default:'' }}" placeholder="e.g. Connaught Place, Bandra..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-600 focus:bg-white">
-                </div>
-
-                <div>
-                    <label for="property_type" class="block font-semibold text-slate-700 mb-1">Property Type</label>
-                    <select id="property_type" name="property_type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-600">
-                        <option value="">All Property Types</option>
-                        {% for code, label in property_types %}
-                        <option value="{{ code }}" {% if selected_property_type == code %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div>
-                    <label for="gender" class="block font-semibold text-slate-700 mb-1">Gender Preference</label>
-                    <select id="gender" name="gender_preference" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-emerald-600">
-                        <option value="">Any Preference</option>
-                        {% for code, label in gender_preferences %}
-                        <option value="{{ code }}" {% if selected_gender == code %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="pt-2 flex gap-2">
-                    <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 rounded-xl transition-colors">
-                        Apply Filter
-                    </button>
-                    <a href="{% url 'pg_rental:listings' %}" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-center">
-                        Reset
-                    </a>
-                </div>
-            </form>
+            {% if user.is_authenticated %}
+            <a href="{% url 'pg_rental:add_listing' %}" class="inline-flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-2xs transition-all text-xs shrink-0 font-devanagari self-start sm:self-auto min-h-[44px]">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>+ List Property</span>
+            </a>
+            {% endif %}
         </div>
     </div>
 
-    <!-- PG Cards Grid Column -->
-    <div class="lg:col-span-3 space-y-4">
+    <!-- Layout Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <div class="flex items-center justify-between text-xs text-slate-500 pb-2">
-            <span>Showing verified PGs & rentals</span>
-            {% if user.is_authenticated %}
-            <a href="{% url 'pg_rental:add_listing' %}" class="text-emerald-600 font-bold hover:underline">+ List Property</a>
-            {% endif %}
+        <!-- Filter Sidebar -->
+        <div class="lg:col-span-1" x-data="{ showFilter: false }">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-2xs space-y-4 lg:sticky lg:top-20">
+                <div @click="showFilter = !showFilter" class="flex items-center justify-between cursor-pointer lg:cursor-default min-h-[38px]">
+                    <h3 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider flex items-center space-x-2 font-devanagari">
+                        <i class="fa-solid fa-filter text-indigo-600"></i>
+                        <span>Filter PG & Rentals</span>
+                    </h3>
+                    <button type="button" class="lg:hidden text-slate-500 font-bold text-xs flex items-center space-x-1 min-h-[36px]">
+                        <span x-text="showFilter ? 'Hide ▴' : 'Show Filter ▾'"></span>
+                    </button>
+                </div>
+
+                <form method="get" class="space-y-4 text-xs font-sans lg:block" :class="showFilter ? 'block' : 'hidden lg:block'">
+                    <div>
+                        <label for="locality" class="block font-semibold text-slate-700 mb-1">Search Locality</label>
+                        <input type="text" id="locality" name="q" value="{{ query|default:'' }}" placeholder="e.g. Darbhanga, Madhubani..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 focus:bg-white font-medium">
+                    </div>
+
+                    <div>
+                        <label for="property_type" class="block font-semibold text-slate-700 mb-1">Property Type</label>
+                        <select id="property_type" name="property_type" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-600 font-medium">
+                            <option value="">All Property Types</option>
+                            {% for code, label in property_types %}
+                            <option value="{{ code }}" {% if selected_property_type == code %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="pt-2 flex gap-2 font-devanagari">
+                        <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-2 rounded-xl transition-colors shadow-2xs min-h-[38px]">
+                            Filter
+                        </button>
+                        <a href="{% url 'pg_rental:listings' %}" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-center min-h-[38px] flex items-center justify-center">
+                            Reset
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {% for pg in page_obj %}
-            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-saas hover:shadow-saas-lg hover:border-emerald-200 transition-all overflow-hidden flex flex-col justify-between">
-                
-                <div class="space-y-3 p-5">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px] border border-emerald-100">
-                            {{ pg.get_property_type_display }}
-                        </span>
-                        <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-[10px]">
-                            {{ pg.get_gender_preference_display }}
-                        </span>
+        <!-- PG Cards Grid Column -->
+        <div class="lg:col-span-3 space-y-4">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {% for pg in listings %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-amber-300 shadow-2xs hover:shadow-saas transition-all overflow-hidden flex flex-col justify-between group">
+                    
+                    <div class="space-y-3 p-5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-bold text-[10px] border border-indigo-100 font-devanagari">
+                                {{ pg.get_property_type_display }}
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[10px] font-devanagari">
+                                {{ pg.get_gender_preference_display }}
+                            </span>
+                        </div>
+
+                        <h2 class="text-base font-extrabold text-slate-900 group-hover:text-[#E85D2A] transition-colors font-devanagari leading-snug">
+                            <a href="{% url 'pg_rental:pg_detail' pg.pk %}">{{ pg.title }}</a>
+                        </h2>
+
+                        <p class="text-xs text-slate-500 font-medium">
+                            <i class="fa-solid fa-location-dot text-amber-600 mr-1"></i>{{ pg.locality }}, {{ pg.city }}
+                        </p>
+
+                        <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">
+                            {{ pg.description|truncatewords:25 }}
+                        </p>
                     </div>
 
-                    <h2 class="text-base font-bold text-slate-900 hover:text-emerald-600 transition-colors">
-                        <a href="{% url 'pg_rental:detail' pg.pk %}">{{ pg.title }}</a>
-                    </h2>
-
-                    <p class="text-xs text-slate-500">
-                        <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>{{ pg.locality }}, {{ pg.city }}
-                    </p>
-
-                    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                        {{ pg.description|truncatewords:25 }}
-                    </p>
-                </div>
-
-                <div class="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                    <div>
-                        <span class="text-[10px] text-slate-400 font-semibold block">MONTHLY RENT</span>
-                        <span class="text-base font-extrabold text-emerald-600">₹{{ pg.price_per_month }}</span>
+                    <div class="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">MONTHLY RENT</span>
+                            <span class="text-base font-black text-indigo-700 font-mono">₹{{ pg.price_per_month }}</span>
+                        </div>
+                        <a href="{% url 'pg_rental:pg_detail' pg.pk %}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs transition-colors shadow-2xs min-h-[38px] flex items-center">
+                            View Details ➔
+                        </a>
                     </div>
-                    <a href="{% url 'pg_rental:detail' pg.pk %}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors shadow-xs">
-                        View Details
-                    </a>
-                </div>
 
-            </div>
-            {% empty %}
-            <div class="col-span-full bg-white rounded-2xl border border-slate-200/80 p-8 text-center space-y-3 shadow-saas">
-                <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
-                    <i class="fa-solid fa-building-user"></i>
                 </div>
-                <h3 class="font-bold text-slate-900 text-sm">No accommodations found</h3>
-                <p class="text-xs text-slate-500">Try adjusting your locality or property filter.</p>
+                {% empty %}
+                <!-- Compact Modern Empty State -->
+                <div class="col-span-full bg-white rounded-2xl border border-amber-200/80 p-8 text-center space-y-3 shadow-2xs font-devanagari">
+                    <div class="w-12 h-12 mx-auto rounded-2xl bg-amber-50 text-[#E85D2A] flex items-center justify-center text-xl border border-amber-200">
+                        <i class="fa-solid fa-house-user"></i>
+                    </div>
+                    <h3 class="font-extrabold text-slate-800 text-base">अभी कोई आवास उपलब्ध नहीं है</h3>
+                    <p class="text-xs text-slate-500 max-w-sm mx-auto">स्थान या फ़िल्टर बदल कर देखें।</p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+
         </div>
 
     </div>

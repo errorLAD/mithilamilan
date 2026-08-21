@@ -1,36 +1,47 @@
 {% extends 'base.html' %}
 
-{% block title %}Local Jobs & Hiring - OkLocal{% endblock %}
+{% block title %}रोजगार — Jobs & Hiring Hub | MithilaMilan{% endblock %}
 
 {% block content %}
-<div class="bg-slate-50 min-h-screen py-6 sm:py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Job Portal Header -->
-        <div class="bg-white rounded-3xl border border-slate-200 p-6 mb-8 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="space-y-1 text-center md:text-left">
-                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 flex items-center justify-center md:justify-start space-x-2">
-                    <i class="fa-solid fa-briefcase text-blue-500"></i>
-                    <span>Local Jobs & Hiring Hub</span>
+<div class="max-w-7xl mx-auto space-y-6 font-sans pb-16 px-3 sm:px-6">
+    
+    <!-- Job Portal SaaS Header Card -->
+    <div class="bg-white rounded-2xl p-5 sm:p-7 border border-amber-200/80 shadow-2xs space-y-4 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex items-center space-x-2">
+                    <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                            type="button"
+                            aria-label="Go Back"
+                            class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari">
+                        <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                        <span>पीछे</span>
+                    </button>
+                    <span class="text-xs font-bold text-slate-400">/</span>
+                    <span class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider font-devanagari">रोजगार मंच</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight font-devanagari">
+                    रोजगार (Jobs & Hiring)
                 </h1>
-                <p class="text-xs text-slate-500">Discover job openings, internships & hiring opportunities in {% if active_city %}{{ active_city.name }}{% else %}your city{% endif %}</p>
+                <p class="text-xs sm:text-sm text-slate-500 font-medium font-devanagari max-w-xl">
+                    मिथिला आ आसपासक क्षेत्र में उपलब्ध रोजगार, नौकरी आ अवसर।
+                </p>
             </div>
 
-            <div class="flex items-center space-x-2 text-xs font-semibold">
-                <a href="{% url 'job_portal:job_list' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">Browse Jobs</a>
+            <div class="flex items-center space-x-2 text-xs font-bold flex-wrap gap-y-2">
                 {% if user.is_authenticated %}
-                <a href="{% url 'job_portal:my_jobs' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">My Job Posts</a>
-                <a href="{% url 'job_portal:my_applications' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700">My Applications</a>
-                <a href="{% url 'job_portal:create_job' %}" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs">
-                    <i class="fa-solid fa-plus mr-1"></i>Post Job
+                <a href="{% url 'job_portal:my_jobs' %}" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-devanagari">मेरी नौकरी पोस्ट</a>
+                <a href="{% url 'job_portal:create_job' %}" class="inline-flex items-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-extrabold px-4 py-2.5 rounded-xl shadow-2xs transition-all text-xs shrink-0 font-devanagari min-h-[44px]">
+                    <i class="fa-solid fa-plus text-xs"></i>
+                    <span>+ Post Job</span>
                 </a>
                 {% endif %}
             </div>
         </div>
-
-        {% block job_content %}
-        {% endblock %}
-
     </div>
+
+    {% block job_content %}
+    {% endblock %}
+
 </div>
 {% endblock %}

@@ -25,7 +25,7 @@ from pg_rental.models import PGListing, Booking as PGBooking
 from job_portal.models import Job, JobApplication
 from lost_and_found.models import LostAndFoundItem
 from notifications.models import Notification
-from core.models import AdminActivityLog, PlatformSetting, City, Locality
+from core.models import AdminActivityLog, PlatformSetting, City, Locality, FooterSetting, LegalPage
 
 def staff_required(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser)
@@ -778,3 +778,59 @@ def admin_settings_view(request):
 
     context = {'setting': setting, 'active_tab': 'settings'}
     return render(request, 'admin_panel/settings_admin.html', context)
+
+# 23. FOOTER & LEGAL SETTINGS ADMIN VIEW
+@user_passes_test(staff_required)
+def admin_footer_settings_view(request):
+    footer_setting = FooterSetting.objects.first()
+    if not footer_setting:
+        footer_setting = FooterSetting.objects.create()
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'update_footer':
+            footer_setting.site_name = request.POST.get('site_name', footer_setting.site_name)
+            footer_setting.tagline = request.POST.get('tagline', footer_setting.tagline)
+            footer_setting.short_description = request.POST.get('short_description', footer_setting.short_description)
+            footer_setting.subline = request.POST.get('subline', footer_setting.subline)
+            footer_setting.contact_email = request.POST.get('contact_email', footer_setting.contact_email)
+            footer_setting.support_email = request.POST.get('support_email', footer_setting.support_email)
+            footer_setting.report_issue_email = request.POST.get('report_issue_email', footer_setting.report_issue_email)
+            
+            footer_setting.facebook_url = request.POST.get('facebook_url', footer_setting.facebook_url)
+            footer_setting.instagram_url = request.POST.get('instagram_url', footer_setting.instagram_url)
+            footer_setting.youtube_url = request.POST.get('youtube_url', footer_setting.youtube_url)
+            footer_setting.x_twitter_url = request.POST.get('x_twitter_url', footer_setting.x_twitter_url)
+            footer_setting.linkedin_url = request.POST.get('linkedin_url', footer_setting.linkedin_url)
+            
+            footer_setting.copyright_text = request.POST.get('copyright_text', footer_setting.copyright_text)
+            footer_setting.platform_disclaimer = request.POST.get('platform_disclaimer', footer_setting.platform_disclaimer)
+            footer_setting.fraud_warning_text = request.POST.get('fraud_warning_text', footer_setting.fraud_warning_text)
+            footer_setting.user_content_disclaimer = request.POST.get('user_content_disclaimer', footer_setting.user_content_disclaimer)
+            footer_setting.marketplace_disclaimer = request.POST.get('marketplace_disclaimer', footer_setting.marketplace_disclaimer)
+            
+            footer_setting.save()
+            log_admin_action(request.user, "Updated Footer & Disclaimers Config", "FooterSetting", footer_setting.id, "", request)
+            messages.success(request, "Footer and Disclaimer settings updated successfully.")
+
+        elif action == 'update_legal_page':
+            page_id = request.POST.get('page_id')
+            legal_page = get_object_or_404(LegalPage, pk=page_id)
+            legal_page.title = request.POST.get('title', legal_page.title)
+            legal_page.summary = request.POST.get('summary', legal_page.summary)
+            legal_page.content = request.POST.get('content', legal_page.content)
+            legal_page.is_active = 'is_active' in request.POST
+            legal_page.save()
+            log_admin_action(request.user, f"Updated Legal Page: {legal_page.title}", "LegalPage", legal_page.id, "", request)
+            messages.success(request, f"Legal Page '{legal_page.title}' updated successfully.")
+
+        return redirect('admin_panel:footer_settings')
+
+    legal_pages = LegalPage.objects.all()
+    context = {
+        'footer_setting': footer_setting,
+        'legal_pages': legal_pages,
+        'active_tab': 'footer_settings'
+    }
+    return render(request, 'admin_panel/footer_settings.html', context)

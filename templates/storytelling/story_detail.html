@@ -4,51 +4,41 @@
 {% block title %}{{ story.title }} | मिथिलाक कहानी{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto space-y-8 font-sans pb-16">
+<div class="max-w-4xl mx-auto space-y-6 font-sans pb-16 px-3 sm:px-6">
 
-    <!-- Global Back Button -->
-    <div>
-        <button onclick="history.length > 1 ? history.back() : window.location.href='{% url 'storytelling:story_list' %}';" 
-                class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-amber-50 text-xs font-bold transition-all shadow-2xs">
-            <i class="fa-solid fa-arrow-left text-[10px]"></i>
-            <span>← वापस</span>
-        </button>
-    </div>
-
-    <!-- Article Container -->
-    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-amber-200/80 shadow-saas space-y-6 relative overflow-hidden">
+    <!-- Story Container -->
+    <div class="bg-white rounded-2xl p-5 sm:p-8 border border-amber-200/80 shadow-2xs space-y-5">
         
-        <div class="absolute top-4 right-4 text-3xl opacity-15 pointer-events-none">🪷</div>
+        <!-- Header Bar: Small Back Button & Category Badge -->
+        <div class="flex items-center justify-between flex-wrap gap-2 text-xs border-b border-slate-100 pb-3 font-devanagari">
+            <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='{% url 'storytelling:story_list' %}'; }" 
+                    type="button"
+                    class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors shrink-0 cursor-pointer">
+                <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                <span>पीछे</span>
+            </button>
 
-        <!-- Meta Header -->
-        <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
-            <span class="bg-[#7D3028] text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider text-[11px]">
+            <span class="bg-[#7D3028] text-white font-extrabold px-3 py-1 rounded-full uppercase tracking-wider text-[11px] shadow-2xs">
                 {{ story.get_category_display }}
             </span>
-
-            <div class="flex items-center space-x-3 text-slate-400 font-medium text-[11px]">
-                <span><i class="fa-regular fa-clock mr-1"></i>{{ story.content|wordcount|add:200|divide:200|default:4 }} min read</span>
-                <span>•</span>
-                <span><i class="fa-regular fa-eye mr-1"></i>{{ story.views }} views</span>
-            </div>
         </div>
 
         <!-- Story Title -->
-        <h1 class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight tracking-tight">
+        <h1 class="text-2xl sm:text-4xl font-black text-slate-900 leading-tight tracking-tight font-devanagari">
             {{ story.title }}
         </h1>
 
-        <!-- Excerpt if available -->
+        <!-- Excerpt -->
         {% if story.excerpt %}
-        <p class="text-base sm:text-lg font-medium text-slate-600 border-l-4 border-amber-500 pl-4 italic">
+        <p class="text-sm sm:text-base font-medium text-slate-600 border-l-4 border-amber-500 pl-4 italic font-devanagari">
             {{ story.excerpt }}
         </p>
         {% endif %}
 
         <!-- Author Bar -->
-        <div class="flex items-center justify-between border-y border-slate-100 py-4 text-xs font-medium text-slate-600">
+        <div class="flex items-center justify-between border-y border-slate-100 py-3.5 text-xs font-medium text-slate-600 font-sans">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-full bg-[#E85D2A] text-white flex items-center justify-center font-black text-sm shadow-sm">
+                <div class="w-9 h-9 rounded-xl bg-[#E85D2A] text-white flex items-center justify-center font-black text-sm shadow-2xs">
                     {{ story.author.username|slice:":1"|upper }}
                 </div>
                 <div>
@@ -58,42 +48,33 @@
             </div>
 
             {% if story.location %}
-            <span class="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-full text-[11px] font-bold">
-                <i class="fa-solid fa-location-dot text-[#E85D2A] mr-1"></i>{{ story.location }}
+            <span class="bg-amber-50 text-amber-900 border border-amber-200 px-3 py-1 rounded-xl text-[11px] font-bold font-devanagari">
+                <i class="fa-solid fa-location-dot text-amber-600 mr-1"></i>{{ story.location }}
             </span>
             {% endif %}
         </div>
 
-        <!-- Hero Image -->
-        {% if story.image %}
-        <div class="rounded-2xl overflow-hidden aspect-video bg-slate-900 shadow-sm border border-slate-200">
-            <img src="{{ story.image.url }}" alt="{{ story.title }}" class="w-full h-full object-cover">
-        </div>
-        {% endif %}
-
-        <!-- Story Content -->
-        <div class="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 font-normal py-2">
+        <!-- Main Story Content -->
+        <div class="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 font-normal py-2 font-devanagari">
             {{ story.content|linebreaks }}
         </div>
 
-        <!-- Like & Share Bar -->
-        <div class="flex items-center justify-between border-t border-slate-100 pt-6 text-xs">
-            <a href="{% url 'storytelling:like_story' story.pk %}" 
-               class="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 font-extrabold flex items-center space-x-2 hover:bg-rose-100 transition-colors">
-                <i class="fa-solid fa-heart text-rose-600"></i>
-                <span>{{ story.likes.count }} Likes</span>
-            </a>
-
-            <div class="flex items-center space-x-2">
-                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Story link copied!');" 
-                        class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center space-x-1.5 transition-colors">
+        <!-- Share Actions -->
+        <div class="flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-devanagari">
+            <span class="font-bold text-slate-500">साझा करें (Share):</span>
+            
+            <div class="flex items-center space-x-2 font-sans">
+                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" 
+                        type="button"
+                        class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center space-x-1.5 transition-colors min-h-[38px]">
                     <i class="fa-solid fa-link text-xs"></i>
                     <span>Copy Link</span>
                 </button>
 
                 <a href="https://api.whatsapp.com/send?text={{ story.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" 
                    target="_blank" 
-                   class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center space-x-1.5 transition-colors shadow-xs">
+                   rel="noopener"
+                   class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center space-x-1.5 transition-colors shadow-2xs min-h-[38px]">
                     <i class="fa-brands fa-whatsapp text-xs"></i>
                     <span>WhatsApp</span>
                 </a>
@@ -101,27 +82,6 @@
         </div>
 
     </div>
-
-    <!-- Related Stories -->
-    {% if related_stories %}
-    <div class="space-y-4">
-        <h3 class="font-black text-slate-900 text-lg">संबंधित कहानियाँ (Related Stories)</h3>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {% for item in related_stories %}
-            <a href="{% url 'storytelling:story_detail' item.pk %}" class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-saas hover:shadow-saas-lg transition-all space-y-2 group block">
-                <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 inline-block">
-                    {{ item.get_category_display }}
-                </span>
-                <h4 class="font-extrabold text-slate-900 text-xs line-clamp-2 group-hover:text-[#E85D2A] transition-colors leading-snug">
-                    {{ item.title }}
-                </h4>
-                <span class="text-[10px] text-slate-400 block">{{ item.created_at|date:"d M Y" }}</span>
-            </a>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
 
 </div>
 {% endblock %}

@@ -4,103 +4,307 @@
 {% block title %}Post a New Job{% endblock %}
 
 {% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-    .custom-input {
-        width: 100%;
-        padding: 12px 16px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-        transition: all 0.3s ease;
-        box-sizing: border-box;
-      }
-      
-      .custom-input:focus {
-        border-color: #2563eb; /* blue-600 like Tailwind */
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-        outline: none;
-      }
-    </style>  
-<div class="max-w-5xl mx-auto p-4 sm:p-6">
-    <div class="bg-white shadow rounded-xl">
-        <div class="border-b px-6 py-4">
-            <h2 class="text-xl font-semibold text-gray-800">Post a New Job</h2>
-        </div>
-        <div class="p-6">
-            <form method="post" enctype="multipart/form-data" class="space-y-8">
-                {% csrf_token %}
+  .sb-wrap {
+    --sb-bg: #F8FAFC;
+    --sb-surface: #FFFFFF;
+    --sb-border: #E6E9EF;
+    --sb-text: #0F172A;
+    --sb-text-muted: #667085;
+    --sb-accent: #4F46E5;
+    --sb-accent-hover: #4338CA;
+    --sb-accent-soft: #EEF2FF;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--sb-bg);
+    color: var(--sb-text);
+    min-height: 100vh;
+    padding: 32px 20px 100px;
+  }
 
-                <!-- Basic Information -->
-                <div>
-                    <h5 class="text-lg font-medium text-blue-600 mb-4">Basic Information</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{ form.title|as_crispy_field }}
-                        {{ form.company|as_crispy_field }}
-                        {{ form.location|as_crispy_field }}
-                        {{ form.category|as_crispy_field }}
-                        {{ form.job_type|as_crispy_field }}
-                        {{ form.application_deadline|as_crispy_field }}
-                    </div>
-                </div>
+  .sb-shell {
+    max-width: 960px;
+    margin: 0 auto;
+  }
 
-                <!-- Salary Information -->
-                <div>
-                    <h5 class="text-lg font-medium text-blue-600 mb-4">Salary Information</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{ form.salary_min|as_crispy_field }}
-                        {{ form.salary_max|as_crispy_field }}
-                    </div>
-                </div>
+  .sb-header { margin-bottom: 28px; }
+  .sb-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sb-accent);
+    margin: 0 0 6px;
+  }
+  .sb-title {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .sb-subtitle {
+    font-size: 14px;
+    color: var(--sb-text-muted);
+    margin: 0;
+  }
 
-                <!-- Experience & Education -->
-                <div>
-                    <h5 class="text-lg font-medium text-blue-600 mb-4">Experience & Education</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{ form.experience_min|as_crispy_field }}
-                        {{ form.experience_max|as_crispy_field }}
-                    </div>
-                    <div class="mt-4">
-                        {{ form.education|as_crispy_field }}
-                    </div>
-                </div>
+  .sb-card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  }
 
-                <!-- Job Details -->
-                <div>
-                    <h5 class="text-lg font-medium text-blue-600 mb-4">Job Details</h5>
-                    <div class="space-y-4">
-                        {{ form.description|as_crispy_field }}
-                        {{ form.requirements|as_crispy_field }}
-                        {{ form.skills|as_crispy_field }}
-                        {{ form.benefits|as_crispy_field }}
-                    </div>
-                </div>
+  .sb-section {
+    padding: 28px 28px;
+    border-bottom: 1px solid var(--sb-border);
+  }
+  .sb-section:last-of-type { border-bottom: none; }
 
-                <!-- Contact Information -->
-                <div>
-                    <h5 class="text-lg font-medium text-blue-600 mb-4">Contact Information</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{ form.contact_email|as_crispy_field }}
-                        {{ form.contact_phone|as_crispy_field }}
-                    </div>
-                    <div class="mt-4">
-                        {{ form.website|as_crispy_field }}
-                    </div>
-                </div>
+  .sb-section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .sb-section-num {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--sb-accent-soft);
+    color: var(--sb-accent);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sb-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sb-text);
+    margin: 0;
+  }
+  .sb-section-hint {
+    font-size: 12.5px;
+    color: var(--sb-text-muted);
+    margin: 2px 0 0;
+  }
 
-                <!-- Actions -->
-                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t mt-6">
-                    <a href="{% url 'job_portal:job_list' %}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100">
-                        <i class="fas fa-times mr-2"></i>Cancel
-                    </a>
-                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        <i class="fas fa-paper-plane mr-2"></i>Post Job
-                    </button>
-                </div>
-            </form>
-        </div>
+  .sb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .sb-stack { display: flex; flex-direction: column; gap: 16px; }
+
+  /* Normalize crispy/django-rendered fields */
+  .sb-section label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sb-text);
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+  .sb-section input[type="text"],
+  .sb-section input[type="email"],
+  .sb-section input[type="tel"],
+  .sb-section input[type="number"],
+  .sb-section input[type="url"],
+  .sb-section input[type="date"],
+  .sb-section input[type="file"],
+  .sb-section select,
+  .sb-section textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--sb-border);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--sb-text);
+    background: #FBFCFD;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .sb-section input:focus,
+  .sb-section select:focus,
+  .sb-section textarea:focus {
+    outline: none;
+    border-color: var(--sb-accent);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  }
+  .sb-section textarea { min-height: 96px; resize: vertical; }
+  .sb-section small, .sb-section .form-text {
+    font-size: 12px;
+    color: var(--sb-text-muted);
+  }
+  .sb-section .asteriskField { color: var(--sb-accent); }
+
+  /* Actions */
+  .sb-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 28px;
+    background: #FBFCFD;
+  }
+  .sb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+  }
+  .sb-btn:active { transform: translateY(1px); }
+  .sb-btn-ghost {
+    background: #FFFFFF;
+    border-color: var(--sb-border);
+    color: var(--sb-text);
+  }
+  .sb-btn-ghost:hover { background: #F3F4F6; color: var(--sb-text); }
+  .sb-btn-primary {
+    background: var(--sb-accent);
+    color: #FFFFFF;
+  }
+  .sb-btn-primary:hover { background: var(--sb-accent-hover); }
+
+  @media (max-width: 640px) {
+    .sb-wrap { padding: 20px 14px 96px; }
+    .sb-section { padding: 20px 18px; }
+    .sb-grid { grid-template-columns: 1fr; }
+    .sb-title { font-size: 22px; }
+
+    /* Sticky bottom action bar on mobile */
+    .sb-actions {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      border-top: 1px solid var(--sb-border);
+      box-shadow: 0 -4px 12px rgba(16, 24, 40, 0.06);
+    }
+    .sb-btn { flex: 1; }
+    .sb-card { border-radius: 12px; }
+  }
+</style>
+
+<div class="sb-wrap">
+  <div class="sb-shell">
+    <div class="sb-header">
+      <p class="sb-eyebrow">Hiring</p>
+      <h1 class="sb-title">Post a new job</h1>
+      <p class="sb-subtitle">Fill in the details below — candidates see this exactly as you write it.</p>
     </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="sb-card">
+
+        <div class="sb-section">
+          <div class="sb-section-head">
+            <span class="sb-section-num">1</span>
+            <div>
+              <p class="sb-section-title">Basic information</p>
+              <p class="sb-section-hint">Role, company, and where it's based.</p>
+            </div>
+          </div>
+          <div class="sb-grid">
+            {{ form.title|as_crispy_field }}
+            {{ form.company|as_crispy_field }}
+            {{ form.location|as_crispy_field }}
+            {{ form.category|as_crispy_field }}
+            {{ form.job_type|as_crispy_field }}
+            {{ form.application_deadline|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="sb-section">
+          <div class="sb-section-head">
+            <span class="sb-section-num">2</span>
+            <div>
+              <p class="sb-section-title">Salary</p>
+              <p class="sb-section-hint">A clear range gets more qualified applicants.</p>
+            </div>
+          </div>
+          <div class="sb-grid">
+            {{ form.salary_min|as_crispy_field }}
+            {{ form.salary_max|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="sb-section">
+          <div class="sb-section-head">
+            <span class="sb-section-num">3</span>
+            <div>
+              <p class="sb-section-title">Experience & education</p>
+              <p class="sb-section-hint">Minimum requirements for applicants.</p>
+            </div>
+          </div>
+          <div class="sb-grid">
+            {{ form.experience_min|as_crispy_field }}
+            {{ form.experience_max|as_crispy_field }}
+          </div>
+          <div class="sb-stack" style="margin-top: 16px;">
+            {{ form.education|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="sb-section">
+          <div class="sb-section-head">
+            <span class="sb-section-num">4</span>
+            <div>
+              <p class="sb-section-title">Job details</p>
+              <p class="sb-section-hint">Description, requirements, skills, and perks.</p>
+            </div>
+          </div>
+          <div class="sb-stack">
+            {{ form.description|as_crispy_field }}
+            {{ form.requirements|as_crispy_field }}
+            {{ form.skills|as_crispy_field }}
+            {{ form.benefits|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="sb-section">
+          <div class="sb-section-head">
+            <span class="sb-section-num">5</span>
+            <div>
+              <p class="sb-section-title">Contact information</p>
+              <p class="sb-section-hint">How candidates reach you.</p>
+            </div>
+          </div>
+          <div class="sb-grid">
+            {{ form.contact_email|as_crispy_field }}
+            {{ form.contact_phone|as_crispy_field }}
+          </div>
+          <div class="sb-stack" style="margin-top: 16px;">
+            {{ form.website|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="sb-actions">
+          <a href="{% url 'job_portal:job_list' %}" class="sb-btn sb-btn-ghost">Cancel</a>
+          <button type="submit" class="sb-btn sb-btn-primary">Post job</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
 </div>
-
-
-
-{% endblock %} 
+{% endblock %}

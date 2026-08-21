@@ -10,9 +10,19 @@
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-600 via-orange-600 to-rose-700 p-8 md:p-12 text-white shadow-xl">
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
         <div class="relative z-10 max-w-2xl space-y-4">
-            <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-amber-100">
-                <i class="fa-solid fa-calendar-star text-amber-300"></i>
-                <span>Mithila & Cultural Discovery</span>
+            <div class="flex items-center space-x-2">
+                <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                        type="button"
+                        aria-label="Go Back"
+                        class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-white/90 hover:text-white transition-colors cursor-pointer shrink-0 font-devanagari">
+                    <i class="fa-solid fa-arrow-left text-[11px] text-amber-300"></i>
+                    <span>पीछे</span>
+                </button>
+                <span class="text-white/40 text-xs font-bold">/</span>
+                <div class="inline-flex items-center space-x-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-amber-100">
+                    <i class="fa-solid fa-calendar-star text-amber-300"></i>
+                    <span>Mithila & Cultural Discovery</span>
+                </div>
             </div>
             <h1 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
                 Events & Festivals

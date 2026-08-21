@@ -1,223 +1,492 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Submissions & Moderation Status | MithilaMilan{% endblock %}
+{% block title %}मेरी प्रस्तुतियाँ — MithilaMilan Submissions & Approvals{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto space-y-8 font-sans pb-12">
+<div class="max-w-6xl mx-auto space-y-6 font-sans pb-16 px-3 sm:px-6"
+     x-data="{
+         searchQuery: '',
+         selectedStatus: 'ALL',
+         selectedCategory: 'ALL',
+         sortBy: 'NEWEST',
+         expandedCategories: {},
+         detailModalOpen: false,
+         selectedItem: null,
 
-    <!-- Top Header -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-saas flex flex-wrap items-center justify-between gap-4">
+         init() {
+             // Expand categories that have submissions by default
+             {% for cat in categories %}
+                 this.expandedCategories['{{ cat.key }}'] = {{ cat.count }} > 0;
+             {% endfor %}
+         },
+
+         toggleCategory(key) {
+             this.expandedCategories[key] = !this.expandedCategories[key];
+         },
+
+         expandAll() {
+             {% for cat in categories %}
+                 this.expandedCategories['{{ cat.key }}'] = true;
+             {% endfor %}
+         },
+
+         collapseAll() {
+             {% for cat in categories %}
+                 this.expandedCategories['{{ cat.key }}'] = false;
+             {% endfor %}
+         },
+
+         openDetail(item) {
+             this.selectedItem = item;
+             this.detailModalOpen = true;
+         },
+
+         matchesFilters(item, catKey) {
+             // Category Filter
+             if (this.selectedCategory !== 'ALL' && this.selectedCategory !== catKey) {
+                 return false;
+             }
+             // Status Filter
+             if (this.selectedStatus !== 'ALL' && item.status !== this.selectedStatus) {
+                 return false;
+             }
+             // Search Query
+             if (this.searchQuery.trim() !== '') {
+                 const q = this.searchQuery.toLowerCase();
+                 const titleMatch = (item.title || '').toLowerCase().includes(q);
+                 const contentMatch = (item.content || '').toLowerCase().includes(q);
+                 const catMatch = (item.cat_name || '').toLowerCase().includes(q);
+                 return titleMatch || contentMatch || catMatch;
+             }
+             return true;
+         }
+     }"
+     x-init="init()">
+
+    <!-- Header & Back Navigation -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
         <div class="space-y-1">
-            <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center space-x-2">
-                <i class="fa-solid fa-paper-plane text-[#E85D2A]"></i>
-                <span>My Submissions & Approvals</span>
+            <div class="flex items-center space-x-2">
+                <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                        type="button"
+                        aria-label="Go Back"
+                        class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari">
+                    <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                    <span>पीछे</span>
+                </button>
+                <span class="text-slate-300">/</span>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dashboard</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-devanagari pt-1 flex items-center gap-2.5">
+                <span>मेरी प्रस्तुतियाँ</span>
+                <span class="text-xs font-bold py-1 px-2.5 rounded-full bg-[#E85D2A]/10 text-[#E85D2A] border border-[#E85D2A]/20 font-sans">
+                    Content & Approval Center
+                </span>
             </h1>
-            <p class="text-xs text-slate-500 font-medium">Track approval status (Pending, Approved, Rejected) and rejection notes for all your submitted items.</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium font-devanagari">
+                आपके द्वारा भेजी गई सभी सामग्री और उनकी approval स्थिति यहाँ देखें।
+            </p>
         </div>
-        <span class="px-4 py-2 rounded-2xl bg-amber-50 text-amber-900 font-extrabold text-xs border border-amber-200">
-            Total Submissions: {{ total_submissions }}
-        </span>
+
+        <div class="flex items-center space-x-2 self-start sm:self-auto">
+            <button @click="expandAll()" type="button" class="text-xs font-extrabold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl shadow-2xs transition-colors cursor-pointer">
+                <i class="fa-solid fa-angles-down text-[10px] mr-1 text-slate-400"></i> Expand All
+            </button>
+            <button @click="collapseAll()" type="button" class="text-xs font-extrabold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl shadow-2xs transition-colors cursor-pointer">
+                <i class="fa-solid fa-angles-up text-[10px] mr-1 text-slate-400"></i> Collapse All
+            </button>
+        </div>
     </div>
 
-    <!-- 1. News Submissions -->
-    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-newspaper text-[#E85D2A]"></i>
-            <span>Submitted News Articles ({{ my_news.count }})</span>
-        </h2>
-
-        {% if my_news %}
-        <div class="space-y-3">
-            {% for item in my_news %}
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="space-y-1 max-w-xl">
-                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
-                    <span class="text-slate-400 text-[10px] block">Category: {{ item.get_category_display }} • Submitted: {{ item.created_at|date:"d M Y, H:i" }}</span>
-                    {% if item.rejection_reason %}
-                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
-                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="flex items-center space-x-3 shrink-0">
-                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
-                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
-                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
-                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
-                        {% else %}bg-slate-200 text-slate-700{% endif %}">
-                        {{ item.get_status_display }}
-                    </span>
-                    {% if item.status == 'APPROVED' %}
-                    <a href="{% url 'news:news_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
-                    {% endif %}
-                </div>
+    <!-- Overall Statistics Top Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <!-- 1. Total Submissions -->
+        <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs flex items-center justify-between">
+            <div class="space-y-0.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 block">Total Submissions</span>
+                <span class="text-2xl font-black text-slate-900 font-mono">{{ total_submissions }}</span>
             </div>
-            {% endfor %}
+            <div class="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 text-[#E85D2A] flex items-center justify-center text-base shrink-0 font-bold">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
         </div>
-        {% else %}
-        <p class="text-xs text-slate-400 italic">No news articles submitted yet.</p>
-        {% endif %}
+
+        <!-- 2. Pending Approval -->
+        <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs flex items-center justify-between">
+            <div class="space-y-0.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-amber-700 block">Pending</span>
+                <span class="text-2xl font-black text-amber-900 font-mono">{{ pending_count }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-amber-100/80 border border-amber-300 text-amber-800 flex items-center justify-center text-base shrink-0 font-bold">
+                🟠
+            </div>
+        </div>
+
+        <!-- 3. Approved -->
+        <div class="bg-white rounded-2xl p-4 border border-emerald-200/80 shadow-2xs flex items-center justify-between">
+            <div class="space-y-0.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-700 block">Approved</span>
+                <span class="text-2xl font-black text-emerald-900 font-mono">{{ approved_count }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-700 flex items-center justify-center text-base shrink-0 font-bold">
+                🟢
+            </div>
+        </div>
+
+        <!-- 4. Rejected / Needs Changes -->
+        <div class="bg-white rounded-2xl p-4 border border-rose-200/80 shadow-2xs flex items-center justify-between">
+            <div class="space-y-0.5">
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-rose-700 block">Rejected / Action</span>
+                <span class="text-2xl font-black text-rose-900 font-mono">{{ rejected_count|add:needs_changes_count }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-300 text-rose-700 flex items-center justify-center text-base shrink-0 font-bold">
+                🔴
+            </div>
+        </div>
     </div>
 
-    <!-- 2. Story Submissions -->
-    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-book-open text-[#E85D2A]"></i>
-            <span>Submitted Stories ({{ my_stories.count }})</span>
-        </h2>
-
-        {% if my_stories %}
-        <div class="space-y-3">
-            {% for item in my_stories %}
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="space-y-1 max-w-xl">
-                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
-                    <span class="text-slate-400 text-[10px] block">Category: {{ item.get_category_display }} • Submitted: {{ item.created_at|date:"d M Y" }}</span>
-                    {% if item.rejection_reason %}
-                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
-                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="flex items-center space-x-3 shrink-0">
-                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
-                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
-                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
-                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
-                        {% else %}bg-slate-200 text-slate-700{% endif %}">
-                        {{ item.get_status_display }}
-                    </span>
-                    {% if item.status == 'APPROVED' %}
-                    <a href="{% url 'storytelling:story_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
-                    {% endif %}
-                </div>
+    <!-- Filters, Search & Sorting Bar -->
+    <div class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs space-y-3 font-sans">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+            
+            <!-- Search Input -->
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" 
+                       x-model="searchQuery"
+                       placeholder="🔎 Search my submissions..." 
+                       class="w-full pl-9 pr-4 py-2.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/30 focus:border-[#E85D2A] transition-all font-sans">
             </div>
-            {% endfor %}
+
+            <!-- Filter Controls Row -->
+            <div class="flex flex-wrap items-center gap-2 text-xs">
+                
+                <!-- Category Select -->
+                <select x-model="selectedCategory" class="py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold focus:outline-none focus:border-[#E85D2A] text-xs">
+                    <option value="ALL">All Categories (सभी प्रकार)</option>
+                    {% for cat in categories %}
+                    <option value="{{ cat.key }}">{{ cat.title }} ({{ cat.count }})</option>
+                    {% endfor %}
+                </select>
+
+                <!-- Sort By Select -->
+                <select x-model="sortBy" class="py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 font-bold focus:outline-none focus:border-[#E85D2A] text-xs">
+                    <option value="NEWEST">Sort: Newest First</option>
+                    <option value="OLDEST">Sort: Oldest First</option>
+                </select>
+            </div>
         </div>
-        {% else %}
-        <p class="text-xs text-slate-400 italic">No stories submitted yet.</p>
-        {% endif %}
+
+        <!-- Status Filter Chips (Horizontal Scroll on Mobile) -->
+        <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs font-bold">
+            <button @click="selectedStatus = 'ALL'" 
+                    type="button"
+                    class="px-3 py-1.5 rounded-xl border transition-all shrink-0 cursor-pointer"
+                    :class="selectedStatus === 'ALL' ? 'bg-slate-900 text-white border-slate-900 shadow-2xs' : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'">
+                All Status
+            </button>
+            <button @click="selectedStatus = 'PENDING'" 
+                    type="button"
+                    class="px-3 py-1.5 rounded-xl border transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+                    :class="selectedStatus === 'PENDING' ? 'bg-amber-500 text-white border-amber-600 shadow-2xs' : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-200'">
+                <span>🟠 Pending Approval</span>
+            </button>
+            <button @click="selectedStatus = 'APPROVED'" 
+                    type="button"
+                    class="px-3 py-1.5 rounded-xl border transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+                    :class="selectedStatus === 'APPROVED' ? 'bg-emerald-600 text-white border-emerald-700 shadow-2xs' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border-emerald-200'">
+                <span>🟢 Approved</span>
+            </button>
+            <button @click="selectedStatus = 'REJECTED'" 
+                    type="button"
+                    class="px-3 py-1.5 rounded-xl border transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+                    :class="selectedStatus === 'REJECTED' ? 'bg-rose-600 text-white border-rose-700 shadow-2xs' : 'bg-rose-50 hover:bg-rose-100 text-rose-900 border-rose-200'">
+                <span>🔴 Rejected</span>
+            </button>
+            <button @click="selectedStatus = 'NEEDS_CHANGES'" 
+                    type="button"
+                    class="px-3 py-1.5 rounded-xl border transition-all shrink-0 cursor-pointer flex items-center space-x-1.5"
+                    :class="selectedStatus === 'NEEDS_CHANGES' ? 'bg-yellow-500 text-white border-yellow-600 shadow-2xs' : 'bg-yellow-50 hover:bg-yellow-100 text-yellow-900 border-yellow-200'">
+                <span>🟡 Needs Changes</span>
+            </button>
+        </div>
     </div>
 
-    <!-- 3. PG Rental Listings -->
-    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-house-user text-[#E85D2A]"></i>
-            <span>Submitted PG & Rental Listings ({{ my_rentals.count }})</span>
-        </h2>
-
-        {% if my_rentals %}
-        <div class="space-y-3">
-            {% for item in my_rentals %}
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="space-y-1 max-w-xl">
-                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }}</span>
-                    <span class="text-slate-400 text-[10px] block">Rent: ₹{{ item.price_per_month }}/mo • Locality: {{ item.locality }}</span>
-                    {% if item.rejection_reason %}
-                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
-                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="flex items-center space-x-3 shrink-0">
-                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
-                        {% if item.approval_status == 'Pending' %}bg-amber-100 text-amber-900 border border-amber-300
-                        {% elif item.approval_status == 'Approved' %}bg-emerald-100 text-emerald-900 border border-emerald-300
-                        {% elif item.approval_status == 'Rejected' %}bg-rose-100 text-rose-900 border border-rose-300
-                        {% else %}bg-slate-200 text-slate-700{% endif %}">
-                        {{ item.approval_status }}
+    <!-- SECTIONS CONTAINER (Collapsible Cards for ALL Categories) -->
+    <div class="space-y-4 font-sans">
+        
+        {% for cat in categories %}
+        <div x-show="selectedCategory === 'ALL' || selectedCategory === '{{ cat.key }}'" 
+             class="bg-white rounded-2xl border border-amber-200/80 shadow-2xs overflow-hidden transition-all">
+            
+            <!-- Category Header Bar -->
+            <div class="p-3.5 sm:p-4 bg-slate-50/70 border-b border-amber-200/60 flex items-center justify-between gap-3">
+                
+                <!-- Category Title & Badge -->
+                <button @click="toggleCategory('{{ cat.key }}')" 
+                        type="button" 
+                        class="flex items-center space-x-2.5 text-left flex-1 cursor-pointer min-h-[44px]">
+                    <span class="w-8 h-8 rounded-xl bg-white border border-amber-200 shadow-2xs flex items-center justify-center text-sm shrink-0">
+                        <i class="fa-solid font-bold text-slate-700"
+                           :class="expandedCategories['{{ cat.key }}'] ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
                     </span>
-                    {% if item.approval_status == 'Approved' %}
-                    <a href="{% url 'pg_rental:pg_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
+                    <div>
+                        <h2 class="text-sm font-extrabold text-slate-900 font-devanagari flex items-center gap-2">
+                            <span>{{ cat.title }}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black font-mono shadow-2xs border"
+                                  :class="{{ cat.count }} > 0 ? 'bg-amber-100 text-amber-900 border-amber-300' : 'bg-slate-100 text-slate-500 border-slate-200'">
+                                {{ cat.count }}
+                            </span>
+                        </h2>
+                        <span class="text-[10px] text-slate-400 font-semibold block">{{ cat.english_name }}</span>
+                    </div>
+                </button>
+
+                <!-- + Submit Button -->
+                {% if cat.submit_url and cat.submit_url != '#' %}
+                <a href="{{ cat.submit_url }}" 
+                   class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-extrabold text-xs shadow-2xs transition-colors shrink-0 font-devanagari">
+                    <span>{{ cat.submit_text }}</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Category Body Content -->
+            <div x-show="expandedCategories['{{ cat.key }}']" x-collapse>
+                
+                {% if cat.items %}
+                <div class="p-3 sm:p-4 space-y-3">
+                    {% for item in cat.items %}
+                    <div x-show="matchesFilters({ title: '{{ item.title|escapejs }}', content: '{{ item.content|escapejs }}', cat_name: '{{ item.cat_name|escapejs }}', status: '{{ item.status }}' }, '{{ cat.key }}')"
+                         class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-amber-300 shadow-2xs transition-all space-y-3">
+                        
+                        <!-- Top Metadata & Title -->
+                        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                            <div class="space-y-1 flex-1 min-w-0">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-[10px] font-bold py-0.5 px-2 rounded-md bg-amber-50 text-[#7D281E] border border-amber-200 font-devanagari">
+                                        {{ item.cat_name }}
+                                    </span>
+                                    <span class="text-[11px] text-slate-400 font-medium">
+                                        Submitted {{ item.created_at|date:"d M Y, H:i" }}
+                                    </span>
+                                </div>
+                                <h3 class="text-sm font-extrabold text-slate-900 leading-snug truncate">
+                                    {{ item.title }}
+                                </h3>
+                                {% if item.location %}
+                                <p class="text-[11px] text-slate-500 flex items-center space-x-1 font-medium">
+                                    <i class="fa-solid fa-location-dot text-amber-600 text-[10px]"></i>
+                                    <span>{{ item.location }}</span>
+                                </p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Status Badge -->
+                            <div class="shrink-0 self-start">
+                                {% if item.status == 'PENDING' %}
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-extrabold text-[11px] uppercase tracking-wider">
+                                    <span>🟠 Pending Approval</span>
+                                </span>
+                                {% elif item.status == 'APPROVED' %}
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-300 font-extrabold text-[11px] uppercase tracking-wider">
+                                    <span>🟢 Approved</span>
+                                </span>
+                                {% elif item.status == 'REJECTED' %}
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-300 font-extrabold text-[11px] uppercase tracking-wider">
+                                    <span>🔴 Rejected</span>
+                                </span>
+                                {% elif item.status == 'NEEDS_CHANGES' %}
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-yellow-100 text-yellow-900 border border-yellow-300 font-extrabold text-[11px] uppercase tracking-wider">
+                                    <span>🟡 Needs Changes</span>
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 font-extrabold text-[11px] uppercase tracking-wider">
+                                    <span>⚪ Draft</span>
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Approval Timeline Stepper -->
+                        <div class="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 flex items-center justify-between text-[10px] font-bold text-slate-500 overflow-x-auto no-scrollbar">
+                            <div class="flex items-center space-x-1 text-emerald-700 shrink-0">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Submitted ({{ item.created_at|date:"d M, H:i" }})</span>
+                            </div>
+                            <span class="text-slate-300 px-1">➔</span>
+                            
+                            <div class="flex items-center space-x-1 text-amber-700 shrink-0">
+                                <i class="fa-solid fa-spinner animate-spin text-[9px]" x-show="'{{ item.status }}' === 'PENDING'"></i>
+                                <i class="fa-solid fa-circle-check" x-show="'{{ item.status }}' !== 'PENDING'"></i>
+                                <span>Under Review</span>
+                            </div>
+                            <span class="text-slate-300 px-1">➔</span>
+
+                            <div class="flex items-center space-x-1 shrink-0"
+                                 class="{% if item.status == 'APPROVED' %}text-emerald-700{% elif item.status == 'REJECTED' %}text-rose-700{% else %}text-amber-700{% endif %}">
+                                {% if item.status == 'APPROVED' %}
+                                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                                <span>Approved</span>
+                                {% elif item.status == 'REJECTED' %}
+                                <i class="fa-solid fa-circle-xmark text-rose-600"></i>
+                                <span>Rejected</span>
+                                {% else %}
+                                <i class="fa-solid fa-clock text-amber-600"></i>
+                                <span>Decision Pending</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Admin Feedback Banner (If Rejected or Needs Changes) -->
+                        {% if item.rejection_reason %}
+                        <div class="bg-rose-50 border border-rose-200 rounded-xl p-3 text-xs text-rose-900 space-y-1.5">
+                            <div class="flex items-center space-x-1.5 font-extrabold text-rose-800">
+                                <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                                <span>Admin Feedback</span>
+                            </div>
+                            <p class="text-[11px] text-rose-950 leading-relaxed italic">
+                                "{{ item.rejection_reason }}"
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <!-- Card Action Buttons -->
+                        <div class="flex items-center justify-between pt-1 border-t border-slate-100 text-xs">
+                            <button @click="openDetail({
+                                id: '{{ item.id }}',
+                                title: '{{ item.title|escapejs }}',
+                                cat_name: '{{ item.cat_name|escapejs }}',
+                                created_at: '{{ item.created_at|date:"d M Y, H:i" }}',
+                                updated_at: '{{ item.updated_at|date:"d M Y, H:i" }}',
+                                status: '{{ item.status }}',
+                                rejection_reason: '{{ item.rejection_reason|escapejs }}',
+                                content: '{{ item.content|escapejs }}',
+                                location: '{{ item.location|escapejs }}',
+                                edit_url: '{{ item.edit_url }}',
+                                submit_url: '{{ cat.submit_url }}'
+                            })" 
+                            type="button"
+                            class="font-extrabold text-[#E85D2A] hover:underline flex items-center space-x-1 cursor-pointer">
+                                <span>View Details ➔</span>
+                            </button>
+
+                            {% if item.rejection_reason and cat.submit_url %}
+                            <a href="{{ cat.submit_url }}" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-[11px] shadow-2xs transition-colors">
+                                <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                                <span>✏ Edit & Resubmit</span>
+                            </a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <!-- Empty State Compact Card -->
+                <div class="p-4 bg-white text-center space-y-2 font-devanagari">
+                    <p class="text-xs text-slate-500 font-medium">
+                        {{ cat.empty_text }}
+                    </p>
+                    {% if cat.submit_url and cat.submit_url != '#' %}
+                    <a href="{{ cat.submit_url }}" class="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-[#E85D2A] font-extrabold text-xs border border-amber-200 transition-colors">
+                        <span>{{ cat.submit_text }}</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </a>
                     {% endif %}
                 </div>
+                {% endif %}
+
             </div>
-            {% endfor %}
+
         </div>
-        {% else %}
-        <p class="text-xs text-slate-400 italic">No rental listings submitted yet.</p>
-        {% endif %}
+        {% endfor %}
+
     </div>
 
-    <!-- 4. Job Postings -->
-    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-briefcase text-[#E85D2A]"></i>
-            <span>Submitted Job Postings ({{ my_jobs.count }})</span>
-        </h2>
+    <!-- SUBMISSION DETAIL MODAL -->
+    <div x-show="detailModalOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-6"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-6"
+         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs"
+         x-cloak>
+        
+        <div @click="detailModalOpen = false" class="absolute inset-0"></div>
 
-        {% if my_jobs %}
-        <div class="space-y-3">
-            {% for item in my_jobs %}
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="space-y-1 max-w-xl">
-                    <span class="font-bold text-slate-900 text-sm block">{{ item.title }} ({{ item.company }})</span>
-                    <span class="text-slate-400 text-[10px] block">Location: {{ item.location }} • Category: {{ item.category.name }}</span>
-                    {% if item.rejection_reason %}
-                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
-                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
-                    </div>
-                    {% endif %}
+        <div class="relative w-full max-w-lg bg-white rounded-3xl border border-amber-200 shadow-2xl overflow-hidden font-sans z-10 space-y-0">
+            
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 bg-slate-50 border-b border-amber-200/60 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-amber-100 text-[#7D281E] font-bold text-xs font-devanagari" x-text="selectedItem ? selectedItem.cat_name : ''"></span>
+                    <span class="text-xs text-slate-400 font-mono" x-text="selectedItem ? selectedItem.id : ''"></span>
                 </div>
-                <div class="flex items-center space-x-3 shrink-0">
-                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
-                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
-                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
-                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
-                        {% else %}bg-slate-200 text-slate-700{% endif %}">
-                        {{ item.get_status_display }}
-                    </span>
-                    {% if item.status == 'APPROVED' %}
-                    <a href="{{ item.get_absolute_url }}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
-                    {% endif %}
-                </div>
+                <button @click="detailModalOpen = false" class="text-slate-400 hover:text-slate-700 min-h-[44px] min-w-[44px] flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <p class="text-xs text-slate-400 italic">No job postings submitted yet.</p>
-        {% endif %}
-    </div>
 
-    <!-- 5. Lost & Found Submissions -->
-    <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-saas space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2 border-b border-slate-100 pb-3">
-            <i class="fa-solid fa-box-open text-[#E85D2A]"></i>
-            <span>Submitted Lost & Found Items ({{ my_lost_found.count }})</span>
-        </h2>
+            <!-- Modal Content Body -->
+            <div class="p-5 space-y-4 text-xs" x-if="selectedItem">
+                <div>
+                    <h3 class="text-base font-black text-slate-900 leading-snug" x-text="selectedItem ? selectedItem.title : ''"></h3>
+                    <p class="text-slate-400 text-[11px] font-medium pt-0.5" x-text="selectedItem ? 'Submitted: ' + selectedItem.created_at : ''"></p>
+                </div>
 
-        {% if my_lost_found %}
-        <div class="space-y-3">
-            {% for item in my_lost_found %}
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                <div class="space-y-1 max-w-xl">
-                    <span class="font-bold text-slate-900 text-sm block">[{{ item.get_item_type_display }}] {{ item.title }}</span>
-                    <span class="text-slate-400 text-[10px] block">Location: {{ item.location }} • Date: {{ item.date_lost_found }}</span>
-                    {% if item.rejection_reason %}
-                    <div class="text-[11px] text-rose-700 bg-rose-50 p-2 rounded-lg border border-rose-200 mt-1">
-                        <strong>Rejection Reason:</strong> {{ item.rejection_reason }}
+                <template x-if="selectedItem && selectedItem.location">
+                    <p class="text-slate-600 font-medium flex items-center space-x-1.5">
+                        <i class="fa-solid fa-location-dot text-amber-600"></i>
+                        <span x-text="selectedItem.location"></span>
+                    </p>
+                </template>
+
+                <!-- Status Banner -->
+                <div class="p-3 rounded-2xl border flex items-center justify-between"
+                     :class="{
+                         'bg-amber-50 border-amber-200 text-amber-900': selectedItem && selectedItem.status === 'PENDING',
+                         'bg-emerald-50 border-emerald-200 text-emerald-900': selectedItem && selectedItem.status === 'APPROVED',
+                         'bg-rose-50 border-rose-200 text-rose-900': selectedItem && selectedItem.status === 'REJECTED',
+                         'bg-yellow-50 border-yellow-200 text-yellow-900': selectedItem && selectedItem.status === 'NEEDS_CHANGES'
+                     }">
+                    <span class="font-extrabold uppercase tracking-wider text-[11px]" x-text="selectedItem ? 'Status: ' + selectedItem.status : ''"></span>
+                    <i class="fa-solid text-sm"
+                       :class="{
+                           'fa-clock text-amber-600': selectedItem && selectedItem.status === 'PENDING',
+                           'fa-circle-check text-emerald-600': selectedItem && selectedItem.status === 'APPROVED',
+                           'fa-circle-xmark text-rose-600': selectedItem && selectedItem.status === 'REJECTED'
+                       }"></i>
+                </div>
+
+                <!-- Admin Feedback if present -->
+                <template x-if="selectedItem && selectedItem.rejection_reason">
+                    <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 space-y-1 text-rose-900">
+                        <strong class="block font-bold text-xs">⚠️ Admin Feedback / Reason:</strong>
+                        <p class="italic text-[11px]" x-text="selectedItem.rejection_reason"></p>
                     </div>
-                    {% endif %}
-                </div>
-                <div class="flex items-center space-x-3 shrink-0">
-                    <span class="px-3 py-1 rounded-full font-extrabold text-[10px] uppercase tracking-wider
-                        {% if item.status == 'PENDING' %}bg-amber-100 text-amber-900 border border-amber-300
-                        {% elif item.status == 'APPROVED' %}bg-emerald-100 text-emerald-900 border border-emerald-300
-                        {% elif item.status == 'REJECTED' %}bg-rose-100 text-rose-900 border border-rose-300
-                        {% else %}bg-slate-200 text-slate-700{% endif %}">
-                        {{ item.get_status_display }}
-                    </span>
-                    {% if item.status == 'APPROVED' %}
-                    <a href="{% url 'lost_and_found:item_detail' item.pk %}" class="text-[#E85D2A] font-bold hover:underline">View Live ➔</a>
-                    {% endif %}
-                </div>
+                </template>
+
+                <!-- Content Excerpt -->
+                <template x-if="selectedItem && selectedItem.content">
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                        <strong class="text-slate-700 block font-bold">Content Preview:</strong>
+                        <p class="text-slate-600 leading-relaxed text-[11px]" x-text="selectedItem.content"></p>
+                    </div>
+                </template>
             </div>
-            {% endfor %}
+
+            <!-- Modal Footer Actions -->
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end space-x-2">
+                <button @click="detailModalOpen = false" type="button" class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors">
+                    Close
+                </button>
+            </div>
+
         </div>
-        {% else %}
-        <p class="text-xs text-slate-400 italic">No lost/found items submitted yet.</p>
-        {% endif %}
     </div>
 
 </div>

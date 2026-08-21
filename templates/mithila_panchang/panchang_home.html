@@ -32,6 +32,13 @@
     <!-- Sub-navigation toolbar -->
     <div class="bg-white rounded-2xl p-3 border border-amber-200/70 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs font-bold text-slate-700">
         <div class="flex items-center space-x-1 sm:space-x-3 overflow-x-auto no-scrollbar py-1">
+            <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                    type="button"
+                    aria-label="Go Back"
+                    class="inline-flex items-center space-x-1 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari px-1.5 py-1">
+                <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                <span>पीछे</span>
+            </button>
             <a href="{% url 'mithila_panchang:panchang_home' %}" class="px-3.5 py-2 rounded-xl bg-[#7D281E] text-white flex items-center space-x-1.5 shrink-0 shadow-xs">
                 <i class="fa-solid fa-house-chimney"></i>
                 <span>होम</span>

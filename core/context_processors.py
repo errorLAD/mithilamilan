@@ -1,4 +1,4 @@
-from .models import City, Locality, UserLocationPreference
+from .models import City, Locality, UserLocationPreference, FooterSetting, LegalPage
 from subreddits.models import Subreddit
 from django.db.models import Count
 
@@ -47,10 +47,19 @@ def location_and_nav_context(request):
         {'name': 'समाचार', 'url': 'news:news_list', 'icon': 'fa-file-lines', 'key': 'news'},
     ]
 
+    # Footer Settings
+    footer_settings = FooterSetting.objects.first()
+    if not footer_settings:
+        footer_settings = FooterSetting.objects.create()
+
+    legal_pages = LegalPage.objects.filter(is_active=True)
+
     return {
         'active_city': active_city,
         'active_locality': active_locality,
         'available_cities': available_cities,
         'popular_communities': popular_communities,
         'platform_modules': modules,
+        'footer_settings': footer_settings,
+        'legal_pages': legal_pages,
     }

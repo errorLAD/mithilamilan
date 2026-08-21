@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Report an Issue / Fraud | MithilaMilan Safety{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-2 sm:px-4 py-8">
+    <!-- Header -->
+    <div class="bg-rose-900 text-white rounded-3xl p-6 sm:p-8 mb-6 shadow-saas relative overflow-hidden">
+        <div class="flex items-center space-x-3 mb-3">
+            <span class="w-10 h-10 rounded-xl bg-rose-800 border border-rose-700 text-rose-300 flex items-center justify-center text-lg font-bold">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </span>
+            <span class="text-xs font-bold uppercase tracking-wider text-rose-300">Trust & Safety Portal</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-2">Report Fraud, Scam, or Misconduct</h1>
+        <p class="text-xs sm:text-sm text-rose-100 max-w-xl">MithilaMilan takes fraud, scam posts, impersonation, and policy violations seriously. Submit details below for urgent moderation review.</p>
+    </div>
+
+    <!-- Fraud Warning Notice -->
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6 text-xs text-amber-900 leading-relaxed">
+        <strong class="text-amber-900 block font-extrabold text-sm mb-1">⚠️ Stay Safe Reminder</strong>
+        Never share your OTP, password, PIN, card details or bank credentials with anyone. MithilaMilan representatives will <strong>NEVER</strong> ask you to transfer money to a personal account for verification or account activation.
+    </div>
+
+    <!-- Report Form -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-saas">
+        <form method="POST" action="{% url 'core:report_issue' %}" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Type of Issue</label>
+                <select name="issue_type" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                    <option value="">-- Select Category --</option>
+                    <option value="fraud">Fraudulent / Fake Listing or Seller</option>
+                    <option value="scam">Money Request / Payment Scam</option>
+                    <option value="harassment">Harassment or Abuse</option>
+                    <option value="copyright">Copyright / IP Violation</option>
+                    <option value="impersonation">Impersonation of Business / Individual</option>
+                    <option value="other">Other Terms Violation</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Listing / Profile / Post URL (if applicable)</label>
+                <input type="url" name="target_url" placeholder="https://mithilamilan.com/..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Your Name</label>
+                    <input type="text" name="reporter_name" required placeholder="Your Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Your Email</label>
+                    <input type="email" name="reporter_email" required placeholder="your.email@example.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Detailed Description of Suspicious Activity</label>
+                <textarea name="description" rows="5" required placeholder="Please provide specific details, user names, payment claims, or evidence..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500 focus:outline-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs shadow-xs transition-colors">
+                Submit Report to Safety Team
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

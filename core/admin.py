@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import State, City, Locality, UserLocationPreference
+from .models import State, City, Locality, UserLocationPreference, FooterSetting, LegalPage
 
 @admin.register(State)
 class StateAdmin(admin.ModelAdmin):
@@ -23,3 +23,14 @@ class LocalityAdmin(admin.ModelAdmin):
 @admin.register(UserLocationPreference)
 class UserLocationPreferenceAdmin(admin.ModelAdmin):
     list_display = ('user', 'city', 'locality', 'updated_at')
+
+@admin.register(FooterSetting)
+class FooterSettingAdmin(admin.ModelAdmin):
+    list_display = ('site_name', 'tagline', 'contact_email', 'support_email', 'updated_at')
+
+@admin.register(LegalPage)
+class LegalPageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'is_active', 'last_updated', 'updated_at')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'slug', 'content')
+    prepopulated_fields = {'slug': ('title',)}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us | MithilaMilan Support{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-2 sm:px-4 py-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <span class="inline-block py-1 px-3 rounded-full bg-orange-100 text-[#E85D2A] text-xs font-bold uppercase tracking-wider mb-2">Help & Assistance</span>
+        <h1 class="text-2xl sm:text-4xl font-extrabold text-[#0F1F35]">Contact MithilaMilan Team</h1>
+        <p class="text-slate-600 text-xs sm:text-sm mt-2 max-w-xl mx-auto">We are here to support our community, answer inquiries, and resolve any platform issues promptly.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <!-- Card 1 -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-saas text-center">
+            <div class="w-12 h-12 rounded-xl bg-orange-50 text-[#E85D2A] flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <i class="fa-solid fa-envelope"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 text-base mb-1">General Inquiries</h3>
+            <p class="text-xs text-slate-500 mb-3">For general questions, feedback, and platform support.</p>
+            <a href="mailto:{{ footer_settings.contact_email|default:'contact@mithilamilan.com' }}" class="text-xs font-bold text-[#E85D2A] hover:underline">
+                {{ footer_settings.contact_email|default:'contact@mithilamilan.com' }}
+            </a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-saas text-center">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 text-base mb-1">User & Listing Support</h3>
+            <p class="text-xs text-slate-500 mb-3">For store orders, job posts, rentals, or account assistance.</p>
+            <a href="mailto:{{ footer_settings.support_email|default:'support@mithilamilan.com' }}" class="text-xs font-bold text-emerald-600 hover:underline">
+                {{ footer_settings.support_email|default:'support@mithilamilan.com' }}
+            </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-saas text-center">
+            <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+                <i class="fa-solid fa-shield-cat"></i>
+            </div>
+            <h3 class="font-bold text-slate-800 text-base mb-1">Safety & Fraud Reporting</h3>
+            <p class="text-xs text-slate-500 mb-3">Report suspicious listings, fraudulent users, or scams.</p>
+            <a href="{% url 'core:report_issue' %}" class="text-xs font-bold text-rose-600 hover:underline">
+                Report an Issue →
+            </a>
+        </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-saas">
+        <h2 class="text-xl font-extrabold text-[#0F1F35] mb-2">Send us a message</h2>
+        <p class="text-xs text-slate-500 mb-6">Fill out the form below and our team will get back to you within 24 hours.</p>
+
+        <form method="POST" action="{% url 'core:contact' %}" class="space-y-4">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" name="name" required placeholder="Your Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#E85D2A] focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                    <input type="email" name="email" required placeholder="your.email@example.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#E85D2A] focus:outline-none">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Subject</label>
+                <input type="text" name="subject" required placeholder="Subject of your inquiry" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#E85D2A] focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Message</label>
+                <textarea name="message" rows="5" required placeholder="Describe your question or concern in detail..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-[#E85D2A] focus:outline-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-extrabold text-xs shadow-xs transition-colors">
+                Send Message
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

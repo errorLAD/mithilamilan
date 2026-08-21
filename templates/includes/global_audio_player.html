@@ -1,0 +1,126 @@
+{% load static %}
+<!-- ================================================== -->
+<!-- MITHILAMILAN SMALL FLOATING PERSISTENT AUDIO WIDGET -->
+<!-- ================================================== -->
+<div id="global-music-player" 
+     data-turbo-permanent 
+     x-data="{ 
+         song: { title: 'मिथिलाक पावन लोकगीत', singer: 'मैथिली सुर संगीत', cover: 'https://img.youtube.com/vi/H501incNC74/hqdefault.jpg' },
+         isPlaying: false,
+         isVisible: true,
+         currentTime: 0,
+         duration: 0,
+         volume: 80,
+         formattedCurrentTime: '00:00',
+         formattedDuration: '00:00',
+         progressPercent: 0,
+
+         init() {
+             window.addEventListener('mithila-audio-update', (e) => {
+                 const state = e.detail;
+                 this.isPlaying = state.isPlaying;
+                 this.currentTime = state.currentTime || 0;
+                 this.duration = state.duration || 0;
+                 this.volume = state.volume || 80;
+                 if (state.title) this.song.title = state.title;
+                 if (state.singer) this.song.singer = state.singer;
+                 if (state.cover) this.song.cover = state.cover;
+
+                 if (state.isPlaying) {
+                     this.isVisible = true;
+                 }
+
+                 this.formattedCurrentTime = window.MithilaAudio.formatTime(this.currentTime);
+                 this.formattedDuration = window.MithilaAudio.formatTime(this.duration);
+                 this.progressPercent = this.duration > 0 ? (this.currentTime / this.duration) * 100 : 0;
+             });
+         },
+
+         togglePlay() {
+             window.MithilaAudio.togglePlay();
+         },
+
+         closePlayer() {
+             window.MithilaAudio.pause();
+             this.isVisible = false;
+         },
+
+         onSeek(e) {
+             const val = parseFloat(e.target.value);
+             const targetSec = (val / 100) * this.duration;
+             window.MithilaAudio.seekTo(targetSec);
+         }
+     }"
+     x-init="init()"
+     x-show="isVisible"
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="transform translate-y-6 opacity-0"
+     x-transition:enter-end="transform translate-y-0 opacity-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="transform translate-y-0 opacity-100"
+     x-transition:leave-end="transform translate-y-6 opacity-0"
+     class="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-50 pointer-events-auto w-[calc(100vw-1.5rem)] sm:w-80 max-w-sm font-sans"
+     x-cloak>
+
+    <!-- Hidden Offscreen YouTube & HTML5 Audio Container -->
+    <div class="fixed top-0 -left-[9999px] w-1 h-1 overflow-hidden opacity-0 pointer-events-none">
+        <div id="global-yt-iframe"></div>
+        <audio id="global-html5-audio"></audio>
+    </div>
+
+    <!-- Small Floating Card Widget -->
+    <div class="bg-white/95 backdrop-blur-md border border-amber-200/90 shadow-2xl rounded-2xl p-2.5 space-y-2 text-slate-800">
+        
+        <!-- Top Row: Thumbnail + Track Info + Controls + Close Cross -->
+        <div class="flex items-center justify-between gap-2">
+            
+            <!-- Cover & Details -->
+            <div class="flex items-center space-x-2.5 min-w-0 flex-1">
+                <div class="relative w-9 h-9 rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-amber-200/80 shadow-2xs">
+                    <img :src="song.cover" :alt="song.title" class="w-full h-full object-cover">
+                    
+                    <!-- Soundwave Animation Overlay -->
+                    <div x-show="isPlaying" class="absolute inset-0 bg-slate-950/40 flex items-center justify-center space-x-0.5">
+                        <span class="w-0.5 bg-[#E85D2A] rounded-full h-2.5 animate-pulse"></span>
+                        <span class="w-0.5 bg-[#D4AF37] rounded-full h-3.5 animate-pulse delay-75"></span>
+                        <span class="w-0.5 bg-[#E85D2A] rounded-full h-2 animate-pulse delay-150"></span>
+                    </div>
+                </div>
+
+                <div class="min-w-0 flex-1">
+                    <h4 class="font-extrabold text-slate-900 text-xs truncate leading-tight" x-text="song.title"></h4>
+                    <p class="text-[10px] font-medium text-slate-500 truncate mt-0.5" x-text="song.singer"></p>
+                </div>
+            </div>
+
+            <!-- Play & Close Buttons -->
+            <div class="flex items-center space-x-1.5 shrink-0">
+                <button @click="togglePlay()" 
+                        class="w-8 h-8 rounded-full bg-[#E85D2A] hover:bg-[#D54C1A] text-white flex items-center justify-center text-xs shadow-2xs transition-transform active:scale-95 cursor-pointer"
+                        title="Play/Pause">
+                    <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play ml-0.5'"></i>
+                </button>
+
+                <button @click="closePlayer()" 
+                        class="w-6 h-6 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-400 hover:text-rose-600 flex items-center justify-center text-xs transition-colors shrink-0 cursor-pointer" 
+                        title="Close Player">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Bottom Row: Thin Seek Bar & Duration -->
+        <div class="flex items-center space-x-2 text-[9px] font-mono font-bold text-slate-400">
+            <span x-text="formattedCurrentTime" class="shrink-0">00:00</span>
+            <input type="range" 
+                   min="0" 
+                   max="100" 
+                   :value="progressPercent" 
+                   @input="onSeek($event)" 
+                   class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#E85D2A]">
+            <span x-text="formattedDuration" class="shrink-0">00:00</span>
+        </div>
+
+    </div>
+</div>

@@ -4,269 +4,213 @@
 {% block title %}कहानी — मिथिलाक लोक, जीवन आ अनुभवक कहानी | MithilaMilan{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 font-sans">
+<div class="max-w-7xl mx-auto space-y-6 font-sans pb-16 px-3 sm:px-6">
 
-    <!-- Hero Banner (Back button now inside) -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0F1F35] via-[#1a2a42] to-[#7D3028] p-6 sm:p-8 lg:p-10 text-white shadow-xl">
-        <!-- Soft decorative element -->
-        <div class="absolute -right-10 -bottom-12 text-[9rem] sm:text-[11rem] opacity-[0.06] pointer-events-none select-none leading-none">🪷</div>
-        
-        <!-- Back Button (inside card) -->
-        <a href="javascript:history.back()"
-           class="relative z-10 inline-flex items-center gap-2.5 text-sm font-medium text-white/70 hover:text-white transition-colors group mb-6">
-            <span class="w-9 h-9 rounded-full bg-white/10 border border-white/20 group-hover:bg-white/20 flex items-center justify-center transition-all">
-                <i class="fa-solid fa-arrow-left text-xs"></i>
-            </span>
-            <span>वापस (Back)</span>
-        </a>
-
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="space-y-3 max-w-2xl">
-                <span class="inline-flex items-center gap-2 bg-amber-400/15 text-amber-300 border border-amber-400/25 px-3.5 py-1.5 rounded-full text-[11px] font-semibold tracking-wide uppercase">
-                    <i class="fa-solid fa-book-open text-[10px]"></i>
-                    मिथिलाक कथा साहित्य
-                </span>
-                
-                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
-                    कहानी <span class="text-amber-300/90 font-medium">(Stories)</span>
+    <!-- Clean Light SaaS Header Card -->
+    <div class="bg-white rounded-2xl p-5 sm:p-7 border border-amber-200/80 shadow-2xs space-y-4 relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="space-y-1.5">
+                <div class="flex items-center space-x-2">
+                    <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='/'; }"
+                            type="button"
+                            aria-label="Go Back"
+                            class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors cursor-pointer shrink-0 font-devanagari">
+                        <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
+                        <span>पीछे</span>
+                    </button>
+                    <span class="text-xs font-bold text-slate-400">/</span>
+                    <span class="text-xs font-extrabold text-[#E85D2A] uppercase tracking-wider font-devanagari">मिथिला कथा साहित्य</span>
+                </div>
+                <h1 class="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight font-devanagari">
+                    कहानी (Stories)
                 </h1>
-                
-                <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-                    मिथिला के लोक, जीवन, संस्कृति, गाँव, इतिहास आ अनुभवक सुंदर कहानियों का संग्रह।
+                <p class="text-xs sm:text-sm text-slate-500 font-medium font-devanagari max-w-xl">
+                    मिथिलाक कथा, अनुभव आ प्रेरणादायक कहानी संग्रह।
                 </p>
             </div>
 
-            <a href="{% url 'storytelling:create_story' %}"
-               class="shrink-0 inline-flex items-center justify-center gap-2.5 bg-[#E85D2A] hover:bg-[#d44c1a] text-white font-semibold px-6 py-3.5 rounded-2xl shadow-lg hover:shadow-orange-500/25 transition-all active:scale-[0.98] text-sm">
-                <i class="fa-solid fa-pen-nib"></i>
-                + कहानी लिखें
+            <a href="{% url 'storytelling:create_story' %}" class="inline-flex items-center space-x-2 bg-[#E85D2A] hover:bg-[#D54C1A] text-white font-extrabold px-4 py-2.5 rounded-xl shadow-2xs transition-all text-xs shrink-0 font-devanagari self-start sm:self-auto min-h-[44px]">
+                <i class="fa-solid fa-pen-nib text-xs"></i>
+                <span>+ कहानी लिखें</span>
             </a>
         </div>
-    </div>
 
-    <!-- Filters + Search -->
-    <div class="space-y-4">
-        <!-- Category Pills -->
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
-            <a href="{% url 'storytelling:story_list' %}"
-               class="px-4 py-2 rounded-full text-sm font-medium shrink-0 transition-all
-                      {% if not selected_category %}
-                          bg-[#E85D2A] text-white shadow-sm
-                      {% else %}
-                          bg-white border border-slate-200 text-slate-600 hover:border-orange-200 hover:bg-orange-50
-                      {% endif %}">
-                सबै कहानी
+        <!-- Category Pills (Horizontal Scroll on Mobile) -->
+        <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar pt-2 pb-1 border-t border-slate-100 text-xs font-bold">
+            <a href="{% url 'storytelling:story_list' %}" class="px-3.5 py-1.5 rounded-xl shrink-0 transition-all font-devanagari {% if not selected_category %}bg-slate-900 text-white shadow-2xs{% else %}bg-slate-50 hover:bg-amber-50 border border-slate-200 text-slate-700{% endif %}">
+                सबै कहानी (All Stories)
             </a>
-            
             {% for cat_code, cat_label in categories %}
-            <a href="?category={{ cat_code }}"
-               class="px-4 py-2 rounded-full text-sm font-medium shrink-0 transition-all
-                      {% if selected_category == cat_code %}
-                          bg-[#E85D2A] text-white shadow-sm
-                      {% else %}
-                          bg-white border border-slate-200 text-slate-600 hover:border-orange-200 hover:bg-orange-50
-                      {% endif %}">
+            <a href="?category={{ cat_code }}" class="px-3.5 py-1.5 rounded-xl shrink-0 transition-all font-devanagari {% if selected_category == cat_code %}bg-[#E85D2A] text-white shadow-2xs{% else %}bg-slate-50 hover:bg-amber-50 border border-slate-200 text-slate-700{% endif %}">
                 {{ cat_label }}
             </a>
             {% endfor %}
         </div>
-
-        <!-- Search -->
-        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-3 sm:p-4">
-            <form method="get" class="flex flex-col sm:flex-row gap-3">
-                {% if selected_category %}
-                    <input type="hidden" name="category" value="{{ selected_category }}">
-                {% endif %}
-                
-                <div class="relative flex-1">
-                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" 
-                           name="q" 
-                           value="{{ query }}" 
-                           placeholder="कहानी या लेखक खोजें..."
-                           class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#E85D2A]/20 focus:border-[#E85D2A] transition-all">
-                </div>
-                
-                <button type="submit"
-                        class="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-medium px-6 py-3 rounded-xl text-sm transition-colors shrink-0">
-                    <i class="fa-solid fa-search text-xs"></i>
-                    Search
-                </button>
-            </form>
-        </div>
     </div>
 
-    <!-- Featured Story -->
-    {% if featured_story %}
-    {% if not page_obj.number or page_obj.number == 1 %}
-    <div class="group bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-        <div class="grid grid-cols-1 lg:grid-cols-2">
-            <!-- Image -->
-            <div class="relative aspect-[16/10] lg:aspect-auto lg:min-h-[320px] bg-slate-100 overflow-hidden">
-                <img src="{% if featured_story.image %}{{ featured_story.image.url }}{% else %}https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1000&q=80{% endif %}"
-                     alt="{{ featured_story.title }}"
-                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent lg:hidden"></div>
-                
-                <span class="absolute top-4 left-4 bg-[#7D3028] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-                    {{ featured_story.get_category_display }}
-                </span>
+    <!-- Search Bar -->
+    <div class="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 shadow-2xs">
+        <form method="get" class="flex flex-col sm:flex-row items-center gap-3">
+            {% if selected_category %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
+            <div class="relative w-full flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="q" value="{{ query }}" placeholder="कहानी खोजें (Search stories)..." class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-[#E85D2A] focus:bg-white text-xs font-medium font-devanagari">
             </div>
-
-            <!-- Content -->
-            <div class="p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3 text-xs text-slate-400">
-                        <span class="inline-flex items-center gap-1.5">
-                            <i class="fa-regular fa-user text-[#E85D2A]"></i>
-                            u/{{ featured_story.author.username }}
-                        </span>
-                        <span class="text-slate-300">•</span>
-                        <span>{{ featured_story.created_at|date:"d M Y" }}</span>
-                    </div>
-
-                    <a href="{% url 'storytelling:story_detail' featured_story.pk %}" class="block group/title">
-                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 group-hover/title:text-[#E85D2A] transition-colors leading-snug">
-                            {{ featured_story.title }}
-                        </h2>
-                    </a>
-
-                    <p class="text-slate-600 text-sm leading-relaxed line-clamp-4">
-                        {% if featured_story.excerpt %}
-                            {{ featured_story.excerpt }}
-                        {% else %}
-                            {{ featured_story.content|truncatewords:45 }}
-                        {% endif %}
-                    </p>
-                </div>
-
-                <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-between">
-                    <a href="{% url 'storytelling:story_detail' featured_story.pk %}"
-                       class="inline-flex items-center gap-2 text-sm font-semibold text-[#E85D2A] hover:gap-3 transition-all">
-                        पूरी कहानी पढ़ें
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                    </a>
-                    
-                    <span class="inline-flex items-center gap-1.5 text-sm text-slate-500">
-                        <i class="fa-regular fa-heart text-rose-500"></i>
-                        {{ featured_story.likes.count }}
-                    </span>
-                </div>
-            </div>
-        </div>
+            <button type="submit" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-extrabold px-5 py-2.5 rounded-xl text-xs transition-colors shrink-0 font-devanagari min-h-[44px]">
+                खोजें (Search)
+            </button>
+        </form>
     </div>
-    {% endif %}
-    {% endif %}
 
-    <!-- Stories Grid — NEW CARD LAYOUT -->
-    {% if page_obj %}
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
-        {% for item in page_obj %}
-        <article class="group bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+    <!-- Main Content Layout (2-Column) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left Feed -->
+        <div class="lg:col-span-2 space-y-6">
             
-            <!-- Image with overlay -->
-            <div class="relative aspect-[16/10] bg-slate-100 overflow-hidden">
-                <img src="{% if item.image %}{{ item.image.url }}{% else %}https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80{% endif %}"
-                     alt="{{ item.title }}"
-                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                
-                <!-- Gradient overlay -->
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60"></div>
-                
-                <!-- Category badge -->
-                <span class="absolute top-3 left-3 bg-white/95 backdrop-blur-sm text-slate-800 text-[11px] font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                    {{ item.get_category_display }}
-                </span>
-
-                <!-- Likes on image -->
-                <span class="absolute top-3 right-3 inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white text-xs font-medium px-2.5 py-1 rounded-full">
-                    <i class="fa-regular fa-heart text-rose-400"></i>
-                    {{ item.likes.count }}
-                </span>
-            </div>
-
-            <!-- Content -->
-            <div class="p-5 flex flex-col flex-1">
-                <!-- Meta -->
-                <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
-                    <span class="inline-flex items-center gap-1.5">
-                        <i class="fa-regular fa-user text-[#E85D2A]"></i>
-                        u/{{ item.author.username }}
+            {% if featured_story %}
+            {% if not page_obj.number or page_obj.number == 1 %}
+            <!-- Featured Major Story Card -->
+            <div class="bg-white rounded-2xl border border-amber-200/80 shadow-2xs hover:shadow-saas transition-all p-6 space-y-3 group">
+                <div class="flex items-center justify-between">
+                    <span class="bg-[#E85D2A] text-white text-[11px] font-extrabold px-3 py-1 rounded-full shadow-2xs font-devanagari">
+                        {{ featured_story.get_category_display }}
                     </span>
-                    <span class="text-slate-300">•</span>
-                    <span>{{ item.created_at|date:"d M Y" }}</span>
+                    <span class="text-xs text-slate-400 font-medium"><i class="fa-regular fa-clock mr-1"></i>{{ featured_story.created_at|date:"d M Y" }}</span>
                 </div>
 
-                <!-- Title -->
-                <a href="{% url 'storytelling:story_detail' item.pk %}" class="block mb-2.5">
-                    <h3 class="font-bold text-slate-900 text-base leading-snug group-hover:text-[#E85D2A] transition-colors line-clamp-2">
-                        {{ item.title }}
-                    </h3>
+                <a href="{% url 'storytelling:story_detail' featured_story.pk %}" class="block">
+                    <h2 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-[#E85D2A] transition-colors leading-snug font-devanagari">
+                        {{ featured_story.title }}
+                    </h2>
                 </a>
 
-                <!-- Excerpt -->
-                <p class="text-slate-500 text-sm leading-relaxed line-clamp-3 mb-5 flex-1">
-                    {% if item.excerpt %}
-                        {{ item.excerpt }}
-                    {% else %}
-                        {{ item.content|truncatewords:22 }}
-                    {% endif %}
+                <p class="text-xs sm:text-sm text-slate-600 font-medium line-clamp-3 leading-relaxed font-devanagari">
+                    {% if featured_story.excerpt %}{{ featured_story.excerpt }}{% else %}{{ featured_story.content|truncatewords:35 }}{% endif %}
                 </p>
 
-                <!-- CTA -->
-                <a href="{% url 'storytelling:story_detail' item.pk %}"
-                   class="mt-auto inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-[#E85D2A] bg-orange-50 hover:bg-[#E85D2A] hover:text-white transition-all duration-200 border border-orange-100 hover:border-[#E85D2A]">
-                    पूरी कहानी पढ़ें
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                    <span class="text-xs font-bold text-slate-500">u/{{ featured_story.author.username }}</span>
+                    <a href="{% url 'storytelling:story_detail' featured_story.pk %}" class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-[#E85D2A] hover:underline font-devanagari">
+                        <span>पूरा कहानी पढ़ें ➔</span>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            <!-- Story Grid List -->
+            {% if page_obj %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                {% for story in page_obj %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-amber-300 shadow-2xs hover:shadow-saas transition-all p-5 flex flex-col justify-between space-y-3 group">
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-[10px] font-bold">
+                            <span class="px-2.5 py-0.5 rounded-md bg-amber-50 text-[#7D281E] border border-amber-200 font-devanagari">
+                                {{ story.get_category_display }}
+                            </span>
+                            <span class="text-slate-400 font-sans">{{ story.created_at|date:"d M Y" }}</span>
+                        </div>
+
+                        <a href="{% url 'storytelling:story_detail' story.pk %}" class="block">
+                            <h3 class="font-extrabold text-slate-900 text-sm sm:text-base group-hover:text-[#E85D2A] transition-colors leading-snug line-clamp-2 font-devanagari">
+                                {{ story.title }}
+                            </h3>
+                        </a>
+
+                        <p class="text-xs text-slate-500 font-medium line-clamp-3 leading-relaxed font-devanagari">
+                            {% if story.excerpt %}{{ story.excerpt }}{% else %}{{ story.content|truncatewords:20 }}{% endif %}
+                        </p>
+                    </div>
+
+                    <div class="pt-3 flex items-center justify-between border-t border-slate-100 text-xs">
+                        <span class="text-[10px] font-bold text-slate-400">u/{{ story.author.username }}</span>
+                        <a href="{% url 'storytelling:story_detail' story.pk %}" class="font-extrabold text-[#E85D2A] hover:underline font-devanagari">Read ➔</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <div class="flex items-center justify-center space-x-2 pt-4 font-sans">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs hover:bg-amber-50">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                <span class="text-xs font-bold text-slate-600 px-3.5 py-1.5 bg-white border rounded-xl shadow-2xs">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs hover:bg-amber-50">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- Compact Modern Empty State -->
+            <div class="bg-white rounded-2xl p-8 text-center border border-amber-200/80 shadow-2xs space-y-3 font-devanagari">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-[#E85D2A] flex items-center justify-center text-xl mx-auto border border-amber-200">
+                    <i class="fa-solid fa-book-open"></i>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-800">अभी कोई कहानी उपलब्ध नहीं है</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto">अपनी कहानी साझा करें।</p>
+                <a href="{% url 'storytelling:create_story' %}" class="inline-flex items-center space-x-1.5 bg-[#E85D2A] text-white font-extrabold px-4 py-2 rounded-xl text-xs hover:bg-[#D54C1A] transition-colors shadow-2xs">
+                    <span>+ कहानी लिखें</span>
                 </a>
             </div>
-        </article>
-        {% endfor %}
-    </div>
+            {% endif %}
 
-    <!-- Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="flex items-center justify-center gap-3 pt-4">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
-           class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-orange-50 hover:border-orange-200 transition-all">
-            <i class="fa-solid fa-chevron-left text-xs"></i>
-        </a>
-        {% endif %}
-
-        <span class="text-sm font-medium text-slate-600 px-4 py-2 bg-white border border-slate-200 rounded-full">
-            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-        </span>
-
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
-           class="w-10 h-10 rounded-full bg-white border border-slate-200 text-slate-600 flex items-center justify-center hover:bg-orange-50 hover:border-orange-200 transition-all">
-            <i class="fa-solid fa-chevron-right text-xs"></i>
-        </a>
-        {% endif %}
-    </div>
-    {% endif %}
-
-    {% else %}
-    <!-- Empty State -->
-    <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-12 sm:p-16 text-center">
-        <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-orange-50 flex items-center justify-center">
-            <i class="fa-solid fa-book-open text-2xl text-[#E85D2A]"></i>
         </div>
-        
-        <h3 class="text-xl font-bold text-slate-800 mb-2">अभी कोई कहानी नहीं है</h3>
-        <p class="text-slate-500 text-sm max-w-sm mx-auto mb-6 leading-relaxed">
-            अपनी कहानी से शुरुआत करें। एडमिन द्वारा समीक्षा के बाद कहानी प्रकाशित होगी।
-        </p>
-        
-        <a href="{% url 'storytelling:create_story' %}"
-           class="inline-flex items-center gap-2 bg-[#E85D2A] hover:bg-[#d44c1a] text-white font-semibold px-6 py-3 rounded-2xl text-sm transition-colors shadow-sm">
-            <i class="fa-solid fa-pen-nib"></i>
-            + कहानी लिखें
-        </a>
+
+        <!-- Right Sidebar (Trending & Categories) -->
+        <div class="space-y-6 font-sans">
+            
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/80 shadow-2xs space-y-4 font-devanagari">
+                <h3 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-fire text-[#E85D2A]"></i>
+                    <span>लोकप्रिय कहानियाँ (Popular)</span>
+                </h3>
+
+                <div class="space-y-3">
+                    {% for story in popular_stories %}
+                    <a href="{% url 'storytelling:story_detail' story.pk %}" class="flex items-start space-x-3 group p-2 rounded-xl hover:bg-amber-50/50 transition-colors">
+                        <span class="text-xs font-mono font-black text-amber-800 w-5 shrink-0 pt-0.5">0{{ forloop.counter }}</span>
+                        <div class="min-w-0 flex-1 space-y-0.5">
+                            <h4 class="text-xs font-extrabold text-slate-900 group-hover:text-[#E85D2A] transition-colors line-clamp-2 leading-snug">
+                                {{ story.title }}
+                            </h4>
+                            <span class="text-[10px] text-slate-400 font-medium block">{{ story.views }} views</span>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <p class="text-xs text-slate-400 italic">No popular stories yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Categories Quick Widget -->
+            <div class="bg-white rounded-2xl p-5 border border-amber-200/80 shadow-2xs space-y-3 font-devanagari">
+                <h3 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider border-b border-slate-100 pb-3">
+                    श्रेणियां (Categories)
+                </h3>
+                <div class="flex flex-wrap gap-1.5">
+                    {% for cat_code, cat_label in categories %}
+                    <a href="?category={{ cat_code }}" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-amber-50 hover:border-amber-300 text-slate-700 transition-all">
+                        {{ cat_label }}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
     </div>
-    {% endif %}
 
 </div>
 {% endblock %}

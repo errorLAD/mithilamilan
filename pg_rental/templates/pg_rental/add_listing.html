@@ -1,41 +1,218 @@
 {% extends 'pg_rental/base.html' %}
 
 {% block pg_content %}
-<div class="max-w-4xl mx-auto p-4">
-    <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Add New Space</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-            {% for field in form %}
-            <div class="mb-4">
-                <label for="{{ field.id_for_label }}" class="block text-lg font-medium text-gray-700 mb-2">{{ field.label }}</label>
-                {{ field.errors }}
-                {% if field.name == 'images' %}
-                    <div class="flex items-center gap-2">
-                        {{ field }}
-                        <small class="text-sm text-gray-500">You can select multiple images.</small>
-                    </div>
-                {% else %}
-                    <div class="mt-1">
-                        {{ field }}
-                    </div>
-                {% endif %}
-                {% if field.help_text %}
-                    <small class="text-sm text-gray-500">{{ field.help_text }}</small>
-                {% endif %}
-            </div>
-            {% endfor %}
+<style>
+  .sb-wrap {
+    --sb-bg: #F8FAFC;
+    --sb-surface: #FFFFFF;
+    --sb-border: #E6E9EF;
+    --sb-text: #0F172A;
+    --sb-text-muted: #667085;
+    --sb-accent: #4F46E5;
+    --sb-accent-hover: #4338CA;
+    --sb-accent-soft: #EEF2FF;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--sb-bg);
+    color: var(--sb-text);
+    min-height: 100vh;
+    padding: 32px 20px 100px;
+  }
 
-            <div class="flex gap-4 flex-wrap mt-6">
-                <button type="submit" class="w-full sm:w-auto bg-green-600 text-white py-2 px-6 rounded-lg text-lg font-semibold hover:bg-green-700 flex items-center justify-center">
-                    <i class="fas fa-plus mr-2"></i> Create Listing
-                </button>
-                <a href="{% url 'pg_rental:listings' %}" class="w-full sm:w-auto bg-gray-600 text-white py-2 px-6 rounded-lg text-lg font-semibold hover:bg-gray-700 flex items-center justify-center">
-                    <i class="fas fa-times mr-2"></i> Cancel
-                </a>
-            </div>
-        </form>
+  .sb-shell { max-width: 720px; margin: 0 auto; }
+
+  .sb-header { margin-bottom: 28px; }
+  .sb-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sb-accent);
+    margin: 0 0 6px;
+  }
+  .sb-title { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 6px; }
+  .sb-subtitle { font-size: 14px; color: var(--sb-text-muted); margin: 0; }
+
+  .sb-card {
+    background: var(--sb-surface);
+    border: 1px solid var(--sb-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+  }
+  .sb-section { padding: 28px; }
+
+  .sb-field { margin-bottom: 18px; }
+  .sb-field:last-child { margin-bottom: 0; }
+  .sb-field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--sb-text);
+    margin-bottom: 6px;
+  }
+  .sb-field .errorlist {
+    list-style: none;
+    margin: 0 0 6px;
+    padding: 0;
+    font-size: 12.5px;
+    color: #DC2626;
+  }
+  .sb-help { font-size: 12px; color: var(--sb-text-muted); margin-top: 6px; }
+
+  .sb-field input[type="text"],
+  .sb-field input[type="email"],
+  .sb-field input[type="tel"],
+  .sb-field input[type="number"],
+  .sb-field input[type="url"],
+  .sb-field input[type="date"],
+  .sb-field select,
+  .sb-field textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--sb-border);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--sb-text);
+    background: #FBFCFD;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+  .sb-field input:focus,
+  .sb-field select:focus,
+  .sb-field textarea:focus {
+    outline: none;
+    border-color: var(--sb-accent);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+  }
+  .sb-field textarea { min-height: 96px; resize: vertical; }
+
+  /* File input (images) gets its own dropzone-style treatment */
+  .sb-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1.5px dashed var(--sb-border);
+    border-radius: 10px;
+    background: #FBFCFD;
+  }
+  .sb-file input[type="file"] {
+    font-size: 13px;
+    color: var(--sb-text-muted);
+    flex: 1;
+  }
+  .sb-file input[type="file"]::file-selector-button {
+    padding: 7px 14px;
+    margin-right: 12px;
+    border: 1px solid var(--sb-border);
+    border-radius: 7px;
+    background: #FFFFFF;
+    color: var(--sb-text);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .sb-file input[type="file"]::file-selector-button:hover { background: #F3F4F6; }
+
+  /* Actions */
+  .sb-actions {
+    display: flex;
+    gap: 10px;
+    padding: 20px 28px;
+    background: #FBFCFD;
+    border-top: 1px solid var(--sb-border);
+  }
+  .sb-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.05s ease;
+  }
+  .sb-btn:active { transform: translateY(1px); }
+  .sb-btn-ghost { background: #FFFFFF; border-color: var(--sb-border); color: var(--sb-text); }
+  .sb-btn-ghost:hover { background: #F3F4F6; color: var(--sb-text); }
+  .sb-btn-primary { background: var(--sb-accent); color: #FFFFFF; order: 2; }
+  .sb-btn-primary:hover { background: var(--sb-accent-hover); }
+
+  @media (max-width: 640px) {
+    .sb-wrap { padding: 20px 14px 96px; }
+    .sb-section { padding: 20px 18px; }
+    .sb-title { font-size: 22px; }
+    .sb-card { border-radius: 12px; }
+
+    .sb-actions {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      z-index: 40;
+      padding: 12px 16px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 12px rgba(16, 24, 40, 0.06);
+    }
+  }
+</style>
+
+<div class="sb-wrap">
+  <div class="sb-shell">
+    <div class="sb-header">
+      <p class="sb-eyebrow">Listings</p>
+      <h1 class="sb-title">Add new space</h1>
+      <p class="sb-subtitle">List your PG or rental — tenants see this exactly as you write it.</p>
     </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="sb-card">
+        <div class="sb-section">
+          {% for field in form %}
+          <div class="sb-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.errors %}
+              <ul class="errorlist">
+                {% for error in field.errors %}<li>{{ error }}</li>{% endfor %}
+              </ul>
+            {% endif %}
+            {% if field.name == 'images' %}
+              <div class="sb-file">
+                {{ field }}
+              </div>
+              <p class="sb-help">You can select multiple images.</p>
+            {% else %}
+              {{ field }}
+            {% endif %}
+            {% if field.help_text %}
+              <p class="sb-help">{{ field.help_text }}</p>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="sb-actions">
+          <button type="submit" class="sb-btn sb-btn-primary">
+            <i class="fas fa-plus"></i> Create listing
+          </button>
+          <a href="{% url 'pg_rental:listings' %}" class="sb-btn sb-btn-ghost">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 {% endblock %}
