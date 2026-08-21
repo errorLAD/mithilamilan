@@ -115,7 +115,10 @@ def unsubscribe(request, slug):
     return redirect('core:home')
 
 def search(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get('q', '').strip()
+    filter_type = request.GET.get('type', 'all')
+    sort_by = request.GET.get('sort', 'relevance')
+
     if not query:
         return redirect('core:home')
     
@@ -124,23 +127,52 @@ def search(request):
         Q(name__icontains=query) | 
         Q(description__icontains=query),
         approval_status='approved'
-    )
-    
+    ).annotate(member_count=Count('subscribers'))
+
     # Search posts
     posts = Post.objects.filter(
         Q(title__icontains=query) | 
-        Q(content__icontains=query)
-    )
+        Q(content__icontains=query),
+        subreddit__approval_status='approved'
+    ).select_related('author', 'subreddit').prefetch_related('comments', 'upvotes', 'downvotes')
     
-    # Get popular subreddits for the sidebar
+    if sort_by == 'newest':
+        posts = posts.order_by('-created_at')
+    elif sort_by == 'top':
+        posts = posts.order_by('-score', '-created_at')
+
+    posts_count = posts.count()
+    subreddits_count = subreddits.count()
+    total_results = posts_count + subreddits_count
+
+    user_votes = {}
+    subscribed_subreddit_ids = []
+    if request.user.is_authenticated:
+        for p in posts:
+            if p.upvotes.filter(id=request.user.id).exists():
+                user_votes[p.slug] = 'up'
+            elif p.downvotes.filter(id=request.user.id).exists():
+                user_votes[p.slug] = 'down'
+            else:
+                user_votes[p.slug] = 'none'
+        subscribed_subreddit_ids = list(Subreddit.objects.filter(subscribers=request.user).values_list('id', flat=True))
+    
+    # Popular subreddits for sidebar
     popular_subreddits = Subreddit.objects.filter(
         approval_status='approved'
     ).annotate(member_count=Count('subscribers')).order_by('-member_count')[:5]
     
     context = {
         'query': query,
+        'filter_type': filter_type,
+        'sort_by': sort_by,
         'subreddits': subreddits,
         'posts': posts,
+        'posts_count': posts_count,
+        'subreddits_count': subreddits_count,
+        'total_results': total_results,
         'popular_subreddits': popular_subreddits,
+        'user_votes': user_votes,
+        'subscribed_subreddit_ids': subscribed_subreddit_ids,
     }
     return render(request, 'subreddits/search.html', context) 

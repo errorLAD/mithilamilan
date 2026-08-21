@@ -67,11 +67,17 @@
         </div>
 
         <!-- Source link -->
-        {% if news.source_name %}
-        <div class="bg-amber-50 rounded-xl p-3.5 border border-amber-200/80 text-xs text-amber-950 font-medium font-devanagari">
-            <span>स्रोत (Source): <strong>{{ news.source_name }}</strong></span>
+        {% if news.source_name or news.source_url %}
+        <div class="bg-amber-50 rounded-xl p-3.5 border border-amber-200/80 text-xs text-amber-950 font-medium font-devanagari flex items-center justify-between flex-wrap gap-2">
+            <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved text-amber-700"></i>
+                <span>प्रमाणित समाचार स्रोत (Source): <strong>{{ news.source_name|default:"Official News Portal" }}</strong></span>
+            </span>
             {% if news.source_url %}
-            <a href="{{ news.source_url }}" target="_blank" rel="noopener" class="text-[#E85D2A] font-bold ml-2 hover:underline">मूल समाचार देखें ↗</a>
+            <a href="{{ news.source_url }}" target="_blank" rel="noopener" class="text-[#E85D2A] font-bold hover:underline inline-flex items-center gap-1">
+                <span>मूल आधिकारिक समाचार लिंक</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
             {% endif %}
         </div>
         {% endif %}

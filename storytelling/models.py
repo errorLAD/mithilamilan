@@ -33,6 +33,8 @@ class Story(models.Model):
     approved_at = models.DateTimeField(null=True, blank=True)
     approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_stories')
     location = models.CharField(max_length=100, blank=True)
+    source_name = models.CharField(max_length=255, blank=True, help_text="e.g. Sahitya Akademi / Mithila Folk Literature")
+    source_url = models.URLField(max_length=500, blank=True, help_text="Verified reference link")
     image = models.ImageField(upload_to='story_images/', null=True, blank=True)
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_stories', blank=True)
     views = models.PositiveIntegerField(default=0)

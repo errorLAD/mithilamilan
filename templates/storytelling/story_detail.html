@@ -59,6 +59,24 @@
             {{ story.content|linebreaks }}
         </div>
 
+        {% if story.source_url or story.source_name %}
+        <div class="p-4 bg-amber-50/80 rounded-xl border border-amber-200/90 text-xs text-amber-950 font-devanagari space-y-1">
+            <div class="font-black text-amber-900 flex items-center gap-1.5">
+                <i class="fa-solid fa-book-bookmark text-amber-700"></i>
+                <span>परम्परा एवं स्रोत संदर्भ (Authentic Source):</span>
+            </div>
+            <p class="text-amber-800 font-medium">
+                {% if story.source_name %}<strong>{{ story.source_name }}</strong>{% endif %}
+                {% if story.source_url %}
+                    <a href="{{ story.source_url }}" target="_blank" rel="noopener noreferrer" class="ml-2 text-[#E85D2A] underline font-bold hover:text-amber-900 inline-flex items-center gap-1">
+                        <span>स्रोत विवरण लिंक (Verified Source)</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+
         <!-- Share Actions -->
         <div class="flex items-center justify-between border-t border-slate-100 pt-5 text-xs font-devanagari">
             <span class="font-bold text-slate-500">साझा करें (Share):</span>

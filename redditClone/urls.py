@@ -13,6 +13,7 @@ urlpatterns = [
     path('admin-panel/', include('core.admin_urls', namespace='admin_panel')),
     path('', include('core.urls', namespace='core')),
     path('users/', include('users.urls')),
+    path('', include('posts.urls')),
     path('posts/', include('posts.urls')),
     path('subreddits/', include('subreddits.urls')),
     path('pg-rental/', include('pg_rental.urls')),

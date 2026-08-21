@@ -1,146 +1,418 @@
 {% extends 'delhi_wiki/base.html' %}
+{% load static %}
 
-{% block title %}{{ area.name }} - Delhi Wiki{% endblock %}
+{% block title %}{{ area.name }} — Mithila Wiki & Guide{% endblock %}
 
-{% block content %}
-<div class="bg-slate-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans">
-    <div class="max-w-4xl mx-auto space-y-6">
-        
-        <!-- Header Bar: Small Back Button -->
-        <div class="border-b border-slate-100 pb-3 font-devanagari">
-            <button onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href='{% url 'delhi_wiki:area_list' %}'; }" 
-                    type="button"
-                    class="inline-flex items-center space-x-1.5 text-xs font-extrabold text-slate-700 hover:text-[#E85D2A] transition-colors shrink-0 cursor-pointer">
-                <i class="fa-solid fa-arrow-left text-[11px] text-[#E85D2A]"></i>
-                <span>पीछे</span>
-            </button>
-        </div>
+{% block wiki_content %}
+<div class="space-y-8 font-sans pb-12">
 
-        <div class="bg-white rounded-3xl shadow-saas border border-amber-200/80 overflow-hidden">
-        
+    <!-- Hero Card Banner -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-amber-950 to-orange-950 text-white shadow-xl shadow-amber-950/20 border border-amber-500/20">
+        <!-- Background Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, #f59e0b 1px, transparent 0); background-size: 24px 24px;"></div>
+        <div class="absolute -right-12 -top-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-12 -bottom-12 w-64 h-64 bg-orange-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
         {% if area.image %}
-            <div class="aspect-w-16 aspect-h-7"> {# Responsive aspect ratio #}
-                <img src="{{ area.image.url }}" alt="{{ area.name }}" class="w-full h-full object-cover object-center">
-            </div>
-        {% else %}
-            <div class="w-full h-64 bg-gradient-to-r from-gray-200 to-gray-300 flex items-center justify-center">
-                 {# You could add an SVG icon here for a nicer placeholder #}
-                <span class="text-gray-500 text-lg font-medium">No image available</span>
-            </div>
+        <div class="relative h-64 sm:h-80 md:h-96 w-full overflow-hidden">
+            <img src="{{ area.image.url }}" alt="{{ area.name }}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent"></div>
+        </div>
         {% endif %}
-        
-        <div class="p-6 md:p-8 lg:p-10">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 pb-4 border-b border-gray-200">
-                <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-0">{{ area.name }}</h1>
+
+        <div class="relative z-10 p-6 sm:p-8 md:p-10 space-y-4 {% if not area.image %}py-10 sm:py-12{% endif %}">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center space-x-1.5 bg-amber-500/20 backdrop-blur-md ring-1 ring-amber-400/40 text-amber-200 text-xs font-extrabold px-3 py-1 rounded-full font-devanagari">
+                    <i class="fa-solid fa-map-pin text-amber-400"></i>
+                    <span>मिथिला क्षेत्र (Mithila Region)</span>
+                </span>
+
                 {% if area.is_verified %}
-                    <span class="flex-shrink-0 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs sm:text-sm font-semibold tracking-wide self-start sm:self-center">
-                        Verified
-                    </span>
+                <span class="inline-flex items-center space-x-1 bg-emerald-500/20 backdrop-blur-md ring-1 ring-emerald-400/40 text-emerald-200 text-xs font-extrabold px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                    <span>Verified District</span>
+                </span>
                 {% endif %}
             </div>
-            
-            <div class="mb-8 space-y-4">
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-500 uppercase tracking-wider mb-1">Location</h2>
-                    <p class="text-gray-700 text-base leading-relaxed">{{ area.location }}</p>
+
+            <div class="space-y-2">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white font-devanagari">
+                    {{ area.name }}
+                </h1>
+                <p class="text-amber-200/90 text-sm sm:text-base font-medium flex items-center gap-2">
+                    <i class="fa-solid fa-location-dot text-orange-400"></i>
+                    <span>{{ area.location }}</span>
+                </p>
+            </div>
+
+            <p class="text-slate-300 text-xs sm:text-sm max-w-3xl leading-relaxed font-devanagari line-clamp-3">
+                {{ area.description }}
+            </p>
+
+            <div class="pt-2 flex flex-wrap items-center gap-3">
+                <a href="https://www.google.com/maps/search/?api=1&query={{ area.name|urlencode }}+{{ area.location|urlencode }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="inline-flex items-center space-x-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-2xl shadow-lg shadow-amber-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                    <span>Google Maps पर खोजें</span>
+                </a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'delhi_wiki:landmark_create' %}" class="inline-flex items-center space-x-2 bg-white/10 hover:bg-white/20 backdrop-blur-md ring-1 ring-white/20 text-white font-bold text-xs px-4 py-2.5 rounded-2xl transition-all">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>स्थान/स्थल जोड़ें</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Grid Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <a href="#landmarks-section" class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs hover:shadow-md hover:border-amber-400 transition-all flex items-center space-x-3.5 group">
+            <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center text-lg font-bold group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-landmark"></i>
+            </div>
+            <div>
+                <span class="block text-lg font-black text-slate-900 leading-none">{{ landmarks|length }}</span>
+                <span class="text-[11px] font-bold text-slate-500 font-devanagari">दर्शनीय स्थल</span>
+            </div>
+        </a>
+
+        <a href="#food-section" class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs hover:shadow-md hover:border-orange-400 transition-all flex items-center space-x-3.5 group">
+            <div class="w-11 h-11 rounded-xl bg-orange-50 text-orange-700 flex items-center justify-center text-lg font-bold group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-utensils"></i>
+            </div>
+            <div>
+                <span class="block text-lg font-black text-slate-900 leading-none">{{ food_places|length }}</span>
+                <span class="text-[11px] font-bold text-slate-500 font-devanagari">खान-पान केंद्र</span>
+            </div>
+        </a>
+
+        <a href="#markets-section" class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs hover:shadow-md hover:border-rose-400 transition-all flex items-center space-x-3.5 group">
+            <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-700 flex items-center justify-center text-lg font-bold group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            <div>
+                <span class="block text-lg font-black text-slate-900 leading-none">{{ markets|length }}</span>
+                <span class="text-[11px] font-bold text-slate-500 font-devanagari">हाट एवं बाज़ार</span>
+            </div>
+        </a>
+
+        <a href="#events-section" class="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-2xs hover:shadow-md hover:border-indigo-400 transition-all flex items-center space-x-3.5 group">
+            <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center text-lg font-bold group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <i class="fa-solid fa-calendar-star"></i>
+            </div>
+            <div>
+                <span class="block text-lg font-black text-slate-900 leading-none">{{ events|length }}</span>
+                <span class="text-[11px] font-bold text-slate-500 font-devanagari">मेला आ आयोजन</span>
+            </div>
+        </a>
+    </div>
+
+    <!-- Main Content & Directory Sections -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column (Main Directory & Overview) -->
+        <div class="lg:col-span-2 space-y-8">
+
+            <!-- About Section Card -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-2xs space-y-4">
+                <div class="flex items-center space-x-2.5 border-b border-slate-100 pb-4">
+                    <div class="w-8 h-8 rounded-xl bg-amber-50 text-[#E85D2A] flex items-center justify-center text-sm font-extrabold">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h2 class="text-lg font-extrabold text-slate-900 font-devanagari">
+                        {{ area.name }} के संबंध में (Overview & Details)
+                    </h2>
                 </div>
-                
-                <div>
-                    <h2 class="text-lg font-semibold text-gray-500 uppercase tracking-wider mb-1">Description</h2>
-                    <p class="text-gray-700 text-base leading-relaxed">{{ area.description }}</p>
+                <div class="text-sm text-slate-700 leading-relaxed font-devanagari space-y-3">
+                    <p>{{ area.description }}</p>
                 </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Landmarks</h2>
-                    {% if landmarks %}
-                        <ul class="space-y-3">
-                            {% for landmark in landmarks %}
-                                <li>
-                                    <a href="{% url 'delhi_wiki:landmark_detail' landmark.slug %}" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition duration-150 ease-in-out">
-                                        {{ landmark.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-gray-500 italic">No landmarks added yet.</p>
-                    {% endif %}
+
+            <!-- Landmarks Section -->
+            <div id="landmarks-section" class="space-y-4 scroll-mt-20">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2.5 h-6 bg-amber-500 rounded-full"></span>
+                        <h2 class="text-lg font-extrabold text-slate-900 font-devanagari">
+                            दर्शनीय एवं धार्मिक स्थल (Landmarks & Heritage)
+                        </h2>
+                    </div>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'delhi_wiki:landmark_create' %}" class="mt-5 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                            + Add Landmark
-                        </a>
+                    <a href="{% url 'delhi_wiki:landmark_create' %}" class="text-xs font-extrabold text-[#E85D2A] hover:underline flex items-center gap-1 font-devanagari">
+                        <i class="fa-solid fa-plus text-[10px]"></i> स्थान जोड़ें
+                    </a>
                     {% endif %}
                 </div>
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Food Places</h2>
-                    {% if food_places %}
-                        <ul class="space-y-3">
-                            {% for food_place in food_places %}
-                                <li>
-                                    <a href="{% url 'delhi_wiki:food_place_detail' food_place.slug %}" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition duration-150 ease-in-out">
-                                        {{ food_place.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-gray-500 italic">No food places added yet.</p>
-                    {% endif %}
+
+                {% if landmarks %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for landmark in landmarks %}
+                    <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-amber-300 shadow-2xs hover:shadow-md transition-all overflow-hidden flex flex-col justify-between group">
+                        <div class="p-5 space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <span class="px-2.5 py-1 rounded-md bg-amber-50 text-amber-800 font-bold text-[10px] uppercase tracking-wide border border-amber-200">
+                                    {{ landmark.get_category_display }}
+                                </span>
+                                {% if landmark.rating %}
+                                <span class="flex items-center text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg">
+                                    <i class="fa-solid fa-star text-amber-400 mr-1 text-[10px]"></i>{{ landmark.rating }}
+                                </span>
+                                {% endif %}
+                            </div>
+
+                            <h3 class="text-base font-extrabold text-slate-900 group-hover:text-[#E85D2A] transition-colors font-devanagari">
+                                <a href="{% url 'delhi_wiki:landmark_detail' landmark.slug %}">{{ landmark.name }}</a>
+                            </h3>
+
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">
+                                {{ landmark.description }}
+                            </p>
+
+                            {% if landmark.address %}
+                            <p class="text-[11px] text-slate-500 font-medium">
+                                <i class="fa-solid fa-location-dot text-rose-500 mr-1"></i>{{ landmark.address }}
+                            </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+                            <span class="text-slate-500 font-medium font-devanagari"><i class="fa-regular fa-clock mr-1"></i>{{ landmark.timings|default:"समय उपलब्ध नहीं" }}</span>
+                            <a href="{% url 'delhi_wiki:landmark_detail' landmark.slug %}" class="text-[#E85D2A] font-extrabold group-hover:translate-x-0.5 transition-transform flex items-center gap-1 font-devanagari">
+                                <span>देखें</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 text-center space-y-2">
+                    <i class="fa-solid fa-landmark text-amber-300 text-3xl"></i>
+                    <p class="text-xs font-bold text-slate-600 font-devanagari">अभी यहाँ कोई दर्शनीय स्थल दर्ज नहीं है</p>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'delhi_wiki:food_place_create' %}" class="mt-5 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                            + Add Food Place
-                        </a>
+                    <a href="{% url 'delhi_wiki:landmark_create' %}" class="inline-block text-xs font-bold text-[#E85D2A] hover:underline font-devanagari">+ दर्शनीय स्थल जोड़ें</a>
                     {% endif %}
                 </div>
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Markets</h2>
-                    {% if markets %}
-                        <ul class="space-y-3">
-                            {% for market in markets %}
-                                <li>
-                                    <a href="{% url 'delhi_wiki:market_detail' market.slug %}" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition duration-150 ease-in-out">
-                                        {{ market.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-gray-500 italic">No markets added yet.</p>
-                    {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- Food Places Section -->
+            <div id="food-section" class="space-y-4 scroll-mt-20">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2.5 h-6 bg-orange-500 rounded-full"></span>
+                        <h2 class="text-lg font-extrabold text-slate-900 font-devanagari">
+                            प्रसिद्ध भोजनालय एवं व्यंजन (Food & Local Cuisines)
+                        </h2>
+                    </div>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'delhi_wiki:market_create' %}" class="mt-5 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                            + Add Market
-                        </a>
+                    <a href="{% url 'delhi_wiki:food_place_create' %}" class="text-xs font-extrabold text-[#E85D2A] hover:underline flex items-center gap-1 font-devanagari">
+                        <i class="fa-solid fa-plus text-[10px]"></i> दुकान जोड़ें
+                    </a>
                     {% endif %}
                 </div>
-                
-                <div class="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Upcoming Events</h2>
-                    {% if events %}
-                        <ul class="space-y-4"> {# Slightly more space for events with dates #}
-                            {% for event in events %}
-                                <li>
-                                    <a href="{% url 'delhi_wiki:event_detail' event.slug %}" class="text-indigo-600 hover:text-indigo-800 hover:underline font-medium transition duration-150 ease-in-out">
-                                        {{ event.title }}
-                                    </a>
-                                    <p class="text-sm text-gray-500 mt-1">{{ event.start_date|date:"F j, Y" }}</p>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-gray-500 italic">No upcoming events.</p>
-                    {% endif %}
+
+                {% if food_places %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for food in food_places %}
+                    <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-orange-300 shadow-2xs hover:shadow-md transition-all p-5 flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded-md bg-orange-50 text-orange-700 font-bold text-[10px]">
+                                    {{ food.get_cuisine_display }}
+                                </span>
+                                {% if food.rating %}
+                                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                                    <i class="fa-solid fa-star text-amber-400 text-[10px]"></i>{{ food.rating }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <h3 class="text-base font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors font-devanagari">
+                                <a href="{% url 'delhi_wiki:food_place_detail' food.slug %}">{{ food.name }}</a>
+                            </h3>
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">{{ food.description }}</p>
+                        </div>
+                        <div class="pt-4 flex items-center justify-between text-xs border-t border-slate-100 mt-3">
+                            <span class="text-slate-500 font-medium"><i class="fa-solid fa-indian-rupee-sign mr-1"></i>{{ food.price_range|default:"Reasonable" }}</span>
+                            <a href="{% url 'delhi_wiki:food_place_detail' food.slug %}" class="text-orange-600 font-extrabold hover:underline font-devanagari">विवरण देखें ➔</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 text-center space-y-2">
+                    <i class="fa-solid fa-utensils text-orange-300 text-3xl"></i>
+                    <p class="text-xs font-bold text-slate-600 font-devanagari">अभी यहाँ कोई खान-पान केंद्र दर्ज नहीं है</p>
                     {% if user.is_authenticated %}
-                        <a href="{% url 'delhi_wiki:event_create' %}" class="mt-5 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                            + Add Event
-                        </a>
+                    <a href="{% url 'delhi_wiki:food_place_create' %}" class="inline-block text-xs font-bold text-orange-600 hover:underline font-devanagari">+ भोजनालय जोड़ें</a>
                     {% endif %}
                 </div>
-                
-            </div> </div> </div> </div> 
-{% endblock %} 
+                {% endif %}
+            </div>
+
+            <!-- Markets Section -->
+            <div id="markets-section" class="space-y-4 scroll-mt-20">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2.5 h-6 bg-rose-500 rounded-full"></span>
+                        <h2 class="text-lg font-extrabold text-slate-900 font-devanagari">
+                            हाट, बाज़ार एवं ख़रीदारी (Markets & Specialty Shopping)
+                        </h2>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'delhi_wiki:market_create' %}" class="text-xs font-extrabold text-[#E85D2A] hover:underline flex items-center gap-1 font-devanagari">
+                        <i class="fa-solid fa-plus text-[10px]"></i> बाज़ार जोड़ें
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if markets %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for market in markets %}
+                    <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-rose-300 shadow-2xs hover:shadow-md transition-all p-5 flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <span class="px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 font-bold text-[10px]">
+                                स्थानीय बाज़ार
+                            </span>
+                            <h3 class="text-base font-extrabold text-slate-900 group-hover:text-rose-600 transition-colors font-devanagari">
+                                <a href="{% url 'delhi_wiki:market_detail' market.slug %}">{{ market.name }}</a>
+                            </h3>
+                            <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">{{ market.description }}</p>
+                        </div>
+                        <div class="pt-4 flex items-center justify-between text-xs border-t border-slate-100 mt-3">
+                            <span class="text-slate-500 font-medium font-devanagari"><i class="fa-solid fa-bag-shopping text-rose-500 mr-1"></i>{{ market.specialties|truncatechars:25|default:"पारंपरिक वस्तुएँ" }}</span>
+                            <a href="{% url 'delhi_wiki:market_detail' market.slug %}" class="text-rose-600 font-extrabold hover:underline font-devanagari">विवरण देखें ➔</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 text-center space-y-2">
+                    <i class="fa-solid fa-store text-rose-300 text-3xl"></i>
+                    <p class="text-xs font-bold text-slate-600 font-devanagari">अभी यहाँ कोई बाज़ार दर्ज नहीं है</p>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'delhi_wiki:market_create' %}" class="inline-block text-xs font-bold text-rose-600 hover:underline font-devanagari">+ बाज़ार जोड़ें</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Events Section -->
+            <div id="events-section" class="space-y-4 scroll-mt-20">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="w-2.5 h-6 bg-indigo-600 rounded-full"></span>
+                        <h2 class="text-lg font-extrabold text-slate-900 font-devanagari">
+                            आगामी मेला एवं सांस्कृतिक कार्यक्रम (Events & Festivals)
+                        </h2>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'delhi_wiki:event_create' %}" class="text-xs font-extrabold text-[#E85D2A] hover:underline flex items-center gap-1 font-devanagari">
+                        <i class="fa-solid fa-plus text-[10px]"></i> कार्यक्रम जोड़ें
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if events %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {% for event in events %}
+                    <div class="bg-white rounded-2xl border border-slate-200/80 hover:border-indigo-300 shadow-2xs hover:shadow-md transition-all p-5 space-y-3 group">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="px-2.5 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-bold text-[10px]">
+                                {{ event.get_category_display }}
+                            </span>
+                            <span class="text-slate-500 font-bold"><i class="fa-solid fa-calendar mr-1 text-indigo-500"></i>{{ event.start_date|date:"d M Y" }}</span>
+                        </div>
+                        <h3 class="text-base font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors font-devanagari">
+                            <a href="{% url 'delhi_wiki:event_detail' event.slug %}">{{ event.title }}</a>
+                        </h3>
+                        <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed font-devanagari">{{ event.description }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white rounded-2xl border border-slate-200/80 p-6 text-center space-y-2">
+                    <i class="fa-solid fa-calendar-xmark text-indigo-300 text-3xl"></i>
+                    <p class="text-xs font-bold text-slate-600 font-devanagari">अभी कोई आगामी कार्यक्रम सूचीबद्ध नहीं है</p>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'delhi_wiki:event_create' %}" class="inline-block text-xs font-bold text-indigo-600 hover:underline font-devanagari">+ कार्यक्रम जोड़ें</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Right Column (Sidebar Cards) -->
+        <div class="space-y-6">
+
+            <!-- District Quick Info Card -->
+            <div class="bg-white rounded-3xl p-6 border border-amber-200/80 shadow-2xs space-y-4">
+                <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                    <i class="fa-solid fa-circle-info text-[#E85D2A] text-base"></i>
+                    <h3 class="text-sm font-extrabold text-slate-900 font-devanagari">संक्षिप्त विवरण (Quick Stats)</h3>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium font-devanagari">क्षेत्र नाम</span>
+                        <span class="font-extrabold text-slate-800 font-devanagari">{{ area.name }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium font-devanagari">स्थान/राज्य</span>
+                        <span class="font-extrabold text-slate-800 font-devanagari">{{ area.location }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-500 font-medium font-devanagari">सत्यापन स्थिति</span>
+                        <span class="font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full text-[10px]">
+                            {% if area.is_verified %}✓ सत्यापित{% else %}प्रक्रियाधीन{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between py-1.5">
+                        <span class="text-slate-500 font-medium font-devanagari">कुल प्रविष्टियाँ</span>
+                        <span class="font-extrabold text-[#E85D2A]">{{ landmarks|length|add:food_places|length|add:markets|length|add:events|length }} जानकारी</span>
+                    </div>
+                </div>
+
+                <a href="https://www.google.com/maps/search/?api=1&query={{ area.name|urlencode }}+{{ area.location|urlencode }}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-2xl flex items-center justify-center gap-2 transition-colors">
+                    <i class="fa-solid fa-map-pin text-amber-400"></i>
+                    <span>गूगल मैप्स पर देखें</span>
+                </a>
+            </div>
+
+            <!-- Community Contribution CTA Box -->
+            <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-3xl p-6 text-white space-y-4 shadow-lg shadow-amber-500/20">
+                <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-[#E85D2A] fa-hand-holding-heart text-white"></i>
+                </div>
+                <div class="space-y-1.5">
+                    <h3 class="text-base font-black font-devanagari">ज्ञान कोष में योगदान दें</h3>
+                    <p class="text-xs text-amber-100 leading-relaxed font-devanagari">
+                        क्या आपके पास {{ area.name }} के किसी मंदिर, भोजनालय या प्रसिद्ध स्थल की जानकारी है?
+                    </p>
+                </div>
+                <div class="pt-1 space-y-2">
+                    <a href="{% url 'delhi_wiki:landmark_create' %}" class="w-full py-2 bg-white hover:bg-amber-50 text-slate-900 font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-all font-devanagari">
+                        <i class="fa-solid fa-plus text-[#E85D2A]"></i> दर्शनीय स्थल जोड़ें
+                    </a>
+                    <a href="{% url 'delhi_wiki:food_place_create' %}" class="w-full py-2 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all font-devanagari">
+                        <i class="fa-solid fa-plus"></i> भोजनालय / दुकान जोड़ें
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+ 

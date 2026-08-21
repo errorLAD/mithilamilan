@@ -52,6 +52,8 @@ class Landmark(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_approved = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
+    source_name = models.CharField(max_length=255, blank=True, help_text="e.g. Madhubani District Website / Govt of Bihar Tourism")
+    source_url = models.URLField(max_length=500, blank=True, help_text="Official verification source link")
     verified_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, related_name='verified_landmarks')
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_landmarks')
 

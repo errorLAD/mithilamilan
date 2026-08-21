@@ -80,12 +80,22 @@ def post_create(request, subreddit_slug=None):
 
 def post_detail(request, subreddit_slug, post_slug):
     post = get_object_or_404(Post, slug=post_slug, subreddit__slug=subreddit_slug)
-    comments = post.comments.filter(parent=None)
+    comments = post.comments.filter(parent=None).select_related('author').prefetch_related('replies__author', 'replies__replies__author')
     comment_form = CommentCreateForm()
+    
+    # Fetch related posts from the same subreddit for continuous discovery
+    related_posts = Post.objects.filter(subreddit=post.subreddit).exclude(id=post.id).order_by('-score', '-created_at')[:4]
+    
+    is_subscribed = request.user.is_authenticated and post.subreddit.subscribers.filter(id=request.user.id).exists()
+    subscriber_count = post.subreddit.subscribers.count()
+
     return render(request, 'posts/detail.html', {
         'post': post,
         'comments': comments,
-        'comment_form': comment_form
+        'comment_form': comment_form,
+        'related_posts': related_posts,
+        'is_subscribed': is_subscribed,
+        'subscriber_count': subscriber_count,
     })
 
 @login_required
@@ -117,56 +127,77 @@ def post_delete(request, subreddit_slug, post_slug):
     messages.success(request, 'Post deleted successfully!')
     return redirect('subreddits:subreddit_detail', slug=subreddit_slug)
 
+from django.db import transaction
+from django.urls import reverse
+
 @login_required
+@transaction.atomic
 def post_upvote(request, subreddit_slug, post_slug):
-    post = get_object_or_404(Post, slug=post_slug, subreddit__slug=subreddit_slug)
+    post = get_object_or_404(Post.objects.select_for_update(), slug=post_slug, subreddit__slug=subreddit_slug)
     user_vote = 'none'
+    user_voted = False
+
     if request.user in post.downvotes.all():
         post.downvotes.remove(request.user)
     if request.user in post.upvotes.all():
         post.upvotes.remove(request.user)
+        user_voted = False
+        user_vote = 'none'
     else:
         post.upvotes.add(request.user)
+        user_voted = True
         user_vote = 'up'
     post.update_score()
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('format') == 'json' or 'application/json' in request.headers.get('Accept', ''):
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('format') == 'json' or 'application/json' in request.headers.get('Accept', '')
+    if is_ajax:
         return JsonResponse({
+            'success': True,
             'status': 'success',
             'score': post.score,
+            'user_voted': user_voted,
             'user_vote': user_vote,
             'upvotes_count': post.upvotes.count(),
             'downvotes_count': post.downvotes.count()
         })
 
-    next_url = request.GET.get('next', 'posts:detail')
+    next_url = request.GET.get('next') or request.POST.get('next', 'posts:detail')
     if next_url == 'home':
         return redirect('core:home')
     return redirect('posts:detail', subreddit_slug=subreddit_slug, post_slug=post_slug)
 
 @login_required
+@transaction.atomic
 def post_downvote(request, subreddit_slug, post_slug):
-    post = get_object_or_404(Post, slug=post_slug, subreddit__slug=subreddit_slug)
+    post = get_object_or_404(Post.objects.select_for_update(), slug=post_slug, subreddit__slug=subreddit_slug)
     user_vote = 'none'
+    user_voted = False
+
     if request.user in post.upvotes.all():
         post.upvotes.remove(request.user)
     if request.user in post.downvotes.all():
         post.downvotes.remove(request.user)
+        user_voted = False
+        user_vote = 'none'
     else:
         post.downvotes.add(request.user)
+        user_voted = False
         user_vote = 'down'
     post.update_score()
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('format') == 'json' or 'application/json' in request.headers.get('Accept', ''):
+    is_ajax = request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.GET.get('format') == 'json' or 'application/json' in request.headers.get('Accept', '')
+    if is_ajax:
         return JsonResponse({
+            'success': True,
             'status': 'success',
             'score': post.score,
+            'user_voted': user_voted,
             'user_vote': user_vote,
             'upvotes_count': post.upvotes.count(),
             'downvotes_count': post.downvotes.count()
         })
 
-    next_url = request.GET.get('next', 'posts:detail')
+    next_url = request.GET.get('next') or request.POST.get('next', 'posts:detail')
     if next_url == 'home':
         return redirect('core:home')
     return redirect('posts:detail', subreddit_slug=subreddit_slug, post_slug=post_slug)
