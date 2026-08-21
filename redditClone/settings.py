@@ -19,16 +19,17 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-here'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 't')
-
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', '*.railway.app,*.up.railway.app,.vercel.app,localhost,127.0.0.1,*').split(',') if host.strip()]
-
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip() for origin in os.environ.get(
-        'CSRF_TRUSTED_ORIGINS',
-        'http://127.0.0.1:8000,http://localhost:8000,https://*.railway.app,https://*.up.railway.app'
-    ).split(',') if origin.strip()
+ALLOWED_HOSTS = [
+    "*",
+    "mithilamilan.in",
+    "www.mithilamilan.in",
+    "web-production-76926.up.railway.app",
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://web-production-76926.up.railway.app",
+    "https://mithilamilan.in",
+]
 # Application definition
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
