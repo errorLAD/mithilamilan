@@ -194,7 +194,7 @@
                 {% if user.is_authenticated %}
                 <!-- User Profile Menu -->
                 <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" type="button" class="min-h-[44px] min-w-[44px] flex items-center justify-center p-1 rounded-full hover:bg-slate-100 transition-colors">
+                    <button @click="open = !open" type="button" class="min-h-[44px] flex items-center space-x-2 p-1 pl-1 pr-2 rounded-full hover:bg-slate-100 transition-colors border border-slate-200/80">
                         {% if user.avatar %}
                             <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-8 h-8 rounded-full object-cover">
                         {% else %}
@@ -202,17 +202,34 @@
                                 {{ user.username|first|upper }}
                             </div>
                         {% endif %}
+                        <span class="hidden md:inline font-bold text-xs text-slate-800 max-w-[100px] truncate">u/{{ user.username }}</span>
+                        <i class="fa-solid fa-chevron-down text-[9px] text-slate-400"></i>
                     </button>
 
                     <div x-show="open" @click.away="open = false" x-transition class="origin-top-right absolute right-0 mt-2 w-56 rounded-2xl shadow-saas-lg bg-white border border-slate-200 py-1.5 z-50 text-xs text-slate-700 font-medium" x-cloak>
-                        <div class="px-4 py-2 border-b border-slate-100">
-                            <p class="font-bold text-slate-900 truncate">u/{{ user.username }}</p>
-                            <p class="text-[10px] text-slate-500">Karma: {{ user.karma|default:0 }}</p>
+                        <div class="px-4 py-2.5 border-b border-slate-100 bg-slate-50/50 rounded-t-2xl">
+                            <p class="font-extrabold text-slate-900 truncate">u/{{ user.username }}</p>
+                            {% if user.email %}
+                            <p class="text-[10px] text-slate-500 truncate">{{ user.email }}</p>
+                            {% endif %}
+                            <p class="text-[10px] font-bold text-[#E85D2A] mt-0.5"><i class="fa-solid fa-star text-[9px]"></i> Karma: {{ user.karma|default:0 }}</p>
                         </div>
-                        <a href="{% url 'users:profile' user.username %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">Your Profile</a>
-                        <a href="{% url 'core:user_submissions' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 font-semibold text-amber-700 min-h-[44px] flex items-center">My Submissions</a>
-                        <a href="{% url 'pg_rental:my_listings' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">My PG Listings</a>
-                        <a href="{% url 'job_portal:my_jobs' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center">My Job Posts</a>
+                        <a href="{% url 'users:profile' user.username %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center space-x-2">
+                            <i class="fa-regular fa-user text-slate-400 w-4"></i>
+                            <span>Your Profile</span>
+                        </a>
+                        <a href="{% url 'core:user_submissions' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 font-semibold text-amber-700 min-h-[44px] flex items-center space-x-2">
+                            <i class="fa-solid fa-paper-plane text-amber-600 w-4"></i>
+                            <span>My Submissions</span>
+                        </a>
+                        <a href="{% url 'pg_rental:my_listings' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center space-x-2">
+                            <i class="fa-solid fa-house-chimney text-emerald-500 w-4"></i>
+                            <span>My PG Listings</span>
+                        </a>
+                        <a href="{% url 'job_portal:my_jobs' %}" class="block px-4 py-2.5 hover:bg-slate-50 hover:text-slate-900 min-h-[44px] flex items-center space-x-2">
+                            <i class="fa-solid fa-briefcase text-blue-500 w-4"></i>
+                            <span>My Job Posts</span>
+                        </a>
                         {% if user.is_staff or user.is_superuser %}
                         <a href="{% url 'admin_panel:dashboard' %}" class="block px-4 py-2.5 text-[#E85D2A] font-bold hover:bg-orange-50 min-h-[44px] flex items-center justify-between border-t border-slate-100">
                             <span>MithilaMilan Admin OS</span>
@@ -221,14 +238,17 @@
                         {% endif %}
                         <form method="post" action="{% url 'users:logout' %}" class="border-t border-slate-100">
                             {% csrf_token %}
-                            <button type="submit" class="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 font-semibold min-h-[44px] flex items-center">Sign Out</button>
+                            <button type="submit" class="w-full text-left px-4 py-2.5 text-rose-600 hover:bg-rose-50 font-semibold min-h-[44px] flex items-center space-x-2">
+                                <i class="fa-solid fa-right-from-bracket w-4"></i>
+                                <span>Sign Out</span>
+                            </button>
                         </form>
                     </div>
                 </div>
                 {% else %}
-                <div class="hidden sm:flex items-center space-x-2 font-sans">
-                    <a href="{% url 'users:login' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-slate-700 hover:text-slate-900 px-3.5 py-2 hover:bg-slate-100/80 rounded-full transition-colors">Log In</a>
-                    <a href="{% url 'users:signup' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-white bg-[#E85D2A] hover:bg-[#D54C1A] px-4 sm:px-5 py-2 rounded-full shadow-xs transition-all">Sign Up</a>
+                <div class="flex items-center space-x-1.5 sm:space-x-2 font-sans">
+                    <a href="{% url 'users:login' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-slate-700 hover:text-slate-900 px-3 sm:px-3.5 py-2 hover:bg-slate-100/80 rounded-full transition-colors">Log In</a>
+                    <a href="{% url 'users:signup' %}" class="min-h-[44px] flex items-center justify-center text-xs font-bold text-white bg-[#E85D2A] hover:bg-[#D54C1A] px-3.5 sm:px-5 py-2 rounded-full shadow-xs transition-all">Sign Up</a>
                 </div>
                 {% endif %}
 
@@ -311,12 +331,37 @@
             </div>
             
             {% if user.is_authenticated %}
-            <a href="{% url 'core:user_submissions' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-amber-800 bg-amber-50 font-bold min-h-[44px]">
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-2xl mb-2 flex items-center space-x-3">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="{{ user.username }}" class="w-10 h-10 rounded-full object-cover shrink-0">
+                {% else %}
+                    <div class="w-10 h-10 rounded-full bg-[#7D3028] text-white font-bold text-sm flex items-center justify-center shrink-0">
+                        {{ user.username|first|upper }}
+                    </div>
+                {% endif %}
+                <div class="overflow-hidden">
+                    <p class="font-extrabold text-slate-900 truncate">u/{{ user.username }}</p>
+                    <p class="text-[10px] text-[#E85D2A] font-bold">Karma: {{ user.karma|default:0 }}</p>
+                </div>
+            </div>
+
+            <a href="{% url 'users:profile' user.username %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-slate-50 font-bold min-h-[44px]">
+                <i class="fa-regular fa-user w-5 text-center text-slate-500 text-sm"></i><span>Your Profile</span>
+            </a>
+            <a href="{% url 'core:user_submissions' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-amber-800 hover:bg-amber-50 font-bold min-h-[44px]">
                 <i class="fa-solid fa-paper-plane w-5 text-center text-amber-600 text-sm"></i><span>मेरी प्रस्तुतियाँ</span>
             </a>
             <a href="{% url 'notifications:notification_list' %}" @click="sidebarOpen = false" class="flex items-center space-x-3 px-3.5 py-3 rounded-xl text-slate-800 hover:bg-slate-50 font-bold min-h-[44px]">
                 <i class="fa-solid fa-bell w-5 text-center text-amber-500 text-sm"></i><span>सूचनाएँ</span>
             </a>
+            
+            <form method="post" action="{% url 'users:logout' %}" class="pt-2">
+                {% csrf_token %}
+                <button type="submit" @click="sidebarOpen = false" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl font-extrabold text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors min-h-[44px]">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Log Out</span>
+                </button>
+            </form>
             {% else %}
             <div class="space-y-2 pt-1">
                 <a href="{% url 'users:login' %}" @click="sidebarOpen = false" class="flex items-center justify-center space-x-2 w-full py-2.5 px-4 rounded-xl font-extrabold text-xs text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 shadow-2xs transition-colors min-h-[44px]">
@@ -348,22 +393,22 @@
     <!-- Persistent Global Audio Player -->
     {% include 'includes/global_audio_player.html' %}
 
-    <!-- Full-Screen Top-Navbar Makhana Rain Celebration Animation -->
+    <!-- Full-Screen Abundant Makhana Celebration Rain Animation -->
     <style>
     @keyframes makhanaRainFall {
         0% {
             opacity: 0;
-            transform: translate3d(0, -90px, 0) rotate(var(--start-rot, 0deg)) scale(var(--start-scale, 0.8));
+            transform: translate3d(0, -80px, 0) rotate(var(--rot-start, 0deg)) scale(var(--scale-val, 1));
         }
         8% {
-            opacity: 1;
+            opacity: var(--max-opacity, 0.95);
         }
-        85% {
-            opacity: 1;
+        88% {
+            opacity: var(--max-opacity, 0.95);
         }
         100% {
             opacity: 0;
-            transform: translate3d(var(--sway-x, 30px), 115vh, 0) rotate(calc(var(--start-rot, 0deg) + var(--spin-rot, 240deg))) scale(var(--start-scale, 0.8));
+            transform: translate3d(var(--sway-x, 25px), 115vh, 0) rotate(calc(var(--rot-start, 0deg) + var(--rot-delta, 60deg))) scale(var(--scale-val, 1));
         }
     }
     </style>
@@ -377,9 +422,10 @@
 
         try {
             const isMobile = window.innerWidth < 640;
+            // 100 particles on desktop, 55 on mobile for rich celebration rain
             const particleCount = isMobile 
-                ? Math.floor(Math.random() * 41) + 50     // 50-90 particles on mobile
-                : Math.floor(Math.random() * 101) + 100;  // 100-200 particles on desktop
+                ? Math.floor(Math.random() * 15) + 50     // 50 to 65 particles on mobile
+                : Math.floor(Math.random() * 21) + 90;    // 90 to 110 particles on desktop
 
             const container = document.createElement('div');
             container.className = 'makhana-fullscreen-rain';
@@ -393,23 +439,30 @@
                 particle.src = makhanaSrc;
                 particle.alt = 'Makhana Particle';
 
-                // BIG sizes (Desktop: 48px-80px, Mobile: 30px-54px)
-                const minSize = isMobile ? 30 : 48;
-                const maxSize = isMobile ? 54 : 80;
+                // Good smooth Makhana sizes: Desktop (36px - 68px), Mobile (26px - 48px)
+                const minSize = isMobile ? 26 : 36;
+                const maxSize = isMobile ? 48 : 68;
                 const size = Math.floor(Math.random() * (maxSize - minSize + 1)) + minSize;
 
-                const startLeftPercent = Math.random() * 98 + 1; // Spread across top edge (1% to 99%)
-                const swayX = (Math.random() - 0.5) * (isMobile ? 60 : 110);
-                const startRotation = (Math.random() - 0.5) * 60;
-                const spinRotation = (Math.random() > 0.5 ? 1 : -1) * (180 + Math.random() * 270);
-                const startScale = (Math.random() * 0.35 + 0.8).toFixed(2);
+                // Spread start positions smoothly across full top edge (1% to 99%)
+                const startLeftPercent = (Math.random() * 98 + 1).toFixed(2);
+
+                // Gentle horizontal drift & subtle rotation
+                const swayX = ((Math.random() - 0.5) * (isMobile ? 40 : 80)).toFixed(1);
+                const rotStart = ((Math.random() - 0.5) * 50).toFixed(1);
+                const rotDelta = ((Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 80)).toFixed(1);
+                const scaleVal = (Math.random() * 0.3 + 0.85).toFixed(2);
+                const maxOpacity = (Math.random() * 0.2 + 0.8).toFixed(2);
+
+                // Steady rain fall duration slightly slowed down to 3.0s - 3.8s
+                const duration = (Math.random() * 0.8 + 3.0).toFixed(2);
                 
-                const duration = (Math.random() * 0.6 + 1.1).toFixed(2); // 1.1s to 1.7s
-                const delay = (Math.random() * 0.75).toFixed(2); // Stagger start across 0s - 0.75s
+                // Staggered appearance across 0.0s to 1.2s
+                const delay = (Math.random() * 1.2).toFixed(2);
 
                 particle.style.cssText = `
                     position: absolute;
-                    top: -90px;
+                    top: -80px;
                     left: ${startLeftPercent}%;
                     width: ${size}px;
                     height: auto;
@@ -420,20 +473,22 @@
                     will-change: transform, opacity;
                     animation: makhanaRainFall ${duration}s linear ${delay}s forwards;
                     --sway-x: ${swayX}px;
-                    --start-rot: ${startRotation}deg;
-                    --spin-rot: ${spinRotation}deg;
-                    --start-scale: ${startScale};
+                    --rot-start: ${rotStart}deg;
+                    --rot-delta: ${rotDelta}deg;
+                    --scale-val: ${scaleVal};
+                    --max-opacity: ${maxOpacity};
                 `;
 
                 container.appendChild(particle);
             }
 
+            // Cleanup container after longest particle finishes (~3.8s duration + ~1.2s delay = ~5.0s)
             setTimeout(() => {
                 if (container && container.parentNode) {
                     container.parentNode.removeChild(container);
                 }
                 isMakhanaRainActive = false;
-            }, 2600);
+            }, 5200);
         } catch (e) {
             console.error("[Makhana Rain] Error during animation:", e);
             isMakhanaRainActive = false;

@@ -6,6 +6,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     bio = models.TextField(max_length=500, blank=True)
+    location = models.CharField(_('location'), max_length=100, blank=True)
     karma = models.IntegerField(default=0)
     date_joined = models.DateTimeField(auto_now_add=True)
     
