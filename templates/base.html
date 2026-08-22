@@ -82,6 +82,15 @@
 
     {% block extra_head %}{% endblock %}
     {% block extra_css %}{% endblock %}
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7FMJTHTDQ4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-7FMJTHTDQ4');
+</script>
 </head>
 <body class="min-h-full bg-[#F8F8F6] text-[#0F1F35] flex flex-col font-sans antialiased overflow-x-hidden" 
       x-data="{ sidebarOpen: false, locationModalOpen: false }"
